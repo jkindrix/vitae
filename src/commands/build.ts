@@ -15,15 +15,13 @@ export interface BuildCommandOptions {
   theme: string;
   output?: string;
   formats?: string;
+  debug?: boolean;
 }
 
 /**
  * Build command - generate resume outputs
  */
-export async function buildCommand(
-  inputPath: string,
-  options: BuildCommandOptions
-): Promise<void> {
+export async function buildCommand(inputPath: string, options: BuildCommandOptions): Promise<void> {
   const startTime = Date.now();
 
   console.log(chalk.blue('Loading resume...'));
@@ -50,9 +48,7 @@ export async function buildCommand(
   if (formats.includes('docx')) {
     const hasPandoc = await checkPandoc();
     if (!hasPandoc) {
-      console.log(
-        chalk.yellow('⚠ Pandoc not installed - skipping DOCX generation')
-      );
+      console.log(chalk.yellow('⚠ Pandoc not installed - skipping DOCX generation'));
       console.log(chalk.dim('  Install from: https://pandoc.org/installing.html'));
       const docxIndex = formats.indexOf('docx');
       if (docxIndex > -1) formats.splice(docxIndex, 1);
@@ -78,7 +74,14 @@ export async function buildCommand(
 
         case 'pdf': {
           console.log(chalk.blue(`Generating PDF...`));
-          await generatePdf(resume, options.theme, outputPath);
+          const pdfOptions = options.debug
+            ? {
+                debug: true,
+                saveHtml: outputPath.replace('.pdf', '-debug.html'),
+                screenshot: outputPath.replace('.pdf', '-debug.png'),
+              }
+            : {};
+          await generatePdf(resume, options.theme, outputPath, pdfOptions);
           results.push({ format: 'PDF', path: outputPath });
           console.log(chalk.green(`✓ PDF: ${outputPath}`));
           break;
@@ -116,7 +119,5 @@ export async function buildCommand(
   // Summary
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
   console.log('');
-  console.log(
-    chalk.green(`✓ Generated ${results.length} file(s) in ${elapsed}s`)
-  );
+  console.log(chalk.green(`✓ Generated ${results.length} file(s) in ${elapsed}s`));
 }

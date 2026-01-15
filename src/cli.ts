@@ -12,10 +12,7 @@ import {
 
 const program = new Command();
 
-program
-  .name('vitae')
-  .description('Beautiful resume generator from YAML')
-  .version('0.1.0');
+program.name('vitae').description('Beautiful resume generator from YAML').version('0.1.0');
 
 // Build command
 program
@@ -29,6 +26,7 @@ program
     'Comma-separated output formats: pdf,docx,html,json',
     'pdf,docx,html'
   )
+  .option('-d, --debug', 'Enable debug mode with verbose logging and intermediate files')
   .action(async (input: string, options) => {
     try {
       await buildCommand(input, options);

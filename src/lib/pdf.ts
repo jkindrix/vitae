@@ -1,8 +1,41 @@
-import { chromium, type Browser, type Page } from 'playwright';
+import { chromium, type Browser } from 'playwright';
+import { writeFile } from 'fs/promises';
 import { renderStandaloneHtml } from './renderer.js';
+import { PdfError } from './errors.js';
 import type { Resume } from '../types/index.js';
 
 let browser: Browser | null = null;
+
+/**
+ * Debug logger for PDF generation
+ */
+interface DebugLogger {
+  log: (message: string) => void;
+  timing: (label: string, startTime: number) => void;
+}
+
+function createDebugLogger(enabled: boolean): DebugLogger {
+  if (!enabled) {
+    // No-op logger for non-debug mode
+    const noop = (): void => {
+      // Intentionally empty - no logging when debug is disabled
+    };
+    return {
+      log: noop,
+      timing: noop,
+    };
+  }
+
+  return {
+    log: (message: string) => {
+      console.log(`[PDF Debug] ${message}`);
+    },
+    timing: (label: string, startTime: number) => {
+      const elapsed = Date.now() - startTime;
+      console.log(`[PDF Debug] ${label}: ${elapsed}ms`);
+    },
+  };
+}
 
 /**
  * Get or create a browser instance
@@ -51,9 +84,38 @@ export interface PdfOptions {
    * Scale of the webpage rendering (default: 1)
    */
   scale?: number;
+
+  /**
+   * Enable debug mode with verbose logging
+   */
+  debug?: boolean;
+
+  /**
+   * Path to save intermediate HTML for debugging
+   * Only used when debug is true
+   */
+  saveHtml?: string;
+
+  /**
+   * Path to save screenshot before PDF generation
+   * Only used when debug is true
+   */
+  screenshot?: string;
 }
 
-const defaultOptions: Required<PdfOptions> = {
+interface DefaultPdfOptions {
+  format: 'Letter' | 'A4' | 'Legal';
+  margin: {
+    top: string;
+    right: string;
+    bottom: string;
+    left: string;
+  };
+  printBackground: boolean;
+  scale: number;
+}
+
+const defaultOptions: DefaultPdfOptions = {
   format: 'Letter',
   margin: {
     top: '0.5in',
@@ -75,21 +137,92 @@ export async function generatePdf(
   options: PdfOptions = {}
 ): Promise<void> {
   const mergedOptions = { ...defaultOptions, ...options };
-  const html = await renderStandaloneHtml(resume, themeName);
+  const debug = createDebugLogger(options.debug ?? false);
+  const totalStart = Date.now();
 
-  const browserInstance = await getBrowser();
+  debug.log(`Starting PDF generation for ${resume.meta.name}`);
+  debug.log(`Theme: ${themeName}, Output: ${outputPath}`);
+  debug.log(`Options: format=${mergedOptions.format}, scale=${mergedOptions.scale}`);
+
+  // Render HTML
+  let html: string;
+  try {
+    const renderStart = Date.now();
+    html = await renderStandaloneHtml(resume, themeName);
+    debug.timing('HTML rendering', renderStart);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to render HTML: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  }
+
+  // Save intermediate HTML if requested
+  if (options.debug && options.saveHtml) {
+    try {
+      await writeFile(options.saveHtml, html, 'utf-8');
+      debug.log(`Saved intermediate HTML to ${options.saveHtml}`);
+    } catch (error) {
+      debug.log(
+        `Warning: Could not save HTML: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  // Get browser instance
+  let browserInstance: Browser;
+  try {
+    const browserStart = Date.now();
+    browserInstance = await getBrowser();
+    debug.timing('Browser acquisition', browserStart);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to launch browser: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  }
+
   const page = await browserInstance.newPage();
+  const consoleMessages: string[] = [];
+
+  // Capture console messages in debug mode
+  if (options.debug) {
+    page.on('console', (msg) => {
+      const text = `[${msg.type()}] ${msg.text()}`;
+      consoleMessages.push(text);
+      debug.log(`Browser console: ${text}`);
+    });
+
+    page.on('pageerror', (error) => {
+      debug.log(`Page error: ${error.message}`);
+    });
+  }
 
   try {
     // Set content and wait for any fonts/resources to load
+    const contentStart = Date.now();
     await page.setContent(html, {
       waitUntil: 'networkidle',
     });
+    debug.timing('Page content load', contentStart);
 
     // Force print color mode for accurate colors
     await page.emulateMedia({ media: 'print', colorScheme: 'light' });
 
+    // Take screenshot if requested
+    if (options.debug && options.screenshot) {
+      try {
+        await page.screenshot({ path: options.screenshot, fullPage: true });
+        debug.log(`Saved screenshot to ${options.screenshot}`);
+      } catch (error) {
+        debug.log(
+          `Warning: Could not save screenshot: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+    }
+
     // Generate PDF
+    const pdfStart = Date.now();
     await page.pdf({
       path: outputPath,
       format: mergedOptions.format,
@@ -97,6 +230,18 @@ export async function generatePdf(
       printBackground: mergedOptions.printBackground,
       scale: mergedOptions.scale,
     });
+    debug.timing('PDF generation', pdfStart);
+
+    debug.timing('Total PDF generation', totalStart);
+
+    if (options.debug && consoleMessages.length > 0) {
+      debug.log(`Captured ${consoleMessages.length} console message(s)`);
+    }
+  } catch (error) {
+    throw new PdfError(
+      `Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
   } finally {
     await page.close();
   }
@@ -111,26 +256,100 @@ export async function generatePdfBuffer(
   options: PdfOptions = {}
 ): Promise<Buffer> {
   const mergedOptions = { ...defaultOptions, ...options };
-  const html = await renderStandaloneHtml(resume, themeName);
+  const debug = createDebugLogger(options.debug ?? false);
+  const totalStart = Date.now();
 
-  const browserInstance = await getBrowser();
+  debug.log(`Starting PDF buffer generation for ${resume.meta.name}`);
+
+  // Render HTML
+  let html: string;
+  try {
+    const renderStart = Date.now();
+    html = await renderStandaloneHtml(resume, themeName);
+    debug.timing('HTML rendering', renderStart);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to render HTML: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  }
+
+  // Save intermediate HTML if requested
+  if (options.debug && options.saveHtml) {
+    try {
+      await writeFile(options.saveHtml, html, 'utf-8');
+      debug.log(`Saved intermediate HTML to ${options.saveHtml}`);
+    } catch (error) {
+      debug.log(
+        `Warning: Could not save HTML: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  // Get browser instance
+  let browserInstance: Browser;
+  try {
+    const browserStart = Date.now();
+    browserInstance = await getBrowser();
+    debug.timing('Browser acquisition', browserStart);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to launch browser: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  }
+
   const page = await browserInstance.newPage();
 
+  // Capture console messages in debug mode
+  if (options.debug) {
+    page.on('console', (msg) => {
+      debug.log(`Browser console: [${msg.type()}] ${msg.text()}`);
+    });
+
+    page.on('pageerror', (error) => {
+      debug.log(`Page error: ${error.message}`);
+    });
+  }
+
   try {
+    const contentStart = Date.now();
     await page.setContent(html, {
       waitUntil: 'networkidle',
     });
+    debug.timing('Page content load', contentStart);
 
     await page.emulateMedia({ media: 'print', colorScheme: 'light' });
 
+    // Take screenshot if requested
+    if (options.debug && options.screenshot) {
+      try {
+        await page.screenshot({ path: options.screenshot, fullPage: true });
+        debug.log(`Saved screenshot to ${options.screenshot}`);
+      } catch (error) {
+        debug.log(
+          `Warning: Could not save screenshot: ${error instanceof Error ? error.message : String(error)}`
+        );
+      }
+    }
+
+    const pdfStart = Date.now();
     const buffer = await page.pdf({
       format: mergedOptions.format,
       margin: mergedOptions.margin,
       printBackground: mergedOptions.printBackground,
       scale: mergedOptions.scale,
     });
+    debug.timing('PDF generation', pdfStart);
+
+    debug.timing('Total PDF buffer generation', totalStart);
 
     return Buffer.from(buffer);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
   } finally {
     await page.close();
   }
