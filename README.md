@@ -70,6 +70,9 @@ vitae build resume.yaml -f pdf,html               # PDF and HTML
 vitae build resume.yaml -f pdf,docx,html,json     # All formats
 vitae build resume.yaml -o ./output               # Custom output directory
 vitae build resume.yaml -t minimal                # Use specific theme
+vitae build resume.yaml -n john-doe               # Custom output filename (john-doe.pdf, etc.)
+vitae build resume.yaml -a                        # All themes (resume-minimal.pdf, resume-modern.pdf, etc.)
+vitae build resume.yaml --open                    # Open PDF after generation
 ```
 
 **Options:**
@@ -77,7 +80,10 @@ vitae build resume.yaml -t minimal                # Use specific theme
 |--------|-------------|---------|
 | `-f, --formats <formats>` | Comma-separated output formats | `pdf,docx,html` |
 | `-o, --output <dir>` | Output directory | Input file directory |
+| `-n, --name <prefix>` | Output filename prefix | Input filename |
 | `-t, --theme <name>` | Theme to use | `minimal` |
+| `-a, --all-themes` | Generate outputs for all available themes | - |
+| `--open` | Open the first generated file after build | - |
 
 ### `vitae preview <input>`
 
@@ -147,6 +153,8 @@ experience:
         start: 2021-03                          # Required (YYYY-MM or YYYY)
         end: present                            # Optional (YYYY-MM, YYYY, or "present")
         location: San Francisco, CA             # Optional
+        summary: >                              # Optional (brief role description)
+          Led backend team building scalable APIs for real-time collaboration features.
         highlights:                             # Optional
           - Led architecture of real-time features
           - Reduced API response times by 60%
@@ -392,37 +400,36 @@ npm run format
 
 ## JSON Resume Compatibility
 
-Vitae uses its own schema optimized for simplicity. To convert from [JSON Resume](https://jsonresume.org/):
+Vitae automatically detects and converts [JSON Resume](https://jsonresume.org/) format. No manual conversion needed:
+
+```bash
+# JSON Resume files work directly
+vitae build resume.json                    # Auto-detected and converted
+vitae preview resume.json                  # Works with preview too
+vitae validate resume.json                 # Validates after conversion
+```
+
+### Programmatic Import
 
 ```typescript
-import { parseResume } from 'vitae';
-import { readFileSync } from 'fs';
+import { loadResume, parseResume } from 'vitae';
 
-// Load JSON Resume
-const jsonResume = JSON.parse(readFileSync('resume.json', 'utf-8'));
+// Load from file (auto-detects format)
+const resume = await loadResume('resume.json');
 
-// Convert to Vitae format
-const vitaeYaml = `
-meta:
-  name: ${jsonResume.basics.name}
-  title: ${jsonResume.basics.label}
-  email: ${jsonResume.basics.email}
-  phone: ${jsonResume.basics.phone}
-  location: ${jsonResume.basics.location?.city}, ${jsonResume.basics.location?.region}
-  links:
-${jsonResume.basics.profiles?.map(p => `    - label: ${p.network}\n      url: ${p.url}`).join('\n')}
+// Parse from string (auto-detects format)
+const resume = await parseResume(jsonResumeString);
 
-summary: ${jsonResume.basics.summary}
+// Force JSON Resume interpretation
+const resume = await loadResume('data.yaml', { jsonResume: true });
+```
 
-experience:
-${jsonResume.work?.map(w => `  - company: ${w.name}
-    roles:
-      - title: ${w.position}
-        start: ${w.startDate}
-        end: ${w.endDate || 'present'}
-        highlights:
-${w.highlights?.map(h => `          - ${h}`).join('\n')}`).join('\n')}
-`;
+### Export to JSON Resume
+
+```typescript
+import { toJsonResume } from 'vitae';
+
+const jsonResume = toJsonResume(vitaeResume);
 ```
 
 ## Troubleshooting
