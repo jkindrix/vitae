@@ -1,1 +1,1 @@
-export * from './resume.js';
+export type * from './resume.js';
