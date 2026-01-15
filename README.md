@@ -21,7 +21,7 @@ A beautiful resume generator that converts YAML to PDF, DOCX, HTML, and JSON wit
 ### Install from npm
 
 ```bash
-npm install -g vitae
+npm install -g @jkindrix/vitae
 ```
 
 ### Install from source
@@ -258,6 +258,7 @@ themes/
 |--------|-------------|---------|
 | `formatDate` | Full date (January 2024) | `{{ role.start \| formatDate }}` |
 | `formatDateShort` | Short date (Jan 2024) | `{{ role.start \| formatDateShort }}` |
+| `formatDateRange` | Date range (Jan 2024 - Present) | `{{ role.start \| formatDateRange(role.end) }}` |
 | `joinItems` | Join array with separator | `{{ skills \| joinItems(', ') }}` |
 | `domain` | Extract domain from URL | `{{ url \| domain }}` |
 
