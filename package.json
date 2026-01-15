@@ -1,5 +1,5 @@
 {
-  "name": "vitae",
+  "name": "@jkindrix/vitae",
   "version": "0.1.0",
   "description": "Beautiful resume generator from YAML - PDF and DOCX outputs with theming support",
   "type": "module",
@@ -59,14 +59,14 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "chalk": "^5.3.0",
-    "commander": "^12.1.0",
+    "commander": "^14.0.2",
     "nunjucks": "^3.2.4",
     "playwright": "^1.49.1",
     "yaml": "^2.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@types/node": "^22.10.2",
+    "@types/node": "^25.0.8",
     "@types/nunjucks": "^3.2.6",
     "@vitest/coverage-v8": "^4.0.17",
     "eslint": "^9.39.2",
