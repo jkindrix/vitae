@@ -21,11 +21,14 @@ program
   .argument('<input>', 'Path to resume.yaml file')
   .option('-t, --theme <name>', 'Theme to use', 'minimal')
   .option('-o, --output <dir>', 'Output directory (defaults to input directory)')
+  .option('-n, --name <prefix>', 'Output filename prefix (defaults to input filename)')
   .option(
     '-f, --formats <formats>',
     'Comma-separated output formats: pdf,docx,html,json',
     'pdf,docx,html'
   )
+  .option('-a, --all-themes', 'Generate outputs for all available themes')
+  .option('--open', 'Open the first generated file after build')
   .option('-d, --debug', 'Enable debug mode with verbose logging and intermediate files')
   .action(async (input: string, options) => {
     try {
