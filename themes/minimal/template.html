@@ -1,0 +1,156 @@
+<article class="resume">
+  <header class="resume__header">
+    <h1 class="resume__name">{{ meta.name }}</h1>
+    {% if meta.title %}
+    <p class="resume__title">{{ meta.title }}</p>
+    {% endif %}
+
+    <div class="resume__contact">
+      {% if meta.email %}
+      <span class="resume__contact-item">{{ meta.email }}</span>
+      {% endif %}
+      {% if meta.phone %}
+      <span class="resume__contact-item">{{ meta.phone }}</span>
+      {% endif %}
+      {% if meta.location %}
+      <span class="resume__contact-item">{{ meta.location }}</span>
+      {% endif %}
+    </div>
+
+    {% if meta.links and meta.links.length > 0 %}
+    <div class="resume__links">
+      {% for link in meta.links %}
+      <a href="{{ link.url }}" class="resume__link" target="_blank" rel="noopener">
+        {{ link.label or link.url | domain }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  {% if summary %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Summary</h2>
+    <p class="resume__summary">{{ summary }}</p>
+  </section>
+  {% endif %}
+
+  {% if skills and skills.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Skills</h2>
+    <div class="resume__skills">
+      {% for category in skills %}
+      <div class="resume__skill-category">
+        <span class="resume__skill-label">{{ category.category }}:</span>
+        <span class="resume__skill-items">{{ category.items | joinItems }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if experience and experience.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Experience</h2>
+    {% for exp in experience %}
+    <div class="resume__company">
+      <h3 class="resume__company-name">{{ exp.company }}</h3>
+      {% for role in exp.roles %}
+      <div class="resume__role">
+        <div class="resume__role-header">
+          <span class="resume__role-title">{{ role.title }}</span>
+          <span class="resume__role-meta">
+            {% if role.start %}{{ role.start | formatDateShort }}{% endif %}
+            {% if role.end %} – {{ role.end | formatDateShort }}{% endif %}
+            {% if role.location %} | {{ role.location }}{% endif %}
+          </span>
+        </div>
+        {% if role.highlights and role.highlights.length > 0 %}
+        <ul class="resume__highlights">
+          {% for highlight in role.highlights %}
+          <li>{{ highlight }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if projects and projects.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Projects</h2>
+    <div class="resume__projects">
+      {% for project in projects %}
+      <div class="resume__project">
+        <div class="resume__project-header">
+          {% if project.url %}
+          <a href="{{ project.url }}" class="resume__project-name" target="_blank" rel="noopener">{{ project.name }}</a>
+          {% else %}
+          <span class="resume__project-name">{{ project.name }}</span>
+          {% endif %}
+          {% if project.description %}
+          <span class="resume__project-desc">— {{ project.description }}</span>
+          {% endif %}
+        </div>
+        {% if project.highlights and project.highlights.length > 0 %}
+        <ul class="resume__highlights">
+          {% for highlight in project.highlights %}
+          <li>{{ highlight }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if education and education.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Education</h2>
+    {% for edu in education %}
+    <div class="resume__education">
+      <div class="resume__education-header">
+        <span class="resume__education-institution">{{ edu.institution }}</span>
+        {% if edu.start or edu.end %}
+        <span class="resume__education-dates">
+          {% if edu.start %}{{ edu.start }}{% endif %}
+          {% if edu.end %} – {{ edu.end }}{% endif %}
+        </span>
+        {% endif %}
+      </div>
+      {% if edu.degree or edu.field %}
+      <p class="resume__education-degree">
+        {{ edu.degree }}{% if edu.field %} in {{ edu.field }}{% endif %}
+      </p>
+      {% endif %}
+      {% if edu.highlights and edu.highlights.length > 0 %}
+      <ul class="resume__highlights">
+        {% for highlight in edu.highlights %}
+        <li>{{ highlight }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if certifications and certifications.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Certifications</h2>
+    <ul class="resume__certifications">
+      {% for cert in certifications %}
+      <li>
+        <span class="resume__cert-name">{{ cert.name }}</span>
+        {% if cert.issuer %}<span class="resume__cert-issuer"> — {{ cert.issuer }}</span>{% endif %}
+        {% if cert.date %}<span class="resume__cert-date"> ({{ cert.date }})</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</article>

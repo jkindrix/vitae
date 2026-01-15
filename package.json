@@ -1,0 +1,66 @@
+{
+  "name": "vitae",
+  "version": "0.1.0",
+  "description": "Beautiful resume generator from YAML - PDF and DOCX outputs with theming support",
+  "type": "module",
+  "bin": {
+    "vitae": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "themes",
+    "schemas"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/cli.js",
+    "lint": "eslint src",
+    "format": "prettier --write src",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "resume",
+    "cv",
+    "pdf",
+    "docx",
+    "yaml",
+    "generator",
+    "cli"
+  ],
+  "author": "Justin Kindrix",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jkindrix/vitae.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jkindrix/vitae/issues"
+  },
+  "homepage": "https://github.com/jkindrix/vitae#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "nunjucks": "^3.2.4",
+    "playwright": "^1.49.1",
+    "yaml": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/nunjucks": "^3.2.6",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

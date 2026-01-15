@@ -1,0 +1,408 @@
+/* Minimal Theme for Vitae
+ * Clean, professional design with excellent typography
+ * Optimized for both screen and print
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors */
+  --color-text: #1a1a1a;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #6b6b6b;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-border: #e5e5e5;
+  --color-background: #ffffff;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 10pt;
+  --font-size-sm: 9pt;
+  --font-size-lg: 11pt;
+  --font-size-xl: 12pt;
+  --font-size-2xl: 14pt;
+  --font-size-3xl: 20pt;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+/* ============================================
+   Resume Container
+   ============================================ */
+.resume {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+/* ============================================
+   Header Section
+   ============================================ */
+.resume__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resume__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.resume__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__contact-item {
+  display: inline;
+}
+
+.resume__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.resume__links {
+  font-size: var(--font-size-sm);
+}
+
+.resume__link {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.resume__link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.resume__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--color-text);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   Summary
+   ============================================ */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Skills
+   ============================================ */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.resume__skill-label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__skill-items {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Experience
+   ============================================ */
+.resume__company {
+  margin-bottom: var(--space-md);
+}
+
+.resume__company:last-child {
+  margin-bottom: 0;
+}
+
+.resume__company-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__role:last-child {
+  margin-bottom: 0;
+}
+
+.resume__role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__role-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ============================================
+   Highlights (Bullet Points)
+   ============================================ */
+.resume__highlights {
+  list-style: disc;
+  padding-left: var(--space-lg);
+  margin: 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Projects
+   ============================================ */
+.resume__projects {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__project {
+  margin-bottom: 0;
+}
+
+.resume__project-header {
+  margin-bottom: var(--space-xs);
+}
+
+.resume__project-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__project-name:hover {
+  text-decoration: underline;
+}
+
+.resume__project-desc {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Education
+   ============================================ */
+.resume__education {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__education:last-child {
+  margin-bottom: 0;
+}
+
+.resume__education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__education-institution {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__education-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__education-degree {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Certifications
+   ============================================ */
+.resume__certifications {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resume__certifications li {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__certifications li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__cert-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__cert-issuer {
+  color: var(--color-text-secondary);
+}
+
+.resume__cert-date {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resume__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .resume__project-name {
+    color: var(--color-text);
+  }
+
+  /* Prevent page breaks inside elements */
+  .resume__company,
+  .resume__role,
+  .resume__project,
+  .resume__education {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title {
+    page-break-after: avoid;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #f5f5f5;
+  }
+
+  .resume {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+  }
+}
