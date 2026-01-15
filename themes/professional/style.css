@@ -236,6 +236,14 @@ a.resume__entry-title {
   color: var(--color-text-muted);
 }
 
+.resume__entry-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  margin: var(--space-xs) 0;
+  text-align: justify;
+}
+
 /* ============================================
    Highlights (Bullet Points)
    ============================================ */

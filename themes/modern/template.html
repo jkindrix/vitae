@@ -111,6 +111,9 @@
               {% if role.location %} | {{ role.location }}{% endif %}
             </span>
           </div>
+          {% if role.summary %}
+          <p class="resume__role-summary">{{ role.summary }}</p>
+          {% endif %}
           {% if role.highlights and role.highlights.length > 0 %}
           <ul class="resume__highlights">
             {% for highlight in role.highlights %}

@@ -34,6 +34,7 @@ export interface Role {
   start: string;
   end?: string;
   location?: string;
+  summary?: string;
   highlights?: string[];
 }
 

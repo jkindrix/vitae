@@ -234,10 +234,9 @@ function convertWork(work: JsonResumeWork[] | undefined): Experience[] {
     const endDate = convertDate(job.endDate);
     if (endDate) role.end = endDate;
     if (job.location) role.location = job.location;
+    if (job.summary) role.summary = job.summary;
     if (job.highlights && job.highlights.length > 0) {
       role.highlights = job.highlights;
-    } else if (job.summary) {
-      role.highlights = [job.summary];
     }
 
     const existing = companyMap.get(company);
@@ -592,6 +591,7 @@ export function toJsonResume(resume: Resume): JsonResumeFormat {
         };
         if (role.end) job.endDate = role.end;
         if (role.location) job.location = role.location;
+        if (role.summary) job.summary = role.summary;
         if (role.highlights) job.highlights = role.highlights;
         work.push(job);
       }

@@ -230,6 +230,13 @@ body {
   white-space: nowrap;
 }
 
+.resume__role-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
 /* ============================================
    Highlights (Bullet Points)
    ============================================ */

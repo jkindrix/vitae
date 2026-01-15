@@ -114,6 +114,10 @@
                   "type": "string",
                   "description": "Work location"
                 },
+                "summary": {
+                  "type": "string",
+                  "description": "Brief summary of the role before listing highlights"
+                },
                 "highlights": {
                   "type": "array",
                   "items": {
