@@ -5,6 +5,7 @@ import { join } from 'path';
 import { randomUUID } from 'crypto';
 import { loadTheme, getDocxReferencePath } from './themes.js';
 import { DocxError } from './errors.js';
+import { formatDateShort } from './dates.js';
 import type { Resume } from '../types/index.js';
 
 /**
@@ -88,7 +89,7 @@ function resumeToMarkdown(resume: Resume): string {
         const dateParts: string[] = [];
         if (role.start) {
           const endDate = role.end ?? 'Present';
-          dateParts.push(`${formatDate(role.start)} - ${formatDate(endDate)}`);
+          dateParts.push(`${formatDateShort(role.start)} - ${formatDateShort(endDate)}`);
         }
         if (role.location) dateParts.push(role.location);
 
@@ -150,8 +151,8 @@ function resumeToMarkdown(resume: Resume): string {
 
       if (edu.start || edu.end) {
         const dateParts: string[] = [];
-        if (edu.start) dateParts.push(formatDate(edu.start));
-        if (edu.end) dateParts.push(formatDate(edu.end));
+        if (edu.start) dateParts.push(formatDateShort(edu.start));
+        if (edu.end) dateParts.push(formatDateShort(edu.end));
         lines.push(dateParts.join(' - '));
       }
       lines.push('');
@@ -180,35 +181,6 @@ function resumeToMarkdown(resume: Resume): string {
   }
 
   return lines.join('\n');
-}
-
-/**
- * Format a date string for display
- */
-function formatDate(dateStr: string): string {
-  if (dateStr.toLowerCase() === 'present') return 'Present';
-
-  const [year, month] = dateStr.split('-');
-  if (!month) return year ?? '';
-
-  const monthAbbr = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  const monthIndex = parseInt(month, 10) - 1;
-  const abbr = monthAbbr[monthIndex];
-  return abbr ? `${abbr} ${year}` : (year ?? '');
 }
 
 export interface DocxOptions {

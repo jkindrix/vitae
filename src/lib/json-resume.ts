@@ -264,10 +264,12 @@ function convertSkills(skills: JsonResumeSkill[] | undefined): SkillCategory[] |
   }
 
   const result = skills
-    .filter((skill) => skill.name && skill.keywords && skill.keywords.length > 0)
+    .filter((skill): skill is JsonResumeSkill & { name: string; keywords: string[] } =>
+      Boolean(skill.name && skill.keywords && skill.keywords.length > 0)
+    )
     .map((skill) => ({
-      category: skill.name!,
-      items: skill.keywords!,
+      category: skill.name,
+      items: skill.keywords,
     }));
 
   return result.length > 0 ? result : undefined;
@@ -282,9 +284,9 @@ function convertProjects(projects: JsonResumeProject[] | undefined): Project[] |
   }
 
   const result = projects
-    .filter((project) => project.name)
+    .filter((project): project is JsonResumeProject & { name: string } => Boolean(project.name))
     .map((project) => {
-      const p: Project = { name: project.name! };
+      const p: Project = { name: project.name };
       if (project.url) p.url = project.url;
       if (project.description) p.description = project.description;
       if (project.highlights && project.highlights.length > 0) {
@@ -305,9 +307,9 @@ function convertEducation(education: JsonResumeEducation[] | undefined): Educati
   }
 
   const result = education
-    .filter((edu) => edu.institution)
+    .filter((edu): edu is JsonResumeEducation & { institution: string } => Boolean(edu.institution))
     .map((edu) => {
-      const e: Education = { institution: edu.institution! };
+      const e: Education = { institution: edu.institution };
       if (edu.studyType) e.degree = edu.studyType;
       if (edu.area) e.field = edu.area;
       const startDate = convertDate(edu.startDate);
@@ -332,9 +334,9 @@ function convertCertificates(
   }
 
   const result = certificates
-    .filter((cert) => cert.name)
+    .filter((cert): cert is JsonResumeCertificate & { name: string } => Boolean(cert.name))
     .map((cert) => {
-      const c: Certification = { name: cert.name! };
+      const c: Certification = { name: cert.name };
       if (cert.issuer) c.issuer = cert.issuer;
       const date = convertDate(cert.date);
       if (date) c.date = date;
@@ -354,9 +356,9 @@ function convertLanguages(languages: JsonResumeLanguage[] | undefined): Language
   }
 
   const result = languages
-    .filter((lang) => lang.language)
+    .filter((lang): lang is JsonResumeLanguage & { language: string } => Boolean(lang.language))
     .map((lang) => {
-      const l: Language = { language: lang.language! };
+      const l: Language = { language: lang.language };
       if (lang.fluency) l.fluency = lang.fluency;
       return l;
     });
@@ -373,9 +375,9 @@ function convertAwards(awards: JsonResumeAward[] | undefined): Award[] | undefin
   }
 
   const result = awards
-    .filter((award) => award.title)
+    .filter((award): award is JsonResumeAward & { title: string } => Boolean(award.title))
     .map((award) => {
-      const a: Award = { title: award.title! };
+      const a: Award = { title: award.title };
       if (award.awarder) a.awarder = award.awarder;
       const date = convertDate(award.date);
       if (date) a.date = date;
@@ -397,9 +399,9 @@ function convertPublications(
   }
 
   const result = publications
-    .filter((pub) => pub.name)
+    .filter((pub): pub is JsonResumePublication & { name: string } => Boolean(pub.name))
     .map((pub) => {
-      const p: Publication = { name: pub.name! };
+      const p: Publication = { name: pub.name };
       if (pub.publisher) p.publisher = pub.publisher;
       const releaseDate = convertDate(pub.releaseDate);
       if (releaseDate) p.releaseDate = releaseDate;
@@ -420,9 +422,11 @@ function convertVolunteer(volunteer: JsonResumeVolunteer[] | undefined): Volunte
   }
 
   const result = volunteer
-    .filter((vol) => vol.organization)
+    .filter((vol): vol is JsonResumeVolunteer & { organization: string } =>
+      Boolean(vol.organization)
+    )
     .map((vol) => {
-      const v: Volunteer = { organization: vol.organization! };
+      const v: Volunteer = { organization: vol.organization };
       if (vol.position) v.position = vol.position;
       const start = convertDate(vol.startDate);
       if (start) v.start = start;
@@ -445,9 +449,9 @@ function convertReferences(references: JsonResumeReference[] | undefined): Refer
   }
 
   const result = references
-    .filter((ref) => ref.name)
+    .filter((ref): ref is JsonResumeReference & { name: string } => Boolean(ref.name))
     .map((ref) => {
-      const r: Reference = { name: ref.name! };
+      const r: Reference = { name: ref.name };
       if (ref.reference) r.reference = ref.reference;
       return r;
     });
