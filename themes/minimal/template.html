@@ -153,4 +153,118 @@
     </ul>
   </section>
   {% endif %}
+
+  {% if languages and languages.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Languages</h2>
+    <ul class="resume__languages">
+      {% for lang in languages %}
+      <li>
+        <span class="resume__lang-name">{{ lang.language }}</span>
+        {% if lang.fluency %}<span class="resume__lang-fluency"> — {{ lang.fluency }}</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if awards and awards.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Awards</h2>
+    <div class="resume__awards">
+      {% for award in awards %}
+      <div class="resume__award">
+        <div class="resume__award-header">
+          <span class="resume__award-title">{{ award.title }}</span>
+          {% if award.awarder or award.date %}
+          <span class="resume__award-meta">
+            {% if award.awarder %}{{ award.awarder }}{% endif %}
+            {% if award.date %} ({{ award.date }}){% endif %}
+          </span>
+          {% endif %}
+        </div>
+        {% if award.summary %}
+        <p class="resume__award-summary">{{ award.summary }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if publications and publications.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Publications</h2>
+    <div class="resume__publications">
+      {% for pub in publications %}
+      <div class="resume__publication">
+        <div class="resume__publication-header">
+          {% if pub.url %}
+          <a href="{{ pub.url }}" class="resume__publication-name" target="_blank" rel="noopener">{{ pub.name }}</a>
+          {% else %}
+          <span class="resume__publication-name">{{ pub.name }}</span>
+          {% endif %}
+          {% if pub.publisher or pub.releaseDate %}
+          <span class="resume__publication-meta">
+            {% if pub.publisher %}{{ pub.publisher }}{% endif %}
+            {% if pub.releaseDate %} ({{ pub.releaseDate }}){% endif %}
+          </span>
+          {% endif %}
+        </div>
+        {% if pub.summary %}
+        <p class="resume__publication-summary">{{ pub.summary }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if volunteer and volunteer.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">Volunteer Experience</h2>
+    {% for vol in volunteer %}
+    <div class="resume__volunteer">
+      <div class="resume__volunteer-header">
+        <span class="resume__volunteer-org">{{ vol.organization }}</span>
+        {% if vol.start or vol.end %}
+        <span class="resume__volunteer-dates">
+          {% if vol.start %}{{ vol.start }}{% endif %}
+          {% if vol.end %} – {{ vol.end }}{% endif %}
+        </span>
+        {% endif %}
+      </div>
+      {% if vol.position %}
+      <p class="resume__volunteer-position">{{ vol.position }}</p>
+      {% endif %}
+      {% if vol.summary %}
+      <p class="resume__volunteer-summary">{{ vol.summary }}</p>
+      {% endif %}
+      {% if vol.highlights and vol.highlights.length > 0 %}
+      <ul class="resume__highlights">
+        {% for highlight in vol.highlights %}
+        <li>{{ highlight }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if references and references.length > 0 %}
+  <section class="resume__section">
+    <h2 class="resume__section-title">References</h2>
+    <div class="resume__references">
+      {% for ref in references %}
+      <div class="resume__reference">
+        <span class="resume__reference-name">{{ ref.name }}</span>
+        {% if ref.reference %}
+        <blockquote class="resume__reference-quote">"{{ ref.reference }}"</blockquote>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 </article>

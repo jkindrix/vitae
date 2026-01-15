@@ -220,6 +220,136 @@
           }
         }
       }
+    },
+    "languages": {
+      "type": "array",
+      "description": "Languages spoken",
+      "items": {
+        "type": "object",
+        "required": ["language"],
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "Language name"
+          },
+          "fluency": {
+            "type": "string",
+            "description": "Fluency level (e.g., Native, Fluent, Professional, Conversational)"
+          }
+        }
+      }
+    },
+    "awards": {
+      "type": "array",
+      "description": "Awards and honors",
+      "items": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Award title"
+          },
+          "awarder": {
+            "type": "string",
+            "description": "Organization that gave the award"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date received"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Brief description of the award"
+          }
+        }
+      }
+    },
+    "publications": {
+      "type": "array",
+      "description": "Academic or professional publications",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Publication title"
+          },
+          "publisher": {
+            "type": "string",
+            "description": "Publisher or journal name"
+          },
+          "releaseDate": {
+            "type": "string",
+            "description": "Publication date"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to the publication"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Brief description or abstract"
+          }
+        }
+      }
+    },
+    "volunteer": {
+      "type": "array",
+      "description": "Volunteer experience",
+      "items": {
+        "type": "object",
+        "required": ["organization"],
+        "properties": {
+          "organization": {
+            "type": "string",
+            "description": "Organization name"
+          },
+          "position": {
+            "type": "string",
+            "description": "Role or position"
+          },
+          "start": {
+            "type": "string",
+            "description": "Start date"
+          },
+          "end": {
+            "type": "string",
+            "description": "End date"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Brief description of the work"
+          },
+          "highlights": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Key accomplishments"
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "description": "Professional references",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Reference name"
+          },
+          "reference": {
+            "type": "string",
+            "description": "Reference quote or testimonial"
+          }
+        }
+      }
     }
   }
 }

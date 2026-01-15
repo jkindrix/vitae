@@ -352,6 +352,169 @@ a.resume__project-name:hover {
 }
 
 /* ============================================
+   Languages
+   ============================================ */
+.resume__languages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.resume__languages li {
+  font-size: var(--font-size-base);
+}
+
+.resume__lang-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__lang-fluency {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   Awards
+   ============================================ */
+.resume__awards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__award-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__award-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__award-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__award-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Publications
+   ============================================ */
+.resume__publications {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__publication-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__publication-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__publication-name:hover {
+  text-decoration: underline;
+}
+
+.resume__publication-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__publication-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Volunteer
+   ============================================ */
+.resume__volunteer {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__volunteer:last-child {
+  margin-bottom: 0;
+}
+
+.resume__volunteer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__volunteer-org {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__volunteer-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__volunteer-position {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.resume__volunteer-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__references {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.resume__reference-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-border);
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 @media print {

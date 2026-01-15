@@ -4,6 +4,7 @@ import { tmpdir } from 'os';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
 import { loadTheme, getDocxReferencePath } from './themes.js';
+import { DocxError } from './errors.js';
 import type { Resume } from '../types/index.js';
 
 /**
@@ -191,8 +192,18 @@ function formatDate(dateStr: string): string {
   if (!month) return year ?? '';
 
   const monthAbbr = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   const monthIndex = parseInt(month, 10) - 1;
@@ -218,10 +229,7 @@ export async function generateDocx(
 ): Promise<void> {
   const pandocAvailable = await checkPandoc();
   if (!pandocAvailable) {
-    throw new Error(
-      'Pandoc is not installed. Please install Pandoc to generate DOCX files.\n' +
-      'Visit: https://pandoc.org/installing.html'
-    );
+    throw DocxError.pandocNotInstalled();
   }
 
   // Convert resume to Markdown

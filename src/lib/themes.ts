@@ -1,6 +1,7 @@
 import { readdir, readFile, stat } from 'fs/promises';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { ThemeError } from './errors.js';
 import type { Theme } from '../types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,7 +37,7 @@ export async function loadTheme(themeName: string): Promise<Theme> {
 
   const exists = await fileExists(themePath);
   if (!exists) {
-    throw new Error(`Theme '${themeName}' not found at ${themePath}`);
+    throw ThemeError.notFound(themeName, themePath);
   }
 
   const hasTemplate = await fileExists(join(themePath, 'template.html'));
@@ -44,7 +45,7 @@ export async function loadTheme(themeName: string): Promise<Theme> {
   const hasDocxReference = await fileExists(join(themePath, 'reference.docx'));
 
   if (!hasTemplate) {
-    throw new Error(`Theme '${themeName}' is missing required template.html`);
+    throw ThemeError.missingTemplate(themeName);
   }
 
   return {

@@ -1,6 +1,7 @@
 import nunjucks from 'nunjucks';
 import { loadTheme, readTemplate, readStyles } from './themes.js';
-import type { Resume, Theme } from '../types/index.js';
+import { formatDate, formatDateShort, formatDateRange } from './dates.js';
+import type { Resume } from '../types/index.js';
 
 // Configure Nunjucks environment
 const env = new nunjucks.Environment(null, {
@@ -11,45 +12,10 @@ const env = new nunjucks.Environment(null, {
 
 // Add custom filters
 
-/**
- * Format a date string (YYYY-MM) to a readable format
- */
-env.addFilter('formatDate', (dateStr: string | undefined): string => {
-  if (!dateStr) return '';
-  if (dateStr.toLowerCase() === 'present') return 'Present';
-
-  const [year, month] = dateStr.split('-');
-  if (!month) return year ?? '';
-
-  const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
-  ];
-
-  const monthIndex = parseInt(month, 10) - 1;
-  const monthName = monthNames[monthIndex];
-  return monthName ? `${monthName} ${year}` : (year ?? '');
-});
-
-/**
- * Format a date string to abbreviated format (Jan 2024)
- */
-env.addFilter('formatDateShort', (dateStr: string | undefined): string => {
-  if (!dateStr) return '';
-  if (dateStr.toLowerCase() === 'present') return 'Present';
-
-  const [year, month] = dateStr.split('-');
-  if (!month) return year ?? '';
-
-  const monthAbbr = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-  ];
-
-  const monthIndex = parseInt(month, 10) - 1;
-  const abbr = monthAbbr[monthIndex];
-  return abbr ? `${abbr} ${year}` : (year ?? '');
-});
+// Date formatting filters using shared utilities
+env.addFilter('formatDate', formatDate);
+env.addFilter('formatDateShort', formatDateShort);
+env.addFilter('formatDateRange', formatDateRange);
 
 /**
  * Join array items with a separator
@@ -80,10 +46,7 @@ export interface RenderResult {
 /**
  * Render a resume to HTML using a theme
  */
-export async function renderHtml(
-  resume: Resume,
-  themeName: string
-): Promise<RenderResult> {
+export async function renderHtml(resume: Resume, themeName: string): Promise<RenderResult> {
   const theme = await loadTheme(themeName);
   const template = await readTemplate(theme);
   const css = await readStyles(theme);
@@ -105,10 +68,7 @@ export async function renderHtml(
 /**
  * Render a complete standalone HTML document
  */
-export async function renderStandaloneHtml(
-  resume: Resume,
-  themeName: string
-): Promise<string> {
+export async function renderStandaloneHtml(resume: Resume, themeName: string): Promise<string> {
   const { html, css } = await renderHtml(resume, themeName);
 
   return `<!DOCTYPE html>

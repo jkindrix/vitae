@@ -78,6 +78,55 @@ export interface Certification {
 }
 
 /**
+ * Language proficiency
+ */
+export interface Language {
+  language: string;
+  fluency?: string;
+}
+
+/**
+ * Award or honor
+ */
+export interface Award {
+  title: string;
+  awarder?: string;
+  date?: string;
+  summary?: string;
+}
+
+/**
+ * Academic or professional publication
+ */
+export interface Publication {
+  name: string;
+  publisher?: string;
+  releaseDate?: string;
+  url?: string;
+  summary?: string;
+}
+
+/**
+ * Volunteer experience
+ */
+export interface Volunteer {
+  organization: string;
+  position?: string;
+  start?: string;
+  end?: string;
+  summary?: string;
+  highlights?: string[];
+}
+
+/**
+ * Professional reference
+ */
+export interface Reference {
+  name: string;
+  reference?: string;
+}
+
+/**
  * Complete resume data structure
  */
 export interface Resume {
@@ -88,6 +137,11 @@ export interface Resume {
   projects?: Project[];
   education?: Education[];
   certifications?: Certification[];
+  languages?: Language[];
+  awards?: Award[];
+  publications?: Publication[];
+  volunteer?: Volunteer[];
+  references?: Reference[];
 }
 
 /**

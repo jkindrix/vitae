@@ -3,6 +3,7 @@ import addFormats from 'ajv-formats';
 import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { ValidationError as VitaeValidationError, type ValidationErrorDetail } from './errors.js';
 import type { Resume } from '../types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,14 +28,9 @@ async function getValidator(): Promise<ValidateFunction> {
   return validateFn;
 }
 
-export interface ValidationError {
-  path: string;
-  message: string;
-}
-
 export interface ValidationResult {
   valid: boolean;
-  errors: ValidationError[];
+  errors: ValidationErrorDetail[];
 }
 
 /**
@@ -48,9 +44,10 @@ export async function validateResume(data: unknown): Promise<ValidationResult> {
     return { valid: true, errors: [] };
   }
 
-  const errors: ValidationError[] = (validate.errors ?? []).map((err: ErrorObject) => ({
+  const errors: ValidationErrorDetail[] = (validate.errors ?? []).map((err: ErrorObject) => ({
     path: err.instancePath || '/',
     message: err.message ?? 'Unknown validation error',
+    keyword: err.keyword,
   }));
 
   return { valid: false, errors };
@@ -63,10 +60,7 @@ export async function assertValidResume(data: unknown): Promise<Resume> {
   const result = await validateResume(data);
 
   if (!result.valid) {
-    const errorMessages = result.errors
-      .map((e) => `  ${e.path}: ${e.message}`)
-      .join('\n');
-    throw new Error(`Invalid resume data:\n${errorMessages}`);
+    throw VitaeValidationError.fromDetails(result.errors);
   }
 
   return data as Resume;
