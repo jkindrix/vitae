@@ -1,0 +1,500 @@
+/* Modern Theme for Vitae
+ * Contemporary two-column layout with accent colors
+ * Perfect for tech, creative, and startup industries
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors - Modern palette with accent */
+  --color-text: #2d3748;
+  --color-text-secondary: #4a5568;
+  --color-text-muted: #718096;
+  --color-text-light: #a0aec0;
+  --color-accent: #4f46e5;
+  --color-accent-light: #818cf8;
+  --color-accent-dark: #3730a3;
+  --color-sidebar-bg: #1e293b;
+  --color-sidebar-text: #f1f5f9;
+  --color-sidebar-muted: #94a3b8;
+  --color-background: #ffffff;
+  --color-border: #e2e8f0;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  --font-size-base: 10pt;
+  --font-size-sm: 9pt;
+  --font-size-lg: 11pt;
+  --font-size-xl: 12pt;
+  --font-size-2xl: 14pt;
+  --font-size-3xl: 16pt;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Layout */
+  --sidebar-width: 2.5in;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Resume Container - Two Column Layout
+   ============================================ */
+.resume {
+  display: flex;
+  max-width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto;
+}
+
+/* ============================================
+   Sidebar
+   ============================================ */
+.resume__sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--color-sidebar-bg);
+  color: var(--color-sidebar-text);
+  padding: var(--space-lg);
+}
+
+.resume__header {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resume__name {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: var(--space-xs);
+  line-height: var(--line-height-tight);
+}
+
+.resume__title {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resume__sidebar-section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__sidebar-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-sm);
+}
+
+/* Contact List */
+.resume__contact-list {
+  list-style: none;
+}
+
+.resume__contact-item {
+  font-size: var(--font-size-sm);
+  color: var(--color-sidebar-muted);
+  margin-bottom: var(--space-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  word-break: break-word;
+}
+
+.resume__contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.resume__contact-icon {
+  font-size: var(--font-size-sm);
+  color: var(--color-accent-light);
+  width: 1em;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.resume__contact-item a {
+  color: var(--color-sidebar-text);
+}
+
+.resume__contact-item a:hover {
+  color: var(--color-accent-light);
+}
+
+/* Skills in Sidebar */
+.resume__skill-group {
+  margin-bottom: var(--space-md);
+}
+
+.resume__skill-group:last-child {
+  margin-bottom: 0;
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-sidebar-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__skill-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__skill-list li {
+  font-size: var(--font-size-sm);
+  color: var(--color-sidebar-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+}
+
+/* Certifications in Sidebar */
+.resume__cert-list {
+  list-style: none;
+}
+
+.resume__cert-list li {
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.resume__cert-list li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__cert-name {
+  font-weight: 600;
+  color: var(--color-sidebar-text);
+}
+
+.resume__cert-issuer {
+  color: var(--color-sidebar-muted);
+  font-size: var(--font-size-sm);
+}
+
+.resume__cert-date {
+  color: var(--color-sidebar-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Main Content
+   ============================================ */
+.resume__main {
+  flex: 1;
+  padding: var(--space-lg);
+}
+
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-accent-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+/* Summary */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* Entry (Experience, Education, Projects) */
+.resume__entry {
+  margin-bottom: var(--space-md);
+}
+
+.resume__entry:last-child {
+  margin-bottom: 0;
+}
+
+.resume__entry--compact {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__entry-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.resume__entry-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+a.resume__entry-title {
+  color: var(--color-accent);
+}
+
+.resume__entry-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__entry-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* Company and Role */
+.resume__company-name {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role {
+  margin-bottom: var(--space-sm);
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--color-border);
+}
+
+.resume__role:last-child {
+  margin-bottom: 0;
+}
+
+.resume__role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent-dark);
+}
+
+.resume__role-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Highlights */
+.resume__highlights {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+  padding-left: var(--space-md);
+  position: relative;
+}
+
+.resume__highlights li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  background: var(--color-accent);
+  border-radius: 50%;
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Languages in Sidebar
+   ============================================ */
+.resume__lang-list {
+  list-style: none;
+}
+
+.resume__lang-list li {
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.resume__lang-list li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__lang-name {
+  font-weight: 600;
+  color: var(--color-sidebar-text);
+}
+
+.resume__lang-fluency {
+  color: var(--color-sidebar-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Entry Summary
+   ============================================ */
+.resume__entry-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__reference {
+  margin-bottom: var(--space-md);
+}
+
+.resume__reference:last-child {
+  margin-bottom: 0;
+}
+
+.resume__reference-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-accent);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    margin: 0;
+    min-height: auto;
+  }
+
+  .resume__sidebar {
+    background: var(--color-sidebar-bg) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  /* Prevent page breaks inside elements */
+  .resume__entry,
+  .resume__role {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title,
+  .resume__company-name {
+    page-break-after: avoid;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #e2e8f0;
+  }
+
+  .resume {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+}
