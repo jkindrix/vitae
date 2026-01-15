@@ -1,83 +1,103 @@
-# vitae
+# Vitae
 
-Beautiful resume generator from YAML. Outputs pixel-perfect PDF, ATS-optimized DOCX, and web-ready HTML.
+A beautiful resume generator that converts YAML to PDF, DOCX, HTML, and JSON with theming support.
 
 ## Features
 
-- **YAML-based** — Human-readable resume format with schema validation
-- **Multiple outputs** — PDF (via Playwright), DOCX (via Pandoc), HTML
-- **Theming** — Customizable themes with HTML templates and CSS
-- **Live preview** — Hot-reloading development server
-- **ATS-friendly** — DOCX output optimized for Applicant Tracking Systems
+- **YAML-based resumes** - Version control your resume with Git
+- **Multiple output formats** - PDF, DOCX, HTML, and JSON
+- **Theming system** - Customizable templates with CSS
+- **Live preview** - Hot-reload preview server for rapid iteration
+- **Schema validation** - Catch errors before generating
+- **CLI & Library** - Use from command line or as a Node.js module
 
 ## Installation
+
+### Prerequisites
+
+- **Node.js 20+** (required)
+- **Pandoc** (optional, for DOCX generation) - [Install Pandoc](https://pandoc.org/installing.html)
+
+### Install from npm
 
 ```bash
 npm install -g vitae
 ```
 
-### Requirements
+### Install from source
 
-- Node.js 20+
-- [Pandoc](https://pandoc.org/installing.html) (for DOCX generation)
-
-Playwright browsers are installed automatically on first use.
+```bash
+git clone https://github.com/jkindrix/vitae.git
+cd vitae
+npm install
+npm run build
+npm link
+```
 
 ## Quick Start
 
 ```bash
-# Create a new resume
+# Create a new resume from template
 vitae init
 
 # Edit resume.yaml with your information
-# Then build all formats
+# Then generate outputs
 vitae build resume.yaml
 
-# Or preview with hot reload
+# Or preview with hot-reload
 vitae preview resume.yaml
 ```
 
-## Commands
+## CLI Commands
 
 ### `vitae init`
 
-Creates a new `resume.yaml` template in the current directory.
+Create a new `resume.yaml` file from a template.
 
 ```bash
-vitae init
-vitae init --force  # Overwrite existing file
+vitae init              # Create resume.yaml in current directory
+vitae init --force      # Overwrite existing file
 ```
 
 ### `vitae build <input>`
 
-Generates resume outputs from a YAML file.
+Generate resume outputs in multiple formats.
 
 ```bash
-vitae build resume.yaml                     # PDF, DOCX, HTML (default)
-vitae build resume.yaml -f pdf              # PDF only
-vitae build resume.yaml -f pdf,html         # PDF and HTML
-vitae build resume.yaml -t minimal          # Use specific theme
-vitae build resume.yaml -o ./output         # Custom output directory
+vitae build resume.yaml                           # Generate PDF, DOCX, HTML
+vitae build resume.yaml -f pdf                    # PDF only
+vitae build resume.yaml -f pdf,html               # PDF and HTML
+vitae build resume.yaml -f pdf,docx,html,json     # All formats
+vitae build resume.yaml -o ./output               # Custom output directory
+vitae build resume.yaml -t minimal                # Use specific theme
 ```
 
-Options:
-- `-t, --theme <name>` — Theme to use (default: `minimal`)
-- `-o, --output <dir>` — Output directory (default: input file directory)
-- `-f, --formats <list>` — Comma-separated formats: `pdf`, `docx`, `html`, `json`
+**Options:**
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-f, --formats <formats>` | Comma-separated output formats | `pdf,docx,html` |
+| `-o, --output <dir>` | Output directory | Input file directory |
+| `-t, --theme <name>` | Theme to use | `minimal` |
 
 ### `vitae preview <input>`
 
-Starts a local server with live preview. The page auto-refreshes when you edit your resume.
+Start a local server with hot-reload preview.
 
 ```bash
-vitae preview resume.yaml
-vitae preview resume.yaml -p 8080           # Custom port
-vitae preview resume.yaml -t minimal        # Use specific theme
+vitae preview resume.yaml             # Preview on port 3000
+vitae preview resume.yaml -p 8080     # Custom port
+vitae preview resume.yaml -t minimal  # Use specific theme
 ```
+
+**Options:**
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-p, --port <number>` | Port to run server on | `3000` |
+| `-t, --theme <name>` | Theme to use | `minimal` |
 
 ### `vitae validate <input>`
 
-Validates a resume YAML file against the schema.
+Validate a resume file against the schema.
 
 ```bash
 vitae validate resume.yaml
@@ -85,87 +105,368 @@ vitae validate resume.yaml
 
 ### `vitae themes`
 
-Lists available themes.
+List available themes and their features.
 
 ```bash
 vitae themes
 ```
 
-## Resume Format
+## Resume Schema
 
-Resumes are written in YAML:
+Vitae uses YAML format with the following structure:
 
 ```yaml
+# Required: Personal and contact information
 meta:
-  name: Jane Smith
-  title: Senior Software Engineer
-  email: jane@example.com
-  phone: (555) 123-4567
-  location: San Francisco, CA
-  links:
-    - label: GitHub
-      url: https://github.com/janesmith
-    - label: LinkedIn
-      url: https://linkedin.com/in/janesmith
+  name: Jane Smith                              # Required
+  title: Senior Software Engineer               # Optional
+  email: jane@example.com                       # Optional (validated)
+  phone: (555) 123-4567                         # Optional
+  location: San Francisco, CA                   # Optional
+  links:                                        # Optional
+    - label: LinkedIn                           # Optional (defaults to domain)
+      url: https://linkedin.com/in/janesmith   # Required
 
+# Optional: Professional summary
 summary: >
-  Senior engineer with 8+ years of experience building
-  scalable web applications and leading engineering teams.
+  Senior Software Engineer with 8+ years of experience...
 
+# Optional: Categorized skills
 skills:
   - category: Languages
-    items: [TypeScript, Python, Go, Rust]
-  - category: Frameworks
-    items: [React, Node.js, Django, FastAPI]
+    items:
+      - TypeScript
+      - Python
+      - Go
 
+# Required: Work experience
 experience:
-  - company: Tech Corp
+  - company: Tech Innovations Inc.
     roles:
-      - title: Senior Software Engineer
-        start: 2020-03
-        end: present
-        location: San Francisco, CA
-        highlights:
-          - Led migration to microservices architecture
-          - Mentored team of 5 junior engineers
-          - Reduced API latency by 40%
+      - title: Senior Software Engineer         # Required
+        start: 2021-03                          # Required (YYYY-MM or YYYY)
+        end: present                            # Optional (YYYY-MM, YYYY, or "present")
+        location: San Francisco, CA             # Optional
+        highlights:                             # Optional
+          - Led architecture of real-time features
+          - Reduced API response times by 60%
 
+# Optional: Projects
 projects:
-  - name: open-source-project
-    url: https://github.com/janesmith/project
-    description: Description of the project and its impact
+  - name: fastcache                             # Required
+    url: https://github.com/user/fastcache      # Optional (validated)
+    description: High-performance caching lib    # Optional
+    highlights:                                  # Optional
+      - 10K+ npm downloads
+
+# Optional: Education
+education:
+  - institution: University of Texas            # Required
+    degree: Bachelor of Science                 # Optional
+    field: Computer Science                     # Optional
+    start: "2011"                               # Optional
+    end: "2015"                                 # Optional
+    highlights:                                 # Optional
+      - "GPA: 3.8/4.0"
+
+# Optional: Certifications
+certifications:
+  - name: AWS Solutions Architect               # Required
+    issuer: Amazon Web Services                 # Optional
+    date: "2023"                                # Optional
+    url: https://verify.aws/...                 # Optional (validated)
 ```
 
-See the [schema](schemas/resume.schema.json) for the complete specification.
+### Date Formats
+
+- `YYYY-MM` - Month and year (e.g., `2023-06`)
+- `YYYY` - Year only (e.g., `2023`)
+- `present` or `Present` - Current/ongoing
+
+### Validation
+
+Vitae validates:
+- Required fields (`meta.name`, `experience`)
+- Email format (`meta.email`)
+- URL format (`meta.links[].url`, `projects[].url`, `certifications[].url`)
+- Date patterns (`roles[].start`, `roles[].end`)
 
 ## Themes
 
-Themes are located in the `themes/` directory. Each theme contains:
+Themes are directories containing templates and styles:
 
-- `template.html` — Nunjucks template for HTML output
-- `style.css` — Stylesheet for PDF and HTML
-- `reference.docx` — (Optional) Pandoc reference doc for DOCX styling
+```
+themes/
+└── minimal/
+    ├── template.html    # Required: Nunjucks template
+    ├── style.css        # Optional: CSS styles
+    └── reference.docx   # Optional: DOCX style reference
+```
 
-### Built-in Themes
+### Creating a Custom Theme
 
-- **minimal** — Clean, professional design with excellent typography
+1. Create a theme directory:
+   ```bash
+   mkdir -p themes/mytheme
+   ```
 
-### Creating Custom Themes
+2. Create `template.html` using [Nunjucks](https://mozilla.github.io/nunjucks/) syntax:
+   ```html
+   <article class="resume">
+     <h1>{{ meta.name }}</h1>
+     {% if meta.title %}
+     <p>{{ meta.title }}</p>
+     {% endif %}
 
-1. Copy an existing theme directory
-2. Modify the template and styles
-3. Use with `vitae build -t your-theme`
+     {% for exp in experience %}
+     <section>
+       <h2>{{ exp.company }}</h2>
+       {% for role in exp.roles %}
+       <div>
+         <strong>{{ role.title }}</strong>
+         <span>{{ role.start | formatDateShort }} – {{ role.end | formatDateShort }}</span>
+       </div>
+       {% endfor %}
+     </section>
+     {% endfor %}
+   </article>
+   ```
 
-## Programmatic Usage
+3. Add optional `style.css` for styling
+
+4. Use your theme:
+   ```bash
+   vitae build resume.yaml -t mytheme
+   ```
+
+### Template Variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `resume` | `Resume` | Complete resume object |
+| `meta` | `Meta` | Personal/contact info |
+| `summary` | `string?` | Professional summary |
+| `skills` | `SkillCategory[]?` | Categorized skills |
+| `experience` | `Experience[]` | Work experience |
+| `projects` | `Project[]?` | Projects |
+| `education` | `Education[]?` | Education history |
+| `certifications` | `Certification[]?` | Certifications |
+
+### Template Filters
+
+| Filter | Description | Example |
+|--------|-------------|---------|
+| `formatDate` | Full date (January 2024) | `{{ role.start \| formatDate }}` |
+| `formatDateShort` | Short date (Jan 2024) | `{{ role.start \| formatDateShort }}` |
+| `joinItems` | Join array with separator | `{{ skills \| joinItems(', ') }}` |
+| `domain` | Extract domain from URL | `{{ url \| domain }}` |
+
+## Library Usage
+
+Vitae can be used as a Node.js library:
 
 ```typescript
-import { loadResume, generatePdf, generateDocx } from 'vitae';
+import {
+  loadResume,
+  parseResume,
+  validateResume,
+  renderHtml,
+  renderStandaloneHtml,
+  generatePdf,
+  generatePdfBuffer,
+  generateDocx,
+  closeBrowser,
+  listThemes,
+  loadTheme,
+} from 'vitae';
 
+// Load and validate from file
 const resume = await loadResume('resume.yaml');
-await generatePdf(resume, 'minimal', 'output.pdf');
+
+// Parse from string
+const resume = await parseResume(yamlContent);
+
+// Validate without loading
+const { valid, errors } = await validateResume(data);
+
+// Render HTML
+const { html, css } = await renderHtml(resume, 'minimal');
+const standaloneHtml = await renderStandaloneHtml(resume, 'minimal');
+
+// Generate PDF
+await generatePdf(resume, 'minimal', 'output.pdf', {
+  format: 'Letter',      // 'Letter' | 'A4' | 'Legal'
+  margin: { top: '0.5in', right: '0.5in', bottom: '0.5in', left: '0.5in' },
+  printBackground: true,
+  scale: 1,
+});
+
+// Generate PDF as buffer (for streaming)
+const pdfBuffer = await generatePdfBuffer(resume, 'minimal');
+
+// Generate DOCX (requires Pandoc)
 await generateDocx(resume, 'minimal', 'output.docx');
+
+// Clean up browser instance when done
+await closeBrowser();
+
+// Theme management
+const themes = await listThemes();
+const theme = await loadTheme('minimal');
 ```
+
+## TypeScript Types
+
+```typescript
+import type {
+  Resume,
+  Meta,
+  Link,
+  SkillCategory,
+  Experience,
+  Role,
+  Project,
+  Education,
+  Certification,
+  Theme,
+  OutputFormat,
+  BuildOptions,
+} from 'vitae';
+```
+
+## PDF Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `format` | `'Letter' \| 'A4' \| 'Legal'` | `'Letter'` | Paper size |
+| `margin.top` | `string` | `'0.5in'` | Top margin |
+| `margin.right` | `string` | `'0.5in'` | Right margin |
+| `margin.bottom` | `string` | `'0.5in'` | Bottom margin |
+| `margin.left` | `string` | `'0.5in'` | Left margin |
+| `printBackground` | `boolean` | `true` | Print background colors |
+| `scale` | `number` | `1` | Webpage scale factor |
+
+## Output Formats
+
+| Format | Extension | Requires | Description |
+|--------|-----------|----------|-------------|
+| PDF | `.pdf` | Playwright | High-quality PDF via headless Chrome |
+| DOCX | `.docx` | Pandoc | Microsoft Word document |
+| HTML | `.html` | - | Standalone HTML with embedded CSS |
+| JSON | `.json` | - | Raw resume data as JSON |
+
+## Examples
+
+See the [`examples/`](./examples) directory for sample resumes.
+
+```bash
+# Build the sample resume
+vitae build examples/sample.yaml -o examples/output
+```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build TypeScript
+npm run build
+
+# Watch mode
+npm run dev
+
+# Run CLI
+npm start -- build examples/sample.yaml
+
+# Run tests
+npm test
+
+# Lint
+npm run lint
+
+# Format
+npm run format
+```
+
+## JSON Resume Compatibility
+
+Vitae uses its own schema optimized for simplicity. To convert from [JSON Resume](https://jsonresume.org/):
+
+```typescript
+import { parseResume } from 'vitae';
+import { readFileSync } from 'fs';
+
+// Load JSON Resume
+const jsonResume = JSON.parse(readFileSync('resume.json', 'utf-8'));
+
+// Convert to Vitae format
+const vitaeYaml = `
+meta:
+  name: ${jsonResume.basics.name}
+  title: ${jsonResume.basics.label}
+  email: ${jsonResume.basics.email}
+  phone: ${jsonResume.basics.phone}
+  location: ${jsonResume.basics.location?.city}, ${jsonResume.basics.location?.region}
+  links:
+${jsonResume.basics.profiles?.map(p => `    - label: ${p.network}\n      url: ${p.url}`).join('\n')}
+
+summary: ${jsonResume.basics.summary}
+
+experience:
+${jsonResume.work?.map(w => `  - company: ${w.name}
+    roles:
+      - title: ${w.position}
+        start: ${w.startDate}
+        end: ${w.endDate || 'present'}
+        highlights:
+${w.highlights?.map(h => `          - ${h}`).join('\n')}`).join('\n')}
+`;
+```
+
+## Troubleshooting
+
+### DOCX generation fails
+
+DOCX generation requires Pandoc. Install it from [pandoc.org/installing](https://pandoc.org/installing.html).
+
+```bash
+# macOS
+brew install pandoc
+
+# Ubuntu/Debian
+sudo apt install pandoc
+
+# Windows
+choco install pandoc
+```
+
+### PDF looks different than preview
+
+PDF uses print media styles. Check your theme's `@media print` rules.
+
+### Validation errors
+
+Run `vitae validate resume.yaml` to see detailed error messages with paths.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing`)
+3. Make your changes
+4. Run tests (`npm test`)
+5. Commit (`git commit -m 'feat: add amazing feature'`)
+6. Push (`git push origin feature/amazing`)
+7. Open a Pull Request
 
 ## License
 
-MIT
+MIT License - see [LICENSE](./LICENSE) for details.
+
+## Acknowledgments
+
+- [Playwright](https://playwright.dev/) for PDF generation
+- [Nunjucks](https://mozilla.github.io/nunjucks/) for templating
+- [AJV](https://ajv.js.org/) for schema validation
+- [Commander.js](https://github.com/tj/commander.js) for CLI
+- [Pandoc](https://pandoc.org/) for DOCX conversion
