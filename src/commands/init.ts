@@ -1,6 +1,8 @@
 import { writeFile, stat } from 'fs/promises';
 import { resolve } from 'path';
+import { createInterface } from 'readline';
 import chalk from 'chalk';
+import { stringify as stringifyYaml } from 'yaml';
 
 const EXAMPLE_RESUME = `# Vitae Resume
 # Edit this file with your information
@@ -77,6 +79,124 @@ projects:
 
 export interface InitCommandOptions {
   force?: boolean;
+  interactive?: boolean;
+}
+
+/**
+ * Prompt user for input
+ */
+function prompt(rl: ReturnType<typeof createInterface>, question: string): Promise<string> {
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      resolve(answer.trim());
+    });
+  });
+}
+
+/**
+ * Interactive resume builder
+ */
+async function buildInteractiveResume(): Promise<Record<string, unknown>> {
+  const rl = createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  console.log('');
+  console.log(chalk.blue("Let's build your resume! Press Enter to skip optional fields."));
+  console.log('');
+
+  try {
+    // Basic info
+    const name = await prompt(rl, chalk.cyan('Your full name: '));
+    if (!name) {
+      throw new Error('Name is required');
+    }
+
+    const title = await prompt(rl, chalk.cyan('Professional title (e.g., "Software Engineer"): '));
+    const email = await prompt(rl, chalk.cyan('Email address: '));
+    const phone = await prompt(rl, chalk.cyan('Phone number: '));
+    const location = await prompt(rl, chalk.cyan('Location (e.g., "San Francisco, CA"): '));
+
+    // Links
+    console.log('');
+    console.log(chalk.dim('Add your professional links (press Enter to skip):'));
+    const linkedinUrl = await prompt(rl, chalk.cyan('LinkedIn URL: '));
+    const githubUrl = await prompt(rl, chalk.cyan('GitHub URL: '));
+    const websiteUrl = await prompt(rl, chalk.cyan('Personal website URL: '));
+
+    // Summary
+    console.log('');
+    const summary = await prompt(rl, chalk.cyan('Professional summary (1-2 sentences): '));
+
+    // Current job
+    console.log('');
+    console.log(chalk.dim('Add your current or most recent job:'));
+    const company = await prompt(rl, chalk.cyan('Company name: '));
+    const jobTitle = await prompt(rl, chalk.cyan('Job title: '));
+    const startDate = await prompt(rl, chalk.cyan('Start date (YYYY-MM): '));
+    const stillThere = await prompt(rl, chalk.cyan('Still working there? (y/n): '));
+    let endDate: string | undefined;
+    if (stillThere.toLowerCase() !== 'y') {
+      endDate = await prompt(rl, chalk.cyan('End date (YYYY-MM): '));
+    }
+    const jobLocation = await prompt(rl, chalk.cyan('Job location: '));
+
+    // Build the resume object
+    const resume: Record<string, unknown> = {
+      meta: {
+        name,
+        ...(title && { title }),
+        ...(email && { email }),
+        ...(phone && { phone }),
+        ...(location && { location }),
+        ...((linkedinUrl || githubUrl || websiteUrl) && {
+          links: [
+            ...(linkedinUrl ? [{ label: 'LinkedIn', url: linkedinUrl }] : []),
+            ...(githubUrl ? [{ label: 'GitHub', url: githubUrl }] : []),
+            ...(websiteUrl ? [{ url: websiteUrl }] : []),
+          ],
+        }),
+      },
+      ...(summary && { summary }),
+      experience: company
+        ? [
+            {
+              company,
+              roles: [
+                {
+                  title: jobTitle || 'Role Title',
+                  start: startDate || '2020-01',
+                  ...(stillThere.toLowerCase() === 'y'
+                    ? { end: 'present' }
+                    : endDate
+                      ? { end: endDate }
+                      : {}),
+                  ...(jobLocation && { location: jobLocation }),
+                  highlights: ['Add your key accomplishments here'],
+                },
+              ],
+            },
+          ]
+        : [
+            {
+              company: 'Company Name',
+              roles: [
+                {
+                  title: 'Job Title',
+                  start: '2020-01',
+                  end: 'present',
+                  highlights: ['Add your key accomplishments here'],
+                },
+              ],
+            },
+          ],
+    };
+
+    return resume;
+  } finally {
+    rl.close();
+  }
 }
 
 /**
@@ -97,12 +217,26 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
     // File doesn't exist, which is fine
   }
 
-  await writeFile(outputPath, EXAMPLE_RESUME, 'utf-8');
+  let content: string;
 
+  if (options.interactive) {
+    // Interactive mode
+    const resume = await buildInteractiveResume();
+    content =
+      '# Vitae Resume\n# Generated interactively - edit to add more details\n\n' +
+      stringifyYaml(resume, { indent: 2, lineWidth: 0 });
+  } else {
+    // Template mode
+    content = EXAMPLE_RESUME;
+  }
+
+  await writeFile(outputPath, content, 'utf-8');
+
+  console.log('');
   console.log(chalk.green(`✓ Created ${outputPath}`));
   console.log('');
   console.log('Next steps:');
-  console.log(chalk.dim('  1. Edit resume.yaml with your information'));
+  console.log(chalk.dim('  1. Edit resume.yaml to add more details'));
   console.log(chalk.dim('  2. Run: vitae build resume.yaml'));
   console.log(chalk.dim('  3. Or preview: vitae preview resume.yaml'));
 }
