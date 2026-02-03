@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import {
   buildCommand,
+  importCommand,
   initCommand,
   themesCommand,
   validateCommand,
@@ -40,11 +41,29 @@ program
     }
   });
 
+// Import command
+program
+  .command('import')
+  .description('Convert other resume formats to Vitae YAML')
+  .argument('<input>', 'Path to input file (JSON Resume format)')
+  .option('-o, --output <path>', 'Output file path (defaults to <input>.vitae.yaml)')
+  .option('--format <format>', 'Input format: json-resume, auto (default: auto)', 'auto')
+  .action(async (input: string, options) => {
+    try {
+      await importCommand(input, options);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(chalk.red(`Error: ${message}`));
+      process.exitCode = 1;
+    }
+  });
+
 // Init command
 program
   .command('init')
   .description('Create a new resume.yaml file')
   .option('-f, --force', 'Overwrite existing file')
+  .option('-i, --interactive', 'Build resume interactively with prompts')
   .action(async (options) => {
     try {
       await initCommand(options);
