@@ -4,7 +4,11 @@ import { createInterface } from 'readline';
 import chalk from 'chalk';
 import { stringify as stringifyYaml } from 'yaml';
 
-const EXAMPLE_RESUME = `# Vitae Resume
+const SCHEMA_URL =
+  'https://raw.githubusercontent.com/jkindrix/vitae/main/schemas/resume.schema.json';
+
+const EXAMPLE_RESUME = `# yaml-language-server: $schema=${SCHEMA_URL}
+# Vitae Resume
 # Edit this file with your information
 
 meta:
@@ -223,6 +227,7 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
     // Interactive mode
     const resume = await buildInteractiveResume();
     content =
+      `# yaml-language-server: $schema=${SCHEMA_URL}\n` +
       '# Vitae Resume\n# Generated interactively - edit to add more details\n\n' +
       stringifyYaml(resume, { indent: 2, lineWidth: 0 });
   } else {
