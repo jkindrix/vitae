@@ -1,0 +1,57 @@
+# Example GitHub Actions workflow for building your resume with Vitae.
+#
+# This workflow builds your resume on every push, generating all output
+# formats across all themes, and uploads the results as downloadable
+# artifacts.
+#
+# Prerequisites:
+#   - A resume.yaml file in your repository root
+#   - Optionally, variant files for role-targeted builds
+#
+# Customize:
+#   - Change the input file path if your resume.yaml is elsewhere
+#   - Adjust -f to select specific formats (pdf,docx,html,json,md,png)
+#   - Remove -a if you only want one theme
+#   - Add --variant <path> for role-specific builds
+
+name: Build Resume
+
+on:
+  push:
+    paths:
+      - 'resume.yaml'
+      - '*.variant.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Vitae
+        run: npm install -g @jkindrix/vitae
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build resume (all formats, all themes)
+        run: vitae build resume.yaml -f pdf,docx,html,json,md,png -a
+
+      - name: Upload resume artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume
+          path: |
+            *.pdf
+            *.docx
+            *.html
+            *.json
+            *.md
+            *.png
