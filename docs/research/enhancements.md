@@ -42,13 +42,9 @@ These require meaningful implementation but have outsized impact on user value o
 
 **Status:** Shipped. `vitae check <input>` scores a resume 0-100 for ATS compatibility using static analysis across 6 weighted categories: contact completeness (15%), section presence (15%), experience quality (25%), content depth (20%), date continuity (10%), and structure (15%). Supports `--job <file>` for keyword gap analysis against a job description, `--variant` for role-specific checks, and `--json` for machine-readable output. Colored terminal output with progress bars, categorized findings (errors/warnings/suggestions), and employment gap detection. No AI or external dependencies — pure static analysis.
 
-### 8. Job Description Tailoring
+### 8. Job Description Tailoring — IMPLEMENTED
 
-**What:** `vitae tailor <resume> --job <job-description.txt>` that compares resume content against a job posting and reports keyword gaps, suggests reordering, and optionally generates a tailored variant.
-
-**Why:** ResumeLM and every AI-powered commercial tool offers this. The basic version (keyword extraction + gap analysis) doesn't require AI — it's text analysis. An advanced version could optionally integrate an LLM API.
-
-**Effort:** New command + text analysis module. Basic version is pure string matching; advanced version needs optional LLM integration.
+**Status:** Shipped. `vitae tailor resume.yaml --job job.txt` analyzes a resume against a job description using pure static analysis (no AI), then generates a tailored variant YAML file. Reuses the ATS keyword extraction infrastructure. Ranks sections and skill categories by keyword relevance, produces `section_order` and `skills.include` in the variant, and writes commented YAML with missing keyword recommendations and summary improvement suggestions. Supports `--output`, `--variant` (chain with existing variants), `--json`, and `--report-only` flags.
 
 ### 9. Resume Variants from a Single Source — IMPLEMENTED
 
@@ -157,7 +153,7 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 5 | ~~Markdown output~~ | ~~Medium~~ | ~~Medium~~ | ~~Extracts existing code~~ | **DONE** |
 | 6 | ~~GitHub Actions template~~ | ~~Medium~~ | ~~High~~ | ~~Matches RenderCV~~ | **DONE** |
 | 7 | ~~ATS analyzer~~ | ~~Very High~~ | ~~Low~~ | ~~Category-defining~~ | **DONE** |
-| 8 | Job description tailoring | Very High | Low | Matches commercial tier | Medium |
+| 8 | ~~Job description tailoring~~ | ~~Very High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
 | 9 | ~~Resume variants~~ | ~~High~~ | ~~Medium~~ | ~~Novel in CLI space~~ | **DONE** |
 | 10 | Plugin system for themes | Medium | Very High | Enables ecosystem | Medium |
 | 11 | Multi-language / i18n | High | Low | Matches brilliant-cv | Medium |
@@ -171,6 +167,6 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | Accessibility auditing | Medium | Low | Novel | Medium |
 
-**Completed (9 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #9 (resume variants), #12 (JSON Resume export).
+**Completed (10 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #12 (JSON Resume export).
 
-**Next highest-ROI items:** #8 (job description tailoring — pairs with the ATS analyzer), #11 (multi-language / i18n), #10 (plugin system for themes).
+**Next highest-ROI items:** #17 (cover letter support), #11 (multi-language / i18n), #10 (plugin system for themes).

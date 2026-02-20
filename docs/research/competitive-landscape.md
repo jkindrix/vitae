@@ -80,6 +80,7 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 - **Watch mode** — `vitae build --watch` rebuilds on save alongside the existing hot-reload preview
 - **Hot-reload preview** — SSE-based live editing matches web builder UX expectations
 - **ATS compatibility analyzer** — `vitae check` scores resumes 0-100 with keyword matching against job descriptions; no CLI competitor offers this
+- **Job description tailoring** — `vitae tailor` generates a variant YAML from keyword analysis against a job posting; no AI required
 - **CI/CD ready** — ships a GitHub Actions workflow template for automated resume builds
 - **Free and open** — competes against $120-300/yr commercial tools at zero cost
 
@@ -103,6 +104,7 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 | Markdown output | Shipped — `vitae build -f md` extracts existing internal Markdown pipeline |
 | Theme color/font overrides | Shipped — `theme` key in resume.yaml overrides CSS custom properties (colors + fonts) |
 | Watch mode for build | Shipped — `vitae build --watch` rebuilds on file save with debounce |
+| Job description tailoring | Shipped — `vitae tailor` generates variant YAML from keyword analysis against a job posting |
 
 ### Niche Summary
 
