@@ -7,6 +7,7 @@ import {
   importCommand,
   exportCommand,
   checkCommand,
+  tailorCommand,
   initCommand,
   themesCommand,
   validateCommand,
@@ -136,6 +137,26 @@ program
   .action(async (input: string, options) => {
     try {
       await checkCommand(input, options);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(chalk.red(`Error: ${message}`));
+      process.exitCode = 1;
+    }
+  });
+
+// Tailor command (job description tailoring)
+program
+  .command('tailor')
+  .description('Generate a tailored variant from a job description')
+  .argument('<input>', 'Path to resume.yaml file')
+  .requiredOption('-j, --job <file>', 'Path to job description text file')
+  .option('-o, --output <path>', 'Output path for the generated variant YAML')
+  .option('-v, --variant <path>', 'Apply an existing variant before tailoring')
+  .option('--json', 'Output analysis as JSON')
+  .option('--report-only', 'Print analysis report without generating a variant file')
+  .action(async (input: string, options) => {
+    try {
+      await tailorCommand(input, options);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(chalk.red(`Error: ${message}`));

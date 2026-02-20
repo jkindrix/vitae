@@ -664,7 +664,7 @@ const STOP_WORDS = new Set([
   'responsibilities', 'requirements', 'qualifications', 'apply',
 ]);
 
-function extractKeywords(text: string): string[] {
+export function extractKeywords(text: string): string[] {
   const normalized = text
     .toLowerCase()
     .replace(/[^a-z0-9+#.\s-]/g, ' ')
@@ -698,7 +698,7 @@ function extractKeywords(text: string): string[] {
     .map(([keyword]) => keyword);
 }
 
-function buildResumeTextBlocks(resume: Resume): Record<string, string> {
+export function buildResumeTextBlocks(resume: Resume): Record<string, string> {
   const blocks: Record<string, string> = {};
 
   blocks['meta'] = [resume.meta.name, resume.meta.title]
@@ -752,7 +752,7 @@ function buildResumeTextBlocks(resume: Resume): Record<string, string> {
   return blocks;
 }
 
-function textContainsKeyword(text: string, keyword: string): boolean {
+export function textContainsKeyword(text: string, keyword: string): boolean {
   const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regex = new RegExp(`\\b${escaped}\\b`, 'i');
   return regex.test(text);

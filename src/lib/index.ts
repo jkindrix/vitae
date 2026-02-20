@@ -22,4 +22,5 @@ export type { ValidationErrorDetail } from './errors.js';
 export { fromJsonResume, toJsonResume, isJsonResumeFormat } from './json-resume.js';
 export { applyVariant } from './variant.js';
 export { normalizeResume, DEFAULT_SECTION_ORDER } from './normalize.js';
-export { analyzeResume } from './ats.js';
+export { analyzeResume, extractKeywords, buildResumeTextBlocks, textContainsKeyword } from './ats.js';
+export { analyzeTailoring, generateVariant, serializeVariantWithComments } from './tailor.js';
