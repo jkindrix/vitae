@@ -1,7 +1,7 @@
 import nunjucks from 'nunjucks';
 import { loadTheme, readTemplate, readStyles } from './themes.js';
 import { formatDate, formatDateShort, formatDateRange } from './dates.js';
-import type { NormalizedResume } from '../types/index.js';
+import type { NormalizedResume, ThemeOverrides } from '../types/index.js';
 
 // Configure Nunjucks environment
 const env = new nunjucks.Environment(null, {
@@ -72,10 +72,46 @@ export async function renderHtml(resume: NormalizedResume, themeName: string): P
 }
 
 /**
+ * Generate CSS overrides from theme configuration
+ */
+export function generateThemeOverrideCss(theme: ThemeOverrides): string {
+  const vars: string[] = [];
+
+  if (theme.colors) {
+    const colorMap: Record<string, string> = {
+      accent: '--color-accent',
+      text: '--color-text',
+      textSecondary: '--color-text-secondary',
+      textMuted: '--color-text-muted',
+      background: '--color-background',
+      border: '--color-border',
+    };
+    for (const [key, cssVar] of Object.entries(colorMap)) {
+      const value = theme.colors[key as keyof typeof theme.colors];
+      if (value) vars.push(`${cssVar}: ${value}`);
+    }
+  }
+
+  if (theme.fonts) {
+    const fontMap: Record<string, string> = {
+      sans: '--font-sans',
+      serif: '--font-serif',
+    };
+    for (const [key, cssVar] of Object.entries(fontMap)) {
+      const value = theme.fonts[key as keyof typeof theme.fonts];
+      if (value) vars.push(`${cssVar}: ${value}`);
+    }
+  }
+
+  return vars.length > 0 ? `:root { ${vars.join('; ')}; }` : '';
+}
+
+/**
  * Render a complete standalone HTML document
  */
 export async function renderStandaloneHtml(resume: NormalizedResume, themeName: string): Promise<string> {
   const { html, css } = await renderHtml(resume, themeName);
+  const overrideCss = resume.theme ? generateThemeOverrideCss(resume.theme) : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -84,6 +120,7 @@ export async function renderStandaloneHtml(resume: NormalizedResume, themeName: 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${resume.meta.name} - Resume</title>
   ${css ? `<style>\n${css}\n</style>` : ''}
+  ${overrideCss ? `<style>\n${overrideCss}\n</style>` : ''}
 </head>
 <body>
 ${html}

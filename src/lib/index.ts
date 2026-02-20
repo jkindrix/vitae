@@ -1,7 +1,7 @@
 export { loadResume, parseResume, loadVariant } from './loader.js';
 export { validateResume, assertValidResume, validateVariant, assertValidVariant } from './schema.js';
 export { listThemes, loadTheme, getThemesDir } from './themes.js';
-export { renderHtml, renderStandaloneHtml } from './renderer.js';
+export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss } from './renderer.js';
 export { generatePdf, generatePdfBuffer, generatePng, closeBrowser } from './pdf.js';
 export type { PdfOptions } from './pdf.js';
 export { generateDocx, checkPandoc, resumeToMarkdown } from './docx.js';

@@ -383,6 +383,59 @@
           }
         }
       }
+    },
+    "theme": {
+      "type": "object",
+      "description": "Theme customization overrides for colors and fonts",
+      "properties": {
+        "colors": {
+          "type": "object",
+          "description": "Color overrides (CSS custom property values)",
+          "properties": {
+            "accent": {
+              "type": "string",
+              "description": "Primary accent color (e.g., '#2563eb')"
+            },
+            "text": {
+              "type": "string",
+              "description": "Main text color"
+            },
+            "textSecondary": {
+              "type": "string",
+              "description": "Secondary text color"
+            },
+            "textMuted": {
+              "type": "string",
+              "description": "Muted/subtle text color"
+            },
+            "background": {
+              "type": "string",
+              "description": "Page background color"
+            },
+            "border": {
+              "type": "string",
+              "description": "Border/divider color"
+            }
+          },
+          "additionalProperties": false
+        },
+        "fonts": {
+          "type": "object",
+          "description": "Font family overrides",
+          "properties": {
+            "sans": {
+              "type": "string",
+              "description": "Sans-serif font stack (e.g., 'Inter, sans-serif')"
+            },
+            "serif": {
+              "type": "string",
+              "description": "Serif font stack (e.g., 'Merriweather, serif')"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

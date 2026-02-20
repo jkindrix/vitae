@@ -147,6 +147,29 @@ export interface Reference {
   reference?: string;
 }
 
+// ---------------------------------------------------------------------------
+// Theme override types
+// ---------------------------------------------------------------------------
+
+export interface ThemeColors {
+  accent?: string;
+  text?: string;
+  textSecondary?: string;
+  textMuted?: string;
+  background?: string;
+  border?: string;
+}
+
+export interface ThemeFonts {
+  sans?: string;
+  serif?: string;
+}
+
+export interface ThemeOverrides {
+  colors?: ThemeColors;
+  fonts?: ThemeFonts;
+}
+
 /**
  * Complete resume data structure
  */
@@ -163,6 +186,7 @@ export interface Resume {
   publications?: Publication[];
   volunteer?: Volunteer[];
   references?: Reference[];
+  theme?: ThemeOverrides;
 }
 
 // ---------------------------------------------------------------------------
@@ -275,6 +299,7 @@ export interface NormalizedResume {
   volunteer?: NormalizedVolunteer[];
   references?: Reference[];
   sections: SectionName[];
+  theme?: ThemeOverrides;
 }
 
 // ---------------------------------------------------------------------------
