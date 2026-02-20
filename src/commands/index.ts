@@ -4,3 +4,4 @@ export { initCommand } from './init.js';
 export { themesCommand } from './themes.js';
 export { validateCommand } from './validate.js';
 export { previewCommand } from './preview.js';
+export { exportCommand } from './export.js';
