@@ -32,7 +32,7 @@ const MONTH_NAMES_SHORT = [
   'Dec',
 ] as const;
 
-interface ParsedDate {
+export interface ParsedDate {
   year: string;
   month: number | null;
   isPresent: boolean;
@@ -41,7 +41,7 @@ interface ParsedDate {
 /**
  * Parse a date string in YYYY-MM, YYYY, or 'present' format
  */
-function parseDate(dateStr: string | undefined): ParsedDate | null {
+export function parseDate(dateStr: string | undefined): ParsedDate | null {
   if (!dateStr) return null;
 
   if (dateStr.toLowerCase() === 'present') {

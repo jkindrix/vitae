@@ -6,7 +6,8 @@ export { generatePdf, generatePdfBuffer, generatePng, closeBrowser } from './pdf
 export type { PdfOptions } from './pdf.js';
 export { generateDocx, checkPandoc, resumeToMarkdown } from './docx.js';
 export type { DocxOptions } from './docx.js';
-export { formatDate, formatDateShort, formatDateRange } from './dates.js';
+export { parseDate, formatDate, formatDateShort, formatDateRange } from './dates.js';
+export type { ParsedDate } from './dates.js';
 export {
   VitaeError,
   ThemeError,
@@ -21,3 +22,4 @@ export type { ValidationErrorDetail } from './errors.js';
 export { fromJsonResume, toJsonResume, isJsonResumeFormat } from './json-resume.js';
 export { applyVariant } from './variant.js';
 export { normalizeResume, DEFAULT_SECTION_ORDER } from './normalize.js';
+export { analyzeResume } from './ats.js';
