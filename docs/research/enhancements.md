@@ -12,25 +12,17 @@ These leverage existing infrastructure directly. Each could be implemented in a 
 
 **Status:** Shipped. The `vitae init` command now prepends a `# yaml-language-server: $schema=<url>` directive to all generated YAML files, enabling autocompletion, validation, and hover docs in VS Code (with redhat.vscode-yaml extension), JetBrains, and any editor supporting the YAML Language Server protocol. The schema URL points to the published `schemas/resume.schema.json` on GitHub.
 
-### 2. Theme Color/Font Overrides via Resume File
+### 2. Theme Color/Font Overrides via Resume File — IMPLEMENTED
 
-**What:** Allow a `theme` key in `resume.yaml` with overrides like `primaryColor`, `fontFamily`, `fontSize` — passed through to CSS variables that all three themes already partially use.
-
-**Why:** The #1 customization request for any themed tool. Currently, users must fork an entire theme to change a color. The minimal theme already uses CSS custom properties — this pattern just needs to be exposed to the data layer.
-
-**Effort:** Add optional theme config to schema, pass values to template context, inject as CSS variable overrides in the renderer.
+**Status:** Shipped. An optional `theme` key in `resume.yaml` allows overriding colors (`accent`, `text`, `textSecondary`, `textMuted`, `background`, `border`) and fonts (`sans`, `serif`) via CSS custom properties. Override CSS is injected as a `:root` block after the theme stylesheet, automatically flowing to all output formats (HTML, PDF, PNG). No theme forking required — users override only what they want.
 
 ### 3. PNG/Image Output — IMPLEMENTED
 
 **Status:** Shipped. `vitae build resume.yaml -f png` generates a full-page PNG screenshot via Playwright. Uses `preparePdfPage()` internally but overrides to screen media for better screenshot rendering. Supports all themes and `--all-themes` mode.
 
-### 4. Watch Mode for Build
+### 4. Watch Mode for Build — IMPLEMENTED
 
-**What:** `vitae build --watch` that rebuilds output files on save, similar to how `preview` watches for changes.
-
-**Why:** The preview command already implements file watching with debouncing. Some users want to generate actual PDF/DOCX files on save rather than use the browser preview — especially for workflows that pipe output to other tools or share via cloud sync.
-
-**Effort:** Extract the existing watcher from `preview.ts` into a shared utility and wire it into the build command.
+**Status:** Shipped. `vitae build resume.yaml --watch` (-w) rebuilds all output files on save. Uses Node.js built-in `fs.watch` with 100ms debounce, watches the resume directory for `*.yaml`/`*.yml` changes (and variant directory if `--variant` specified). Graceful shutdown on Ctrl+C. Reuses the same file watching pattern as the preview command.
 
 ### 5. Markdown Output Format — IMPLEMENTED
 
@@ -159,9 +151,9 @@ These are larger investments that would significantly shift Vitae's competitive 
 | # | Enhancement | User Value | Dev Value | Competitive Edge | Effort |
 | --- | --- | --- | --- | --- | --- |
 | 1 | ~~Editor autocompletion (schema)~~ | ~~High~~ | ~~Medium~~ | ~~Matches RenderCV~~ | **DONE** |
-| 2 | Theme color/font overrides | High | Low | Unique in Node.js CLIs | Low |
+| 2 | ~~Theme color/font overrides~~ | ~~High~~ | ~~Low~~ | ~~Unique in Node.js CLIs~~ | **DONE** |
 | 3 | ~~PNG output~~ | ~~Medium~~ | ~~Low~~ | ~~Matches RenderCV~~ | **DONE** |
-| 4 | Watch mode for build | Medium | Medium | Standard expectation | Low |
+| 4 | ~~Watch mode for build~~ | ~~Medium~~ | ~~Medium~~ | ~~Standard expectation~~ | **DONE** |
 | 5 | ~~Markdown output~~ | ~~Medium~~ | ~~Medium~~ | ~~Extracts existing code~~ | **DONE** |
 | 6 | ~~GitHub Actions template~~ | ~~Medium~~ | ~~High~~ | ~~Matches RenderCV~~ | **DONE** |
 | 7 | ~~ATS analyzer~~ | ~~Very High~~ | ~~Low~~ | ~~Category-defining~~ | **DONE** |
@@ -179,6 +171,6 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | Accessibility auditing | Medium | Low | Novel | Medium |
 
-**Completed (7 of 20):** #1 (schema autocompletion), #3 (PNG output), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #9 (resume variants), #12 (JSON Resume export).
+**Completed (9 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #9 (resume variants), #12 (JSON Resume export).
 
-**Next highest-ROI items:** #2 (theme color/font overrides), #4 (watch mode for build), #8 (job description tailoring — pairs with the ATS analyzer).
+**Next highest-ROI items:** #8 (job description tailoring — pairs with the ATS analyzer), #11 (multi-language / i18n), #10 (plugin system for themes).

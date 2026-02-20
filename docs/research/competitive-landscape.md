@@ -76,6 +76,8 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 - **Bidirectional JSON Resume interop** — import from and export to the dominant data standard
 - **Resume variants** — tagged highlights with include/exclude filtering for role-targeted resumes from a single source
 - **Editor autocompletion** — JSON Schema directive in init output enables VS Code/JetBrains YAML validation
+- **Theme customization without forking** — override colors and fonts directly in `resume.yaml` via CSS custom properties
+- **Watch mode** — `vitae build --watch` rebuilds on save alongside the existing hot-reload preview
 - **Hot-reload preview** — SSE-based live editing matches web builder UX expectations
 - **ATS compatibility analyzer** — `vitae check` scores resumes 0-100 with keyword matching against job descriptions; no CLI competitor offers this
 - **CI/CD ready** — ships a GitHub Actions workflow template for automated resume builds
@@ -99,6 +101,8 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 | Resume variants | Shipped — tagged highlights + variant YAML files with `--variant` flag |
 | JSON Resume export | Shipped — `vitae export` command with bidirectional interop |
 | Markdown output | Shipped — `vitae build -f md` extracts existing internal Markdown pipeline |
+| Theme color/font overrides | Shipped — `theme` key in resume.yaml overrides CSS custom properties (colors + fonts) |
+| Watch mode for build | Shipped — `vitae build --watch` rebuilds on file save with debounce |
 
 ### Niche Summary
 
