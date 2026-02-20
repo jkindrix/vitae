@@ -10,7 +10,7 @@ These are the tools most similar to Vitae — developer-focused, data-driven, te
 
 | Tool | Input | Output | Tech | Stars | Active | Key Differentiator |
 | --- | --- | --- | --- | --- | --- | --- |
-| **Vitae** | YAML | PDF, DOCX, HTML, JSON | Node.js/TS + Playwright | — | Yes | YAML + DOCX + Nunjucks themes + JSON Resume import |
+| **Vitae** | YAML | PDF, DOCX, HTML, JSON, MD, PNG | Node.js/TS + Playwright | — | Yes | YAML + DOCX + Nunjucks themes + JSON Resume import/export + variants |
 | **RenderCV** | YAML | PDF, HTML, MD, PNG | Python + Typst | ~15.6K | Yes | Editor autocompletion via JSON Schema; pixel-perfect Typst typesetting |
 | **YAMLResume** | YAML | PDF, HTML, MD | Node.js + LaTeX | New | Yes | LaTeX-quality output; closest tech stack competitor |
 | **resumed** | JSON | HTML, PDF | Node.js/TS | ~450 | Yes | Lightweight modern JSON Resume CLI |
@@ -68,26 +68,38 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 
 ### Strengths Relative to the Field
 
+- **Widest output format support** — PDF, DOCX, HTML, JSON, Markdown, PNG from a single YAML source
 - **DOCX output** — rare among active CLI tools; important for recruiter compatibility
 - **Accessible theming** — HTML/CSS via Nunjucks is the lowest barrier to custom themes
 - **No system deps beyond Node** — no LaTeX or Typst installation required (unlike YAMLResume, RenderCV)
 - **Dual interface** — works as both CLI and importable library
-- **JSON Resume interop** — import path from the dominant data standard
+- **Bidirectional JSON Resume interop** — import from and export to the dominant data standard
+- **Resume variants** — tagged highlights with include/exclude filtering for role-targeted resumes from a single source
+- **Editor autocompletion** — JSON Schema directive in init output enables VS Code/JetBrains YAML validation
 - **Hot-reload preview** — SSE-based live editing matches web builder UX expectations
+- **ATS compatibility analyzer** — `vitae check` scores resumes 0-100 with keyword matching against job descriptions; no CLI competitor offers this
+- **CI/CD ready** — ships a GitHub Actions workflow template for automated resume builds
 - **Free and open** — competes against $120-300/yr commercial tools at zero cost
 
 ### Gaps Relative to the Field
 
 | Gap | Who Does It | Difficulty to Add |
 | --- | --- | --- |
-| ATS scoring/checking | Zety, Enhancv, Kickresume, OpenResume | Medium — could analyze keyword density, section structure, format compliance |
 | AI content generation | Every commercial tool, Reactive Resume, ResumeLM | Medium — could integrate LLM APIs for bullet point suggestions |
-| Editor autocompletion | RenderCV (via published JSON Schema) | Low — Vitae already has a JSON Schema; publishing it for VS Code/editor integration is straightforward |
-| GitHub Actions / CI integration | RenderCV | Low — a workflow template for automated builds on push |
 | More themes | JSON Resume (400+), Kickresume (40+) | Ongoing — community-driven growth |
 | LaTeX/Typst quality typesetting | RenderCV, YAMLResume, Awesome-CV | High — would require new rendering backends |
-| PNG/image output | RenderCV | Low — Playwright already supports screenshots |
+
+**Gaps recently closed:**
+| Former Gap | Status |
+| --- | --- |
+| ATS scoring/checking | Shipped — `vitae check` with 6-category scoring, gap detection, and job keyword matching |
+| GitHub Actions / CI integration | Shipped — `.github/workflows/build-resume.yml` example |
+| Editor autocompletion | Shipped — `vitae init` adds `yaml-language-server` schema directive |
+| PNG/image output | Shipped — `vitae build -f png` via Playwright screenshot |
+| Resume variants | Shipped — tagged highlights + variant YAML files with `--variant` flag |
+| JSON Resume export | Shipped — `vitae export` command with bidirectional interop |
+| Markdown output | Shipped — `vitae build -f md` extracts existing internal Markdown pipeline |
 
 ### Niche Summary
 
-Vitae is the only actively maintained, Node.js-based, YAML-to-PDF+DOCX+HTML resume generator with accessible HTML/CSS theming and no system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.
+Vitae is the only actively maintained, Node.js-based, YAML-to-{PDF, DOCX, HTML, MD, PNG} resume generator with accessible HTML/CSS theming, resume variants for role-targeted tailoring, bidirectional JSON Resume interop, editor autocompletion, and no system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.

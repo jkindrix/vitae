@@ -8,13 +8,9 @@ High-value additions organized by ROI tier — accounting for Vitae's existing a
 
 These leverage existing infrastructure directly. Each could be implemented in a day or less.
 
-### 1. JSON Schema Publishing for Editor Autocompletion
+### 1. JSON Schema Publishing for Editor Autocompletion — IMPLEMENTED
 
-**What:** Add a `$schema` comment/directive to generated YAML files and publish the schema so VS Code, JetBrains, and other editors provide real-time autocompletion, validation, and hover docs while editing `resume.yaml`.
-
-**Why:** RenderCV's single biggest UX advantage is its editor autocompletion. Vitae already has a complete JSON Schema at `schemas/resume.schema.json` — it just isn't wired up for editor consumption. This is nearly free value.
-
-**Effort:** Add a schema comment to init output, document the VS Code YAML extension configuration, optionally host the schema at a stable URL.
+**Status:** Shipped. The `vitae init` command now prepends a `# yaml-language-server: $schema=<url>` directive to all generated YAML files, enabling autocompletion, validation, and hover docs in VS Code (with redhat.vscode-yaml extension), JetBrains, and any editor supporting the YAML Language Server protocol. The schema URL points to the published `schemas/resume.schema.json` on GitHub.
 
 ### 2. Theme Color/Font Overrides via Resume File
 
@@ -24,13 +20,9 @@ These leverage existing infrastructure directly. Each could be implemented in a 
 
 **Effort:** Add optional theme config to schema, pass values to template context, inject as CSS variable overrides in the renderer.
 
-### 3. PNG/Image Output
+### 3. PNG/Image Output — IMPLEMENTED
 
-**What:** Add `png` as a supported output format.
-
-**Why:** Useful for social media sharing, portfolio sites, and preview thumbnails. Playwright already supports `page.screenshot()` — it's literally called in debug mode today (`src/lib/pdf.ts` uses it for debug screenshots). This is a one-line addition to the format pipeline.
-
-**Effort:** Expose the existing screenshot capability as a first-class output format.
+**Status:** Shipped. `vitae build resume.yaml -f png` generates a full-page PNG screenshot via Playwright. Uses `preparePdfPage()` internally but overrides to screen media for better screenshot rendering. Supports all themes and `--all-themes` mode.
 
 ### 4. Watch Mode for Build
 
@@ -40,21 +32,13 @@ These leverage existing infrastructure directly. Each could be implemented in a 
 
 **Effort:** Extract the existing watcher from `preview.ts` into a shared utility and wire it into the build command.
 
-### 5. Markdown Output Format
+### 5. Markdown Output Format — IMPLEMENTED
 
-**What:** Add `md` as a supported output format (plain Markdown resume).
+**Status:** Shipped. `vitae build resume.yaml -f md` generates a clean Markdown resume. Reuses the existing `resumeToMarkdown()` function (previously internal to the DOCX pipeline), now exported as a first-class API. Theme-independent — generates the same output regardless of theme selection.
 
-**Why:** The DOCX generator already converts the resume to Markdown as an intermediate step (`src/lib/docx.ts`). Markdown output is useful for GitHub profiles, README files, plain-text job applications, and as input to other tools. This is extracting existing functionality.
+### 6. GitHub Actions Workflow Template — IMPLEMENTED
 
-**Effort:** Expose the existing Markdown conversion as a first-class output format.
-
-### 6. GitHub Actions Workflow Template
-
-**What:** Ship a `.github/workflows/build-resume.yml` example that builds the resume on push and attaches artifacts.
-
-**Why:** RenderCV markets this heavily. "Resume as code" users want CI/CD for their resume. This is a documentation/example task, not a code change.
-
-**Effort:** Write one YAML workflow file and document it.
+**Status:** Shipped. `.github/workflows/build-resume.yml` provides a ready-to-use CI workflow that builds all output formats across all themes on push, installs Playwright for PDF/PNG generation, and uploads artifacts. Triggered only on changes to `resume.yaml` or variant files.
 
 ---
 
@@ -62,22 +46,9 @@ These leverage existing infrastructure directly. Each could be implemented in a 
 
 These require meaningful implementation but have outsized impact on user value or competitive positioning.
 
-### 7. ATS Compatibility Analyzer
+### 7. ATS Compatibility Analyzer — IMPLEMENTED
 
-**What:** A `vitae check <input>` command that scores a resume for ATS compatibility — analyzing section structure, keyword presence, format compliance, content length, and common pitfalls (e.g., tables, images, non-standard section names).
-
-**Why:** ATS scoring is the #1 selling point of every commercial resume builder ($8-25/mo). No CLI tool offers this. Vitae has full structured access to the resume data, making static analysis straightforward — no AI required for the core checks. This would be a category-defining feature for the CLI space.
-
-Checks could include:
-
-- Section presence (does it have skills, experience, education?)
-- Content length per section (too short? too long?)
-- Date gap detection in experience
-- Keyword density analysis (optionally against a job description)
-- Contact info completeness
-- Single-page detection (estimate rendered length)
-
-**Effort:** New command + analysis module. No external dependencies needed.
+**Status:** Shipped. `vitae check <input>` scores a resume 0-100 for ATS compatibility using static analysis across 6 weighted categories: contact completeness (15%), section presence (15%), experience quality (25%), content depth (20%), date continuity (10%), and structure (15%). Supports `--job <file>` for keyword gap analysis against a job description, `--variant` for role-specific checks, and `--json` for machine-readable output. Colored terminal output with progress bars, categorized findings (errors/warnings/suggestions), and employment gap detection. No AI or external dependencies — pure static analysis.
 
 ### 8. Job Description Tailoring
 
@@ -109,13 +80,9 @@ Checks could include:
 
 **Effort:** Locale-aware date formatting + translatable section heading strings in themes.
 
-### 12. Export to JSON Resume Format
+### 12. Export to JSON Resume Format — IMPLEMENTED
 
-**What:** `vitae export <input> --format json-resume` that converts Vitae YAML back to JSON Resume format.
-
-**Why:** `toJsonResume()` already exists in `src/lib/json-resume.ts` but isn't exposed as a CLI command. This completes the bidirectional interop story and makes Vitae a hub in the resume ecosystem — import from JSON Resume, work in Vitae's YAML, export back for use with any of the 400+ JSON Resume themes.
-
-**Effort:** Wire existing `toJsonResume()` into a new CLI command or flag.
+**Status:** Shipped. `vitae export resume.yaml` converts Vitae YAML to JSON Resume format. Supports `-o/--output` for custom output path (defaults to `<basename>.resume.json`), `--format` flag, and `-v/--variant` for exporting a tailored variant. Completes bidirectional JSON Resume interop alongside the existing `import` command.
 
 ---
 
@@ -191,18 +158,18 @@ These are larger investments that would significantly shift Vitae's competitive 
 
 | # | Enhancement | User Value | Dev Value | Competitive Edge | Effort |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Editor autocompletion (schema) | High | Medium | Matches RenderCV | Very Low |
+| 1 | ~~Editor autocompletion (schema)~~ | ~~High~~ | ~~Medium~~ | ~~Matches RenderCV~~ | **DONE** |
 | 2 | Theme color/font overrides | High | Low | Unique in Node.js CLIs | Low |
-| 3 | PNG output | Medium | Low | Matches RenderCV | Very Low |
+| 3 | ~~PNG output~~ | ~~Medium~~ | ~~Low~~ | ~~Matches RenderCV~~ | **DONE** |
 | 4 | Watch mode for build | Medium | Medium | Standard expectation | Low |
-| 5 | Markdown output | Medium | Medium | Extracts existing code | Very Low |
-| 6 | GitHub Actions template | Medium | High | Matches RenderCV | Very Low |
-| **7** | **ATS analyzer** | **Very High** | **Low** | **Category-defining** | **Medium** |
+| 5 | ~~Markdown output~~ | ~~Medium~~ | ~~Medium~~ | ~~Extracts existing code~~ | **DONE** |
+| 6 | ~~GitHub Actions template~~ | ~~Medium~~ | ~~High~~ | ~~Matches RenderCV~~ | **DONE** |
+| 7 | ~~ATS analyzer~~ | ~~Very High~~ | ~~Low~~ | ~~Category-defining~~ | **DONE** |
 | 8 | Job description tailoring | Very High | Low | Matches commercial tier | Medium |
 | 9 | ~~Resume variants~~ | ~~High~~ | ~~Medium~~ | ~~Novel in CLI space~~ | **DONE** |
 | 10 | Plugin system for themes | Medium | Very High | Enables ecosystem | Medium |
 | 11 | Multi-language / i18n | High | Low | Matches brilliant-cv | Medium |
-| 12 | Export to JSON Resume | Medium | Medium | Completes interop | Very Low |
+| 12 | ~~Export to JSON Resume~~ | ~~Medium~~ | ~~Medium~~ | ~~Completes interop~~ | **DONE** |
 | 13 | Web theme configurator | High | Medium | Bridges CLI/GUI gap | High |
 | 14 | AI content assistant | High | Low | Matches commercial tier | Medium-High |
 | 15 | Theme registry | Medium | Very High | Matches JSON Resume | High |
@@ -212,6 +179,6 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | Accessibility auditing | Medium | Low | Novel | Medium |
 
-**The single highest-ROI item is #7 (ATS Analyzer)** — it addresses the primary concern of every resume user, no CLI tool offers it, commercial tools charge $8-25/month for it, and Vitae's structured data format makes it straightforward to implement without AI or external services.
+**Completed (7 of 20):** #1 (schema autocompletion), #3 (PNG output), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #9 (resume variants), #12 (JSON Resume export).
 
-**The quickest wins are #1, #3, #5, #6, and #12** — each leverages code or infrastructure that already exists in the codebase and could ship with minimal implementation.
+**Next highest-ROI items:** #2 (theme color/font overrides), #4 (watch mode for build), #8 (job description tailoring — pairs with the ATS analyzer).
