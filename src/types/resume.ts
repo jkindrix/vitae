@@ -19,11 +19,25 @@ export interface Meta {
 }
 
 /**
+ * A highlight with optional tags for variant filtering
+ */
+export interface TaggedHighlight {
+  text: string;
+  tags?: string[];
+}
+
+/**
+ * A highlight can be a plain string or a tagged object
+ */
+export type Highlight = string | TaggedHighlight;
+
+/**
  * Categorized skill group
  */
 export interface SkillCategory {
   category: string;
   items: string[];
+  tags?: string[];
 }
 
 /**
@@ -35,7 +49,8 @@ export interface Role {
   end?: string;
   location?: string;
   summary?: string;
-  highlights?: string[];
+  highlights?: Highlight[];
+  tags?: string[];
 }
 
 /**
@@ -44,6 +59,7 @@ export interface Role {
 export interface Experience {
   company: string;
   roles: Role[];
+  tags?: string[];
 }
 
 /**
@@ -53,7 +69,8 @@ export interface Project {
   name: string;
   url?: string;
   description?: string;
-  highlights?: string[];
+  highlights?: Highlight[];
+  tags?: string[];
 }
 
 /**
@@ -65,7 +82,8 @@ export interface Education {
   field?: string;
   start?: string;
   end?: string;
-  highlights?: string[];
+  highlights?: Highlight[];
+  tags?: string[];
 }
 
 /**
@@ -76,6 +94,7 @@ export interface Certification {
   issuer?: string;
   date?: string;
   url?: string;
+  tags?: string[];
 }
 
 /**
@@ -116,7 +135,8 @@ export interface Volunteer {
   start?: string;
   end?: string;
   summary?: string;
-  highlights?: string[];
+  highlights?: Highlight[];
+  tags?: string[];
 }
 
 /**
@@ -144,6 +164,122 @@ export interface Resume {
   volunteer?: Volunteer[];
   references?: Reference[];
 }
+
+// ---------------------------------------------------------------------------
+// Variant types
+// ---------------------------------------------------------------------------
+
+/**
+ * Valid section names for section ordering
+ */
+export type SectionName =
+  | 'summary'
+  | 'skills'
+  | 'experience'
+  | 'projects'
+  | 'education'
+  | 'certifications'
+  | 'languages'
+  | 'awards'
+  | 'publications'
+  | 'volunteer'
+  | 'references';
+
+/**
+ * Variant file — filters and overrides applied to a base resume
+ */
+export interface Variant {
+  include_tags?: string[];
+  exclude_tags?: string[];
+  meta?: Partial<Meta>;
+  summary?: string;
+  section_order?: SectionName[];
+  skills?: {
+    include?: string[];
+    exclude?: string[];
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Normalized types — output of normalization, input to all renderers
+// ---------------------------------------------------------------------------
+
+/**
+ * Role with highlights guaranteed to be string[]
+ */
+export interface NormalizedRole {
+  title: string;
+  start: string;
+  end?: string;
+  location?: string;
+  summary?: string;
+  highlights?: string[];
+}
+
+/**
+ * Experience with normalized roles
+ */
+export interface NormalizedExperience {
+  company: string;
+  roles: NormalizedRole[];
+}
+
+/**
+ * Project with highlights guaranteed to be string[]
+ */
+export interface NormalizedProject {
+  name: string;
+  url?: string;
+  description?: string;
+  highlights?: string[];
+}
+
+/**
+ * Education with highlights guaranteed to be string[]
+ */
+export interface NormalizedEducation {
+  institution: string;
+  degree?: string;
+  field?: string;
+  start?: string;
+  end?: string;
+  highlights?: string[];
+}
+
+/**
+ * Volunteer with highlights guaranteed to be string[]
+ */
+export interface NormalizedVolunteer {
+  organization: string;
+  position?: string;
+  start?: string;
+  end?: string;
+  summary?: string;
+  highlights?: string[];
+}
+
+/**
+ * Fully normalized resume — all highlights are string[], sections are ordered
+ */
+export interface NormalizedResume {
+  meta: Meta;
+  summary?: string;
+  skills?: SkillCategory[];
+  experience: NormalizedExperience[];
+  projects?: NormalizedProject[];
+  education?: NormalizedEducation[];
+  certifications?: Certification[];
+  languages?: Language[];
+  awards?: Award[];
+  publications?: Publication[];
+  volunteer?: NormalizedVolunteer[];
+  references?: Reference[];
+  sections: SectionName[];
+}
+
+// ---------------------------------------------------------------------------
+// Build and output types
+// ---------------------------------------------------------------------------
 
 /**
  * Build output configuration

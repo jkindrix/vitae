@@ -1,7 +1,7 @@
 import nunjucks from 'nunjucks';
 import { loadTheme, readTemplate, readStyles } from './themes.js';
 import { formatDate, formatDateShort, formatDateRange } from './dates.js';
-import type { Resume } from '../types/index.js';
+import type { NormalizedResume } from '../types/index.js';
 
 // Configure Nunjucks environment
 const env = new nunjucks.Environment(null, {
@@ -44,9 +44,9 @@ export interface RenderResult {
 }
 
 /**
- * Render a resume to HTML using a theme
+ * Render a normalized resume to HTML using a theme
  */
-export async function renderHtml(resume: Resume, themeName: string): Promise<RenderResult> {
+export async function renderHtml(resume: NormalizedResume, themeName: string): Promise<RenderResult> {
   const theme = await loadTheme(themeName);
   const template = await readTemplate(theme);
   const css = await readStyles(theme);
@@ -60,6 +60,12 @@ export async function renderHtml(resume: Resume, themeName: string): Promise<Ren
     projects: resume.projects,
     education: resume.education,
     certifications: resume.certifications,
+    languages: resume.languages,
+    awards: resume.awards,
+    publications: resume.publications,
+    volunteer: resume.volunteer,
+    references: resume.references,
+    sections: resume.sections,
   });
 
   return { html, css };
@@ -68,7 +74,7 @@ export async function renderHtml(resume: Resume, themeName: string): Promise<Ren
 /**
  * Render a complete standalone HTML document
  */
-export async function renderStandaloneHtml(resume: Resume, themeName: string): Promise<string> {
+export async function renderStandaloneHtml(resume: NormalizedResume, themeName: string): Promise<string> {
   const { html, css } = await renderHtml(resume, themeName);
 
   return `<!DOCTYPE html>

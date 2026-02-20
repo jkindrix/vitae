@@ -5,6 +5,9 @@ import { platform } from 'os';
 import chalk from 'chalk';
 import {
   loadResume,
+  loadVariant,
+  applyVariant,
+  normalizeResume,
   renderStandaloneHtml,
   generatePdf,
   generateDocx,
@@ -12,7 +15,7 @@ import {
   checkPandoc,
   listThemes,
 } from '../lib/index.js';
-import type { OutputFormat, Resume } from '../types/index.js';
+import type { OutputFormat, NormalizedResume } from '../types/index.js';
 
 export interface BuildCommandOptions {
   theme: string;
@@ -22,6 +25,7 @@ export interface BuildCommandOptions {
   allThemes?: boolean;
   open?: boolean;
   debug?: boolean;
+  variant?: string;
 }
 
 /**
@@ -54,7 +58,7 @@ function openFile(filePath: string): void {
  * Generate outputs for a single theme
  */
 async function generateForTheme(
-  resume: Resume,
+  resume: NormalizedResume,
   themeName: string,
   formats: OutputFormat[],
   outputDir: string,
@@ -143,8 +147,22 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
   const resolvedInput = resolve(inputPath);
 
   // Load and validate resume
-  const resume = await loadResume(resolvedInput);
+  let resume = await loadResume(resolvedInput);
   console.log(chalk.green(`✓ Loaded resume for ${resume.meta.name}`));
+
+  // Load and apply variant if specified
+  let sectionOrder = undefined;
+  if (options.variant) {
+    const resolvedVariant = resolve(options.variant);
+    console.log(chalk.blue(`Loading variant: ${resolvedVariant}...`));
+    const variant = await loadVariant(resolvedVariant);
+    resume = applyVariant(resume, variant);
+    sectionOrder = variant.section_order;
+    console.log(chalk.green('✓ Applied variant'));
+  }
+
+  // Normalize resume (always runs — converts tagged highlights, builds section order)
+  const normalized = normalizeResume(resume, sectionOrder);
 
   // Determine output formats
   const formatStr = options.formats ?? 'pdf,docx,html';
@@ -185,10 +203,17 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
   const allResults: { format: string; path: string }[] = [];
 
   for (const themeName of themesToBuild) {
-    const results = await generateForTheme(resume, themeName, formats, outputDir, outputBasename, {
-      debug: options.debug ?? false,
-      includeThemeInName: options.allThemes ?? false,
-    });
+    const results = await generateForTheme(
+      normalized,
+      themeName,
+      formats,
+      outputDir,
+      outputBasename,
+      {
+        debug: options.debug ?? false,
+        includeThemeInName: options.allThemes ?? false,
+      }
+    );
     allResults.push(...results);
   }
 
@@ -196,7 +221,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
   if (options.allThemes && formats.includes('json')) {
     const jsonPath = `${outputDir}/${outputBasename}.json`;
     console.log(chalk.blue('Generating JSON...'));
-    const json = JSON.stringify(resume, null, 2);
+    const json = JSON.stringify(normalized, null, 2);
     await writeFile(jsonPath, json, 'utf-8');
     allResults.push({ format: 'JSON', path: jsonPath });
     console.log(chalk.green(`✓ JSON: ${jsonPath}`));

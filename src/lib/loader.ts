@@ -1,9 +1,9 @@
 import { readFile } from 'fs/promises';
 import { extname } from 'path';
 import { parse as parseYaml } from 'yaml';
-import { assertValidResume } from './schema.js';
+import { assertValidResume, assertValidVariant } from './schema.js';
 import { isJsonResumeFormat, fromJsonResume } from './json-resume.js';
-import type { Resume } from '../types/index.js';
+import type { Resume, Variant } from '../types/index.js';
 
 interface LoadOptions {
   /**
@@ -42,6 +42,15 @@ export async function loadResume(filePath: string, options: LoadOptions = {}): P
   }
 
   return assertValidResume(data);
+}
+
+/**
+ * Load and validate a variant file from a YAML or JSON file
+ */
+export async function loadVariant(filePath: string): Promise<Variant> {
+  const content = await readFile(filePath, 'utf-8');
+  const data = parseContent(content, filePath);
+  return assertValidVariant(data);
 }
 
 /**

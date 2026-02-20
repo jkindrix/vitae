@@ -7,6 +7,7 @@ import type {
   Resume,
   Meta,
   Link,
+  Highlight,
   SkillCategory,
   Experience,
   Role,
@@ -140,6 +141,20 @@ interface JsonResumeFormat {
   references?: JsonResumeReference[] | undefined;
   // Not currently used
   interests?: unknown[] | undefined;
+}
+
+/**
+ * Extract text from a Highlight (plain string or tagged object)
+ */
+function highlightText(h: Highlight): string {
+  return typeof h === 'string' ? h : h.text;
+}
+
+/**
+ * Convert Highlight[] to string[]
+ */
+function flattenHighlights(highlights: Highlight[]): string[] {
+  return highlights.map(highlightText);
 }
 
 /**
@@ -592,7 +607,7 @@ export function toJsonResume(resume: Resume): JsonResumeFormat {
         if (role.end) job.endDate = role.end;
         if (role.location) job.location = role.location;
         if (role.summary) job.summary = role.summary;
-        if (role.highlights) job.highlights = role.highlights;
+        if (role.highlights) job.highlights = flattenHighlights(role.highlights);
         work.push(job);
       }
     }
@@ -613,7 +628,7 @@ export function toJsonResume(resume: Resume): JsonResumeFormat {
       const p: JsonResumeProject = { name: proj.name };
       if (proj.description) p.description = proj.description;
       if (proj.url) p.url = proj.url;
-      if (proj.highlights) p.highlights = proj.highlights;
+      if (proj.highlights) p.highlights = flattenHighlights(proj.highlights);
       return p;
     });
   }
@@ -626,7 +641,7 @@ export function toJsonResume(resume: Resume): JsonResumeFormat {
       if (edu.field) e.area = edu.field;
       if (edu.start) e.startDate = edu.start;
       if (edu.end) e.endDate = edu.end;
-      if (edu.highlights) e.courses = edu.highlights;
+      if (edu.highlights) e.courses = flattenHighlights(edu.highlights);
       return e;
     });
   }
@@ -682,7 +697,7 @@ export function toJsonResume(resume: Resume): JsonResumeFormat {
       if (vol.start) v.startDate = vol.start;
       if (vol.end) v.endDate = vol.end;
       if (vol.summary) v.summary = vol.summary;
-      if (vol.highlights) v.highlights = vol.highlights;
+      if (vol.highlights) v.highlights = flattenHighlights(vol.highlights);
       return v;
     });
   }

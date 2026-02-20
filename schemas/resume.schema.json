@@ -5,6 +5,36 @@
   "description": "Schema for vitae resume YAML files",
   "type": "object",
   "required": ["meta", "experience"],
+  "definitions": {
+    "highlight": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "required": ["text"],
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "Highlight text"
+            },
+            "tags": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Tags for variant filtering"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tags for variant filtering"
+    }
+  },
   "properties": {
     "meta": {
       "type": "object",
@@ -74,7 +104,8 @@
               "type": "string"
             },
             "description": "List of skills in this category"
-          }
+          },
+          "tags": { "$ref": "#/definitions/tags" }
         }
       }
     },
@@ -89,6 +120,7 @@
             "type": "string",
             "description": "Company or organization name"
           },
+          "tags": { "$ref": "#/definitions/tags" },
           "roles": {
             "type": "array",
             "description": "Roles held at this company (supports multiple roles at same company)",
@@ -120,11 +152,10 @@
                 },
                 "highlights": {
                   "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
+                  "items": { "$ref": "#/definitions/highlight" },
                   "description": "Key accomplishments and responsibilities"
-                }
+                },
+                "tags": { "$ref": "#/definitions/tags" }
               }
             }
           }
@@ -153,11 +184,10 @@
           },
           "highlights": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "$ref": "#/definitions/highlight" },
             "description": "Key features or accomplishments"
-          }
+          },
+          "tags": { "$ref": "#/definitions/tags" }
         }
       }
     },
@@ -190,11 +220,10 @@
           },
           "highlights": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "$ref": "#/definitions/highlight" },
             "description": "Notable achievements"
-          }
+          },
+          "tags": { "$ref": "#/definitions/tags" }
         }
       }
     },
@@ -221,7 +250,8 @@
             "type": "string",
             "format": "uri",
             "description": "Verification URL"
-          }
+          },
+          "tags": { "$ref": "#/definitions/tags" }
         }
       }
     },
@@ -329,11 +359,10 @@
           },
           "highlights": {
             "type": "array",
-            "items": {
-              "type": "string"
-            },
+            "items": { "$ref": "#/definitions/highlight" },
             "description": "Key accomplishments"
-          }
+          },
+          "tags": { "$ref": "#/definitions/tags" }
         }
       }
     },

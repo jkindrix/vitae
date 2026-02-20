@@ -2,7 +2,7 @@ import { chromium, type Browser, type Page } from 'playwright';
 import { writeFile } from 'fs/promises';
 import { renderStandaloneHtml } from './renderer.js';
 import { PdfError } from './errors.js';
-import type { Resume } from '../types/index.js';
+import type { NormalizedResume } from '../types/index.js';
 
 let browser: Browser | null = null;
 
@@ -141,7 +141,7 @@ interface PreparedPage {
  * This is the common setup logic shared by generatePdf and generatePdfBuffer
  */
 async function preparePdfPage(
-  resume: Resume,
+  resume: NormalizedResume,
   themeName: string,
   options: PdfOptions
 ): Promise<PreparedPage> {
@@ -250,7 +250,7 @@ async function preparePdfPage(
  * Generate a PDF from a resume and save to file
  */
 export async function generatePdf(
-  resume: Resume,
+  resume: NormalizedResume,
   themeName: string,
   outputPath: string,
   options: PdfOptions = {}
@@ -285,7 +285,7 @@ export async function generatePdf(
  * Generate PDF and return as Buffer (useful for preview/streaming)
  */
 export async function generatePdfBuffer(
-  resume: Resume,
+  resume: NormalizedResume,
   themeName: string,
   options: PdfOptions = {}
 ): Promise<Buffer> {

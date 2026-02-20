@@ -1,12 +1,13 @@
 import { createServer, type ServerResponse } from 'http';
 import { resolve, dirname } from 'path';
-import { watch } from 'fs';
+import { watch, type FSWatcher } from 'fs';
 import chalk from 'chalk';
-import { loadResume, renderStandaloneHtml } from '../lib/index.js';
+import { loadResume, loadVariant, applyVariant, normalizeResume, renderStandaloneHtml } from '../lib/index.js';
 
 export interface PreviewCommandOptions {
   theme: string;
   port?: number;
+  variant?: string;
 }
 
 // Store connected SSE clients
@@ -29,24 +30,45 @@ export async function previewCommand(
   options: PreviewCommandOptions
 ): Promise<void> {
   const resolvedInput = resolve(inputPath);
+  const resolvedVariant = options.variant ? resolve(options.variant) : undefined;
   const port = options.port ?? 3000;
 
   console.log(chalk.blue('Starting preview server...'));
 
-  // Watch for file changes
+  // Watch for file changes in the resume directory
+  const watchers: FSWatcher[] = [];
   let debounceTimer: NodeJS.Timeout | null = null;
-  const watcher = watch(dirname(resolvedInput), (_eventType, filename) => {
-    // Debounce rapid file changes
+
+  const handleFileChange = (): void => {
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
     debounceTimer = setTimeout(() => {
-      if (filename?.endsWith('.yaml') || filename?.endsWith('.yml')) {
-        console.log(chalk.dim(`  [${new Date().toLocaleTimeString()}] File changed, reloading...`));
-        broadcastReload();
-      }
+      console.log(chalk.dim(`  [${new Date().toLocaleTimeString()}] File changed, reloading...`));
+      broadcastReload();
     }, 100);
+  };
+
+  // Watch resume directory
+  const resumeWatcher = watch(dirname(resolvedInput), (_eventType, filename) => {
+    if (filename?.endsWith('.yaml') || filename?.endsWith('.yml')) {
+      handleFileChange();
+    }
   });
+  watchers.push(resumeWatcher);
+
+  // Watch variant file directory if different from resume directory
+  if (resolvedVariant) {
+    const variantDir = dirname(resolvedVariant);
+    if (variantDir !== dirname(resolvedInput)) {
+      const variantWatcher = watch(variantDir, (_eventType, filename) => {
+        if (filename?.endsWith('.yaml') || filename?.endsWith('.yml')) {
+          handleFileChange();
+        }
+      });
+      watchers.push(variantWatcher);
+    }
+  }
 
   const server = createServer(async (req, res) => {
     try {
@@ -74,8 +96,20 @@ export async function previewCommand(
       }
 
       // Reload resume on each request for live updates
-      const resume = await loadResume(resolvedInput);
-      const html = await renderStandaloneHtml(resume, options.theme);
+      let resume = await loadResume(resolvedInput);
+
+      // Apply variant if specified
+      let sectionOrder = undefined;
+      if (resolvedVariant) {
+        const variant = await loadVariant(resolvedVariant);
+        resume = applyVariant(resume, variant);
+        sectionOrder = variant.section_order;
+      }
+
+      // Normalize
+      const normalized = normalizeResume(resume, sectionOrder);
+
+      const html = await renderStandaloneHtml(normalized, options.theme);
 
       // Inject SSE-based hot reload script
       const hotReloadScript = `
@@ -150,6 +184,9 @@ export async function previewCommand(
     console.log('');
     console.log(chalk.green(`✓ Preview server running at:`));
     console.log(chalk.cyan(`  http://localhost:${port}`));
+    if (resolvedVariant) {
+      console.log(chalk.dim(`  Variant: ${resolvedVariant}`));
+    }
     console.log('');
     console.log(chalk.dim('  Edit your resume.yaml and the preview will auto-refresh'));
     console.log(chalk.dim('  Press Ctrl+C to stop'));
@@ -167,8 +204,10 @@ export async function previewCommand(
     }
     sseClients.clear();
 
-    // Stop file watcher
-    watcher.close();
+    // Stop file watchers
+    for (const w of watchers) {
+      w.close();
+    }
 
     server.close(() => {
       process.exit(0);

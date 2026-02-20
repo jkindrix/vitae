@@ -4,12 +4,13 @@ import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { ValidationError as VitaeValidationError, type ValidationErrorDetail } from './errors.js';
-import type { Resume } from '../types/index.js';
+import type { Resume, Variant } from '../types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let validateFn: ValidateFunction | null = null;
+let variantValidateFn: ValidateFunction | null = null;
 
 /**
  * Load and compile the JSON schema
@@ -64,4 +65,54 @@ export async function assertValidResume(data: unknown): Promise<Resume> {
   }
 
   return data as Resume;
+}
+
+/**
+ * Load and compile the variant JSON schema
+ */
+async function getVariantValidator(): Promise<ValidateFunction> {
+  if (variantValidateFn) return variantValidateFn;
+
+  const schemaPath = join(__dirname, '../../schemas/variant.schema.json');
+  const schemaContent = await readFile(schemaPath, 'utf-8');
+  const schema = JSON.parse(schemaContent) as object;
+
+  const ajv = new Ajv.default({ allErrors: true, strict: false });
+  addFormats.default(ajv);
+  variantValidateFn = ajv.compile(schema);
+
+  return variantValidateFn;
+}
+
+/**
+ * Validate variant data against the schema
+ */
+export async function validateVariant(data: unknown): Promise<ValidationResult> {
+  const validate = await getVariantValidator();
+  const valid = validate(data);
+
+  if (valid) {
+    return { valid: true, errors: [] };
+  }
+
+  const errors: ValidationErrorDetail[] = (validate.errors ?? []).map((err: ErrorObject) => ({
+    path: err.instancePath || '/',
+    message: err.message ?? 'Unknown validation error',
+    keyword: err.keyword,
+  }));
+
+  return { valid: false, errors };
+}
+
+/**
+ * Assert that data is a valid Variant, throwing if invalid
+ */
+export async function assertValidVariant(data: unknown): Promise<Variant> {
+  const result = await validateVariant(data);
+
+  if (!result.valid) {
+    throw VitaeValidationError.fromDetails(result.errors);
+  }
+
+  return data as Variant;
 }

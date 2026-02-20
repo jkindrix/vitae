@@ -31,6 +31,7 @@ program
   .option('-a, --all-themes', 'Generate outputs for all available themes')
   .option('--open', 'Open the first generated file after build')
   .option('-d, --debug', 'Enable debug mode with verbose logging and intermediate files')
+  .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .action(async (input: string, options) => {
     try {
       await buildCommand(input, options);
@@ -110,11 +111,13 @@ program
   .argument('<input>', 'Path to resume.yaml file')
   .option('-t, --theme <name>', 'Theme to use', 'minimal')
   .option('-p, --port <number>', 'Port to run on', '3000')
+  .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .action(async (input: string, options) => {
     try {
       await previewCommand(input, {
         theme: options.theme,
         port: parseInt(options.port, 10),
+        variant: options.variant,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

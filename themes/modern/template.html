@@ -1,3 +1,281 @@
+{# --- Sidebar section macros --- #}
+
+{% macro render_sidebar_skills() %}
+{% if skills and skills.length > 0 %}
+<section class="resume__sidebar-section">
+  <h2 class="resume__sidebar-title">Skills</h2>
+  {% for category in skills %}
+  <div class="resume__skill-group">
+    <h3 class="resume__skill-category">{{ category.category }}</h3>
+    <ul class="resume__skill-list">
+      {% for item in category.items %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_sidebar_certifications() %}
+{% if certifications and certifications.length > 0 %}
+<section class="resume__sidebar-section">
+  <h2 class="resume__sidebar-title">Certifications</h2>
+  <ul class="resume__cert-list">
+    {% for cert in certifications %}
+    <li>
+      <span class="resume__cert-name">{{ cert.name }}</span>
+      {% if cert.issuer %}<br><span class="resume__cert-issuer">{{ cert.issuer }}</span>{% endif %}
+      {% if cert.date %}<br><span class="resume__cert-date">{{ cert.date }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_sidebar_languages() %}
+{% if languages and languages.length > 0 %}
+<section class="resume__sidebar-section">
+  <h2 class="resume__sidebar-title">Languages</h2>
+  <ul class="resume__lang-list">
+    {% for lang in languages %}
+    <li>
+      <span class="resume__lang-name">{{ lang.language }}</span>
+      {% if lang.fluency %}<br><span class="resume__lang-fluency">{{ lang.fluency }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endmacro %}
+
+{# --- Main section macros --- #}
+
+{% macro render_summary() %}
+{% if summary %}
+<section class="resume__section">
+  <h2 class="resume__section-title">Profile</h2>
+  <p class="resume__summary">{{ summary }}</p>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_experience() %}
+{% if experience and experience.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">Experience</h2>
+  {% for exp in experience %}
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <h3 class="resume__company-name">{{ exp.company }}</h3>
+    </div>
+    {% for role in exp.roles %}
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">{{ role.title }}</span>
+        <span class="resume__role-meta">
+          {% if role.start %}{{ role.start | formatDateShort }}{% endif %}
+          {% if role.end %} - {{ role.end | formatDateShort }}{% else %} - Present{% endif %}
+          {% if role.location %} | {{ role.location }}{% endif %}
+        </span>
+      </div>
+      {% if role.summary %}
+      <p class="resume__role-summary">{{ role.summary }}</p>
+      {% endif %}
+      {% if role.highlights and role.highlights.length > 0 %}
+      <ul class="resume__highlights">
+        {% for highlight in role.highlights %}
+        <li>{{ highlight }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_education() %}
+{% if education and education.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">Education</h2>
+  {% for edu in education %}
+  <div class="resume__entry resume__entry--compact">
+    <div class="resume__entry-header">
+      <div class="resume__entry-main">
+        <span class="resume__entry-title">{{ edu.institution }}</span>
+        <span class="resume__entry-subtitle">
+          {{ edu.degree }}{% if edu.field %} in {{ edu.field }}{% endif %}
+        </span>
+      </div>
+      {% if edu.start or edu.end %}
+      <span class="resume__entry-dates">
+        {% if edu.start %}{{ edu.start }}{% endif %}
+        {% if edu.end %} - {{ edu.end }}{% endif %}
+      </span>
+      {% endif %}
+    </div>
+    {% if edu.highlights and edu.highlights.length > 0 %}
+    <ul class="resume__highlights">
+      {% for highlight in edu.highlights %}
+      <li>{{ highlight }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_projects() %}
+{% if projects and projects.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">Projects</h2>
+  {% for project in projects %}
+  <div class="resume__entry resume__entry--compact">
+    <div class="resume__entry-header">
+      <div class="resume__entry-main">
+        {% if project.url %}
+        <a href="{{ project.url }}" class="resume__entry-title" target="_blank" rel="noopener">{{ project.name }}</a>
+        {% else %}
+        <span class="resume__entry-title">{{ project.name }}</span>
+        {% endif %}
+        {% if project.description %}
+        <span class="resume__entry-subtitle">{{ project.description }}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% if project.highlights and project.highlights.length > 0 %}
+    <ul class="resume__highlights">
+      {% for highlight in project.highlights %}
+      <li>{{ highlight }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_awards() %}
+{% if awards and awards.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">Awards</h2>
+  {% for award in awards %}
+  <div class="resume__entry resume__entry--compact">
+    <div class="resume__entry-header">
+      <div class="resume__entry-main">
+        <span class="resume__entry-title">{{ award.title }}</span>
+        {% if award.awarder %}
+        <span class="resume__entry-subtitle">{{ award.awarder }}</span>
+        {% endif %}
+      </div>
+      {% if award.date %}
+      <span class="resume__entry-dates">{{ award.date }}</span>
+      {% endif %}
+    </div>
+    {% if award.summary %}
+    <p class="resume__entry-summary">{{ award.summary }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_publications() %}
+{% if publications and publications.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">Publications</h2>
+  {% for pub in publications %}
+  <div class="resume__entry resume__entry--compact">
+    <div class="resume__entry-header">
+      <div class="resume__entry-main">
+        {% if pub.url %}
+        <a href="{{ pub.url }}" class="resume__entry-title" target="_blank" rel="noopener">{{ pub.name }}</a>
+        {% else %}
+        <span class="resume__entry-title">{{ pub.name }}</span>
+        {% endif %}
+        {% if pub.publisher %}
+        <span class="resume__entry-subtitle">{{ pub.publisher }}</span>
+        {% endif %}
+      </div>
+      {% if pub.releaseDate %}
+      <span class="resume__entry-dates">{{ pub.releaseDate }}</span>
+      {% endif %}
+    </div>
+    {% if pub.summary %}
+    <p class="resume__entry-summary">{{ pub.summary }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_volunteer() %}
+{% if volunteer and volunteer.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">Volunteer</h2>
+  {% for vol in volunteer %}
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <div class="resume__entry-main">
+        <span class="resume__entry-title">{{ vol.organization }}</span>
+        {% if vol.position %}
+        <span class="resume__entry-subtitle">{{ vol.position }}</span>
+        {% endif %}
+      </div>
+      {% if vol.start or vol.end %}
+      <span class="resume__entry-dates">
+        {% if vol.start %}{{ vol.start }}{% endif %}
+        {% if vol.end %} - {{ vol.end }}{% endif %}
+      </span>
+      {% endif %}
+    </div>
+    {% if vol.summary %}
+    <p class="resume__entry-summary">{{ vol.summary }}</p>
+    {% endif %}
+    {% if vol.highlights and vol.highlights.length > 0 %}
+    <ul class="resume__highlights">
+      {% for highlight in vol.highlights %}
+      <li>{{ highlight }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_references() %}
+{% if references and references.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">References</h2>
+  {% for ref in references %}
+  <div class="resume__reference">
+    <span class="resume__reference-name">{{ ref.name }}</span>
+    {% if ref.reference %}
+    <blockquote class="resume__reference-quote">"{{ ref.reference }}"</blockquote>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{# --- Sections that belong in sidebar vs main --- #}
+{% set sidebar_sections = ["skills", "certifications", "languages"] %}
+
+{# --- Layout --- #}
+
 <article class="resume">
   <aside class="resume__sidebar">
     <header class="resume__header">
@@ -39,253 +317,25 @@
       </ul>
     </section>
 
-    {% if skills and skills.length > 0 %}
-    <section class="resume__sidebar-section">
-      <h2 class="resume__sidebar-title">Skills</h2>
-      {% for category in skills %}
-      <div class="resume__skill-group">
-        <h3 class="resume__skill-category">{{ category.category }}</h3>
-        <ul class="resume__skill-list">
-          {% for item in category.items %}
-          <li>{{ item }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if certifications and certifications.length > 0 %}
-    <section class="resume__sidebar-section">
-      <h2 class="resume__sidebar-title">Certifications</h2>
-      <ul class="resume__cert-list">
-        {% for cert in certifications %}
-        <li>
-          <span class="resume__cert-name">{{ cert.name }}</span>
-          {% if cert.issuer %}<br><span class="resume__cert-issuer">{{ cert.issuer }}</span>{% endif %}
-          {% if cert.date %}<br><span class="resume__cert-date">{{ cert.date }}</span>{% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-    </section>
-    {% endif %}
-
-    {% if languages and languages.length > 0 %}
-    <section class="resume__sidebar-section">
-      <h2 class="resume__sidebar-title">Languages</h2>
-      <ul class="resume__lang-list">
-        {% for lang in languages %}
-        <li>
-          <span class="resume__lang-name">{{ lang.language }}</span>
-          {% if lang.fluency %}<br><span class="resume__lang-fluency">{{ lang.fluency }}</span>{% endif %}
-        </li>
-        {% endfor %}
-      </ul>
-    </section>
-    {% endif %}
+    {% for section in sections %}
+      {% if section == "skills" %}{{ render_sidebar_skills() }}
+      {% elif section == "certifications" %}{{ render_sidebar_certifications() }}
+      {% elif section == "languages" %}{{ render_sidebar_languages() }}
+      {% endif %}
+    {% endfor %}
   </aside>
 
   <main class="resume__main">
-    {% if summary %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">Profile</h2>
-      <p class="resume__summary">{{ summary }}</p>
-    </section>
-    {% endif %}
-
-    {% if experience and experience.length > 0 %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">Experience</h2>
-      {% for exp in experience %}
-      <div class="resume__entry">
-        <div class="resume__entry-header">
-          <h3 class="resume__company-name">{{ exp.company }}</h3>
-        </div>
-        {% for role in exp.roles %}
-        <div class="resume__role">
-          <div class="resume__role-header">
-            <span class="resume__role-title">{{ role.title }}</span>
-            <span class="resume__role-meta">
-              {% if role.start %}{{ role.start | formatDateShort }}{% endif %}
-              {% if role.end %} - {{ role.end | formatDateShort }}{% else %} - Present{% endif %}
-              {% if role.location %} | {{ role.location }}{% endif %}
-            </span>
-          </div>
-          {% if role.summary %}
-          <p class="resume__role-summary">{{ role.summary }}</p>
-          {% endif %}
-          {% if role.highlights and role.highlights.length > 0 %}
-          <ul class="resume__highlights">
-            {% for highlight in role.highlights %}
-            <li>{{ highlight }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </div>
-        {% endfor %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if education and education.length > 0 %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">Education</h2>
-      {% for edu in education %}
-      <div class="resume__entry resume__entry--compact">
-        <div class="resume__entry-header">
-          <div class="resume__entry-main">
-            <span class="resume__entry-title">{{ edu.institution }}</span>
-            <span class="resume__entry-subtitle">
-              {{ edu.degree }}{% if edu.field %} in {{ edu.field }}{% endif %}
-            </span>
-          </div>
-          {% if edu.start or edu.end %}
-          <span class="resume__entry-dates">
-            {% if edu.start %}{{ edu.start }}{% endif %}
-            {% if edu.end %} - {{ edu.end }}{% endif %}
-          </span>
-          {% endif %}
-        </div>
-        {% if edu.highlights and edu.highlights.length > 0 %}
-        <ul class="resume__highlights">
-          {% for highlight in edu.highlights %}
-          <li>{{ highlight }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if projects and projects.length > 0 %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">Projects</h2>
-      {% for project in projects %}
-      <div class="resume__entry resume__entry--compact">
-        <div class="resume__entry-header">
-          <div class="resume__entry-main">
-            {% if project.url %}
-            <a href="{{ project.url }}" class="resume__entry-title" target="_blank" rel="noopener">{{ project.name }}</a>
-            {% else %}
-            <span class="resume__entry-title">{{ project.name }}</span>
-            {% endif %}
-            {% if project.description %}
-            <span class="resume__entry-subtitle">{{ project.description }}</span>
-            {% endif %}
-          </div>
-        </div>
-        {% if project.highlights and project.highlights.length > 0 %}
-        <ul class="resume__highlights">
-          {% for highlight in project.highlights %}
-          <li>{{ highlight }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if awards and awards.length > 0 %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">Awards</h2>
-      {% for award in awards %}
-      <div class="resume__entry resume__entry--compact">
-        <div class="resume__entry-header">
-          <div class="resume__entry-main">
-            <span class="resume__entry-title">{{ award.title }}</span>
-            {% if award.awarder %}
-            <span class="resume__entry-subtitle">{{ award.awarder }}</span>
-            {% endif %}
-          </div>
-          {% if award.date %}
-          <span class="resume__entry-dates">{{ award.date }}</span>
-          {% endif %}
-        </div>
-        {% if award.summary %}
-        <p class="resume__entry-summary">{{ award.summary }}</p>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if publications and publications.length > 0 %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">Publications</h2>
-      {% for pub in publications %}
-      <div class="resume__entry resume__entry--compact">
-        <div class="resume__entry-header">
-          <div class="resume__entry-main">
-            {% if pub.url %}
-            <a href="{{ pub.url }}" class="resume__entry-title" target="_blank" rel="noopener">{{ pub.name }}</a>
-            {% else %}
-            <span class="resume__entry-title">{{ pub.name }}</span>
-            {% endif %}
-            {% if pub.publisher %}
-            <span class="resume__entry-subtitle">{{ pub.publisher }}</span>
-            {% endif %}
-          </div>
-          {% if pub.releaseDate %}
-          <span class="resume__entry-dates">{{ pub.releaseDate }}</span>
-          {% endif %}
-        </div>
-        {% if pub.summary %}
-        <p class="resume__entry-summary">{{ pub.summary }}</p>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if volunteer and volunteer.length > 0 %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">Volunteer</h2>
-      {% for vol in volunteer %}
-      <div class="resume__entry">
-        <div class="resume__entry-header">
-          <div class="resume__entry-main">
-            <span class="resume__entry-title">{{ vol.organization }}</span>
-            {% if vol.position %}
-            <span class="resume__entry-subtitle">{{ vol.position }}</span>
-            {% endif %}
-          </div>
-          {% if vol.start or vol.end %}
-          <span class="resume__entry-dates">
-            {% if vol.start %}{{ vol.start }}{% endif %}
-            {% if vol.end %} - {{ vol.end }}{% endif %}
-          </span>
-          {% endif %}
-        </div>
-        {% if vol.summary %}
-        <p class="resume__entry-summary">{{ vol.summary }}</p>
-        {% endif %}
-        {% if vol.highlights and vol.highlights.length > 0 %}
-        <ul class="resume__highlights">
-          {% for highlight in vol.highlights %}
-          <li>{{ highlight }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if references and references.length > 0 %}
-    <section class="resume__section">
-      <h2 class="resume__section-title">References</h2>
-      {% for ref in references %}
-      <div class="resume__reference">
-        <span class="resume__reference-name">{{ ref.name }}</span>
-        {% if ref.reference %}
-        <blockquote class="resume__reference-quote">"{{ ref.reference }}"</blockquote>
-        {% endif %}
-      </div>
-      {% endfor %}
-    </section>
-    {% endif %}
+    {% for section in sections %}
+      {% if section == "summary" %}{{ render_summary() }}
+      {% elif section == "experience" %}{{ render_experience() }}
+      {% elif section == "education" %}{{ render_education() }}
+      {% elif section == "projects" %}{{ render_projects() }}
+      {% elif section == "awards" %}{{ render_awards() }}
+      {% elif section == "publications" %}{{ render_publications() }}
+      {% elif section == "volunteer" %}{{ render_volunteer() }}
+      {% elif section == "references" %}{{ render_references() }}
+      {% endif %}
+    {% endfor %}
   </main>
 </article>

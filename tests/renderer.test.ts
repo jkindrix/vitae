@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderHtml, renderStandaloneHtml } from '../src/lib/renderer.js';
+import { normalizeResume } from '../src/lib/normalize.js';
 import type { Resume } from '../src/types/index.js';
 
 describe('renderer', () => {
@@ -64,7 +65,7 @@ describe('renderer', () => {
 
   describe('renderHtml', () => {
     it('renders resume to HTML with CSS', async () => {
-      const { html, css } = await renderHtml(testResume, 'minimal');
+      const { html, css } = await renderHtml(normalizeResume(testResume), 'minimal');
 
       expect(html).toContain('Jane Smith');
       expect(html).toContain('Software Engineer');
@@ -73,7 +74,7 @@ describe('renderer', () => {
     });
 
     it('includes all sections in rendered HTML', async () => {
-      const { html } = await renderHtml(testResume, 'minimal');
+      const { html } = await renderHtml(normalizeResume(testResume), 'minimal');
 
       // Meta
       expect(html).toContain('jane@example.com');
@@ -120,7 +121,7 @@ describe('renderer', () => {
         ],
       };
 
-      const { html } = await renderHtml(minimal, 'minimal');
+      const { html } = await renderHtml(normalizeResume(minimal), 'minimal');
 
       expect(html).toContain('Minimal User');
       expect(html).toContain('Co');
@@ -139,7 +140,7 @@ describe('renderer', () => {
         ],
       };
 
-      const { html } = await renderHtml(xssResume, 'minimal');
+      const { html } = await renderHtml(normalizeResume(xssResume), 'minimal');
 
       // Script tags should be escaped
       expect(html).not.toContain('<script>');
@@ -150,7 +151,7 @@ describe('renderer', () => {
     });
 
     it('throws on non-existent theme', async () => {
-      await expect(renderHtml(testResume, 'non-existent-theme')).rejects.toThrow(
+      await expect(renderHtml(normalizeResume(testResume), 'non-existent-theme')).rejects.toThrow(
         "Theme 'non-existent-theme' not found"
       );
     });
@@ -158,7 +159,7 @@ describe('renderer', () => {
 
   describe('renderStandaloneHtml', () => {
     it('renders complete HTML document', async () => {
-      const html = await renderStandaloneHtml(testResume, 'minimal');
+      const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal');
 
       expect(html).toContain('<!DOCTYPE html>');
       expect(html).toContain('<html lang="en">');
@@ -168,13 +169,13 @@ describe('renderer', () => {
     });
 
     it('includes title with name', async () => {
-      const html = await renderStandaloneHtml(testResume, 'minimal');
+      const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal');
 
       expect(html).toContain('<title>Jane Smith - Resume</title>');
     });
 
     it('embeds CSS in style tag', async () => {
-      const html = await renderStandaloneHtml(testResume, 'minimal');
+      const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal');
 
       expect(html).toContain('<style>');
       expect(html).toContain('.resume');
@@ -182,7 +183,7 @@ describe('renderer', () => {
     });
 
     it('includes viewport meta tag', async () => {
-      const html = await renderStandaloneHtml(testResume, 'minimal');
+      const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal');
 
       expect(html).toContain('viewport');
       expect(html).toContain('width=device-width');
@@ -201,7 +202,7 @@ describe('renderer', () => {
         ],
       };
 
-      const { html } = await renderHtml(resume, 'minimal');
+      const { html } = await renderHtml(normalizeResume(resume), 'minimal');
 
       expect(html).toContain('Jun 2020');
       expect(html).toContain('Dec 2021');
@@ -218,7 +219,7 @@ describe('renderer', () => {
         ],
       };
 
-      const { html } = await renderHtml(resume, 'minimal');
+      const { html } = await renderHtml(normalizeResume(resume), 'minimal');
 
       expect(html).toContain('Present');
     });
@@ -234,7 +235,7 @@ describe('renderer', () => {
         ],
       };
 
-      const { html } = await renderHtml(resume, 'minimal');
+      const { html } = await renderHtml(normalizeResume(resume), 'minimal');
 
       expect(html).toContain('2020');
     });
@@ -255,7 +256,7 @@ describe('renderer', () => {
         ],
       };
 
-      const { html } = await renderHtml(resume, 'minimal');
+      const { html } = await renderHtml(normalizeResume(resume), 'minimal');
 
       // The displayed link text should show domain without www (may have whitespace)
       expect(html).toMatch(/>\s*github\.com\s*</);

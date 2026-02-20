@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/jkindrix/vitae/schemas/variant.schema.json",
+  "title": "Vitae Variant Schema",
+  "description": "Schema for vitae variant YAML files — filters and overrides applied to a base resume",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "include_tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Keep items with at least one matching tag (untagged items always pass through)"
+    },
+    "exclude_tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Remove items with a matching tag (exclude takes precedence over include on conflicts)"
+    },
+    "meta": {
+      "type": "object",
+      "description": "Meta field overrides (deep-merged over base resume meta)",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Override professional title"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Override email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Override phone number"
+        },
+        "location": {
+          "type": "string",
+          "description": "Override location"
+        }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "string",
+      "description": "Override the professional summary entirely"
+    },
+    "section_order": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "summary",
+          "skills",
+          "experience",
+          "projects",
+          "education",
+          "certifications",
+          "languages",
+          "awards",
+          "publications",
+          "volunteer",
+          "references"
+        ]
+      },
+      "uniqueItems": true,
+      "description": "Order and inclusion of sections (meta is always rendered first). Sections not listed are omitted."
+    },
+    "skills": {
+      "type": "object",
+      "description": "Skill category filtering by name (runs after tag filtering)",
+      "properties": {
+        "include": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Only keep skill categories with these names (in this order)"
+        },
+        "exclude": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Remove skill categories with these names"
+        }
+      },
+      "additionalProperties": false,
+      "not": {
+        "required": ["include", "exclude"]
+      }
+    }
+  }
+}
