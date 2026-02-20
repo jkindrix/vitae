@@ -34,6 +34,7 @@ program
   .option('--open', 'Open the first generated file after build')
   .option('-d, --debug', 'Enable debug mode with verbose logging and intermediate files')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
+  .option('-w, --watch', 'Watch for changes and rebuild automatically')
   .action(async (input: string, options) => {
     try {
       await buildCommand(input, options);

@@ -2,6 +2,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import { dirname, resolve, basename, extname } from 'path';
 import { exec } from 'child_process';
 import { platform } from 'os';
+import { watch, type FSWatcher } from 'fs';
 import chalk from 'chalk';
 import {
   loadResume,
@@ -28,6 +29,7 @@ export interface BuildCommandOptions {
   open?: boolean;
   debug?: boolean;
   variant?: string;
+  watch?: boolean;
 }
 
 /**
@@ -51,7 +53,7 @@ function openFile(filePath: string): void {
 
   exec(cmd, (error) => {
     if (error) {
-      console.log(chalk.yellow(`⚠ Could not open file: ${error.message}`));
+      console.log(chalk.yellow(`\u26A0 Could not open file: ${error.message}`));
     }
   });
 }
@@ -82,7 +84,7 @@ async function generateForTheme(
           const html = await renderStandaloneHtml(resume, themeName);
           await writeFile(outputPath, html, 'utf-8');
           results.push({ format: 'HTML', path: outputPath });
-          console.log(chalk.green(`✓ HTML: ${outputPath}`));
+          console.log(chalk.green(`\u2713 HTML: ${outputPath}`));
           break;
         }
 
@@ -99,7 +101,7 @@ async function generateForTheme(
             : {};
           await generatePdf(resume, themeName, outputPath, pdfOptions);
           results.push({ format: 'PDF', path: outputPath });
-          console.log(chalk.green(`✓ PDF: ${outputPath}`));
+          console.log(chalk.green(`\u2713 PDF: ${outputPath}`));
           break;
         }
 
@@ -109,7 +111,7 @@ async function generateForTheme(
           );
           await generateDocx(resume, themeName, outputPath);
           results.push({ format: 'DOCX', path: outputPath });
-          console.log(chalk.green(`✓ DOCX: ${outputPath}`));
+          console.log(chalk.green(`\u2713 DOCX: ${outputPath}`));
           break;
         }
 
@@ -120,7 +122,7 @@ async function generateForTheme(
             const json = JSON.stringify(resume, null, 2);
             await writeFile(outputPath, json, 'utf-8');
             results.push({ format: 'JSON', path: outputPath });
-            console.log(chalk.green(`✓ JSON: ${outputPath}`));
+            console.log(chalk.green(`\u2713 JSON: ${outputPath}`));
           }
           break;
         }
@@ -132,7 +134,7 @@ async function generateForTheme(
             const markdown = resumeToMarkdown(resume);
             await writeFile(outputPath, markdown, 'utf-8');
             results.push({ format: 'Markdown', path: outputPath });
-            console.log(chalk.green(`✓ Markdown: ${outputPath}`));
+            console.log(chalk.green(`\u2713 Markdown: ${outputPath}`));
           }
           break;
         }
@@ -144,16 +146,16 @@ async function generateForTheme(
           const pngOptions = options.debug ? { debug: true } : {};
           await generatePng(resume, themeName, outputPath, pngOptions);
           results.push({ format: 'PNG', path: outputPath });
-          console.log(chalk.green(`✓ PNG: ${outputPath}`));
+          console.log(chalk.green(`\u2713 PNG: ${outputPath}`));
           break;
         }
 
         default:
-          console.log(chalk.yellow(`⚠ Unknown format: ${format}`));
+          console.log(chalk.yellow(`\u26A0 Unknown format: ${format}`));
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.log(chalk.red(`✗ Failed to generate ${format}: ${message}`));
+      console.log(chalk.red(`\u2717 Failed to generate ${format}: ${message}`));
     }
   }
 
@@ -161,9 +163,9 @@ async function generateForTheme(
 }
 
 /**
- * Build command - generate resume outputs
+ * Core build logic — load, normalize, generate outputs
  */
-export async function buildCommand(inputPath: string, options: BuildCommandOptions): Promise<void> {
+async function runBuild(inputPath: string, options: BuildCommandOptions): Promise<void> {
   const startTime = Date.now();
 
   console.log(chalk.blue('Loading resume...'));
@@ -173,7 +175,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
 
   // Load and validate resume
   let resume = await loadResume(resolvedInput);
-  console.log(chalk.green(`✓ Loaded resume for ${resume.meta.name}`));
+  console.log(chalk.green(`\u2713 Loaded resume for ${resume.meta.name}`));
 
   // Load and apply variant if specified
   let sectionOrder = undefined;
@@ -183,7 +185,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
     const variant = await loadVariant(resolvedVariant);
     resume = applyVariant(resume, variant);
     sectionOrder = variant.section_order;
-    console.log(chalk.green('✓ Applied variant'));
+    console.log(chalk.green('\u2713 Applied variant'));
   }
 
   // Normalize resume (always runs — converts tagged highlights, builds section order)
@@ -205,7 +207,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
   if (formats.includes('docx')) {
     const hasPandoc = await checkPandoc();
     if (!hasPandoc) {
-      console.log(chalk.yellow('⚠ Pandoc not installed - skipping DOCX generation'));
+      console.log(chalk.yellow('\u26A0 Pandoc not installed - skipping DOCX generation'));
       console.log(chalk.dim('  Install from: https://pandoc.org/installing.html'));
       const docxIndex = formats.indexOf('docx');
       if (docxIndex > -1) formats.splice(docxIndex, 1);
@@ -250,7 +252,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
       const json = JSON.stringify(normalized, null, 2);
       await writeFile(jsonPath, json, 'utf-8');
       allResults.push({ format: 'JSON', path: jsonPath });
-      console.log(chalk.green(`✓ JSON: ${jsonPath}`));
+      console.log(chalk.green(`\u2713 JSON: ${jsonPath}`));
     }
     if (formats.includes('md')) {
       const mdPath = `${outputDir}/${outputBasename}.md`;
@@ -258,7 +260,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
       const markdown = resumeToMarkdown(normalized);
       await writeFile(mdPath, markdown, 'utf-8');
       allResults.push({ format: 'Markdown', path: mdPath });
-      console.log(chalk.green(`✓ Markdown: ${mdPath}`));
+      console.log(chalk.green(`\u2713 Markdown: ${mdPath}`));
     }
   }
 
@@ -268,14 +270,92 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
   // Summary
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
   console.log('');
-  console.log(chalk.green(`✓ Generated ${allResults.length} file(s) in ${elapsed}s`));
+  console.log(chalk.green(`\u2713 Generated ${allResults.length} file(s) in ${elapsed}s`));
 
-  // Open first file if requested
-  if (options.open) {
+  // Open first file if requested (only on first build, not in watch mode)
+  if (options.open && !options.watch) {
     const firstFile = allResults[0];
     if (firstFile) {
       console.log(chalk.blue(`Opening ${firstFile.path}...`));
       openFile(firstFile.path);
     }
   }
+}
+
+/**
+ * Build command - generate resume outputs, optionally watching for changes
+ */
+export async function buildCommand(inputPath: string, options: BuildCommandOptions): Promise<void> {
+  // Initial build
+  await runBuild(inputPath, options);
+
+  // If not watching, we're done
+  if (!options.watch) return;
+
+  // Watch mode
+  const resolvedInput = resolve(inputPath);
+  const watchers: FSWatcher[] = [];
+  let debounceTimer: NodeJS.Timeout | null = null;
+  let building = false;
+
+  console.log('');
+  console.log(chalk.blue('Watch mode enabled. Watching for changes...'));
+  console.log(chalk.dim('Press Ctrl+C to stop'));
+  console.log('');
+
+  const handleChange = (): void => {
+    if (debounceTimer) clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      if (building) return;
+      building = true;
+      console.log(
+        chalk.dim(`[${new Date().toLocaleTimeString()}] File changed, rebuilding...`)
+      );
+      console.log('');
+      try {
+        await runBuild(inputPath, options);
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        console.error(chalk.red(`Build failed: ${msg}`));
+      }
+      building = false;
+      console.log('');
+      console.log(chalk.dim('Watching for changes...'));
+    }, 100);
+  };
+
+  // Watch resume directory for YAML changes
+  const resumeWatcher = watch(dirname(resolvedInput), (_eventType, filename) => {
+    if (filename?.endsWith('.yaml') || filename?.endsWith('.yml')) {
+      handleChange();
+    }
+  });
+  watchers.push(resumeWatcher);
+
+  // Watch variant directory if different from resume directory
+  if (options.variant) {
+    const resolvedVariant = resolve(options.variant);
+    const variantDir = dirname(resolvedVariant);
+    if (variantDir !== dirname(resolvedInput)) {
+      const variantWatcher = watch(variantDir, (_eventType, filename) => {
+        if (filename?.endsWith('.yaml') || filename?.endsWith('.yml')) {
+          handleChange();
+        }
+      });
+      watchers.push(variantWatcher);
+    }
+  }
+
+  // Graceful shutdown
+  process.on('SIGINT', () => {
+    console.log('');
+    console.log(chalk.blue('Stopping watch mode...'));
+    for (const w of watchers) {
+      w.close();
+    }
+    process.exit(0);
+  });
+
+  // Keep process alive
+  await new Promise<never>(() => {});
 }
