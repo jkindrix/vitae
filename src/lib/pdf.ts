@@ -313,3 +313,36 @@ export async function generatePdfBuffer(
     await page.close();
   }
 }
+
+/**
+ * Generate a PNG screenshot from a resume
+ */
+export async function generatePng(
+  resume: NormalizedResume,
+  themeName: string,
+  outputPath: string,
+  options: PdfOptions = {}
+): Promise<void> {
+  const { page, debug } = await preparePdfPage(resume, themeName, options);
+
+  debug.log(`Generating PNG: ${outputPath}`);
+
+  try {
+    // Use screen media for PNG (preparePdfPage sets print media for PDF)
+    await page.emulateMedia({ media: 'screen', colorScheme: 'light' });
+
+    await page.screenshot({
+      path: outputPath,
+      fullPage: true,
+    });
+
+    debug.log(`PNG saved to ${outputPath}`);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to generate PNG: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  } finally {
+    await page.close();
+  }
+}

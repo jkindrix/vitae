@@ -294,7 +294,7 @@ export interface BuildOptions {
 /**
  * Supported output formats
  */
-export type OutputFormat = 'pdf' | 'docx' | 'html' | 'json';
+export type OutputFormat = 'pdf' | 'docx' | 'html' | 'json' | 'md' | 'png';
 
 /**
  * Theme configuration

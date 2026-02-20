@@ -10,10 +10,12 @@ import {
   normalizeResume,
   renderStandaloneHtml,
   generatePdf,
+  generatePng,
   generateDocx,
   closeBrowser,
   checkPandoc,
   listThemes,
+  resumeToMarkdown,
 } from '../lib/index.js';
 import type { OutputFormat, NormalizedResume } from '../types/index.js';
 
@@ -123,6 +125,29 @@ async function generateForTheme(
           break;
         }
 
+        case 'md': {
+          // Markdown output is theme-independent, only generate once
+          if (!options.includeThemeInName) {
+            console.log(chalk.blue(`Generating Markdown...`));
+            const markdown = resumeToMarkdown(resume);
+            await writeFile(outputPath, markdown, 'utf-8');
+            results.push({ format: 'Markdown', path: outputPath });
+            console.log(chalk.green(`✓ Markdown: ${outputPath}`));
+          }
+          break;
+        }
+
+        case 'png': {
+          console.log(
+            chalk.blue(`Generating PNG${options.includeThemeInName ? ` (${themeName})` : ''}...`)
+          );
+          const pngOptions = options.debug ? { debug: true } : {};
+          await generatePng(resume, themeName, outputPath, pngOptions);
+          results.push({ format: 'PNG', path: outputPath });
+          console.log(chalk.green(`✓ PNG: ${outputPath}`));
+          break;
+        }
+
         default:
           console.log(chalk.yellow(`⚠ Unknown format: ${format}`));
       }
@@ -217,14 +242,24 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
     allResults.push(...results);
   }
 
-  // For --all-themes, generate JSON once (theme-independent)
-  if (options.allThemes && formats.includes('json')) {
-    const jsonPath = `${outputDir}/${outputBasename}.json`;
-    console.log(chalk.blue('Generating JSON...'));
-    const json = JSON.stringify(normalized, null, 2);
-    await writeFile(jsonPath, json, 'utf-8');
-    allResults.push({ format: 'JSON', path: jsonPath });
-    console.log(chalk.green(`✓ JSON: ${jsonPath}`));
+  // For --all-themes, generate theme-independent formats once
+  if (options.allThemes) {
+    if (formats.includes('json')) {
+      const jsonPath = `${outputDir}/${outputBasename}.json`;
+      console.log(chalk.blue('Generating JSON...'));
+      const json = JSON.stringify(normalized, null, 2);
+      await writeFile(jsonPath, json, 'utf-8');
+      allResults.push({ format: 'JSON', path: jsonPath });
+      console.log(chalk.green(`✓ JSON: ${jsonPath}`));
+    }
+    if (formats.includes('md')) {
+      const mdPath = `${outputDir}/${outputBasename}.md`;
+      console.log(chalk.blue('Generating Markdown...'));
+      const markdown = resumeToMarkdown(normalized);
+      await writeFile(mdPath, markdown, 'utf-8');
+      allResults.push({ format: 'Markdown', path: mdPath });
+      console.log(chalk.green(`✓ Markdown: ${mdPath}`));
+    }
   }
 
   // Clean up browser

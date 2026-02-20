@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import {
   buildCommand,
   importCommand,
+  exportCommand,
   initCommand,
   themesCommand,
   validateCommand,
@@ -18,14 +19,14 @@ program.name('vitae').description('Beautiful resume generator from YAML').versio
 // Build command
 program
   .command('build')
-  .description('Generate resume outputs (PDF, DOCX, HTML)')
+  .description('Generate resume outputs (PDF, DOCX, HTML, Markdown, PNG)')
   .argument('<input>', 'Path to resume.yaml file')
   .option('-t, --theme <name>', 'Theme to use', 'minimal')
   .option('-o, --output <dir>', 'Output directory (defaults to input directory)')
   .option('-n, --name <prefix>', 'Output filename prefix (defaults to input filename)')
   .option(
     '-f, --formats <formats>',
-    'Comma-separated output formats: pdf,docx,html,json',
+    'Comma-separated output formats: pdf,docx,html,json,md,png',
     'pdf,docx,html'
   )
   .option('-a, --all-themes', 'Generate outputs for all available themes')
@@ -52,6 +53,24 @@ program
   .action(async (input: string, options) => {
     try {
       await importCommand(input, options);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(chalk.red(`Error: ${message}`));
+      process.exitCode = 1;
+    }
+  });
+
+// Export command
+program
+  .command('export')
+  .description('Convert Vitae YAML to other resume formats (e.g., JSON Resume)')
+  .argument('<input>', 'Path to resume.yaml file')
+  .option('-o, --output <path>', 'Output file path (defaults to <input>.resume.json)')
+  .option('--format <format>', 'Output format: json-resume (default: json-resume)', 'json-resume')
+  .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
+  .action(async (input: string, options) => {
+    try {
+      await exportCommand(input, options);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(chalk.red(`Error: ${message}`));

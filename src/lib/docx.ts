@@ -290,7 +290,7 @@ const sectionRenderers: Record<SectionName, (resume: NormalizedResume, lines: st
 /**
  * Convert resume to Markdown format for Pandoc, respecting section ordering
  */
-function resumeToMarkdown(resume: NormalizedResume): string {
+export function resumeToMarkdown(resume: NormalizedResume): string {
   const lines: string[] = [];
 
   // Meta is always first
