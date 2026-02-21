@@ -175,6 +175,7 @@ export interface ThemeOverrides {
  */
 export interface Resume {
   meta: Meta;
+  language?: string;
   summary?: string;
   skills?: SkillCategory[];
   experience: Experience[];
@@ -287,6 +288,7 @@ export interface NormalizedVolunteer {
  */
 export interface NormalizedResume {
   meta: Meta;
+  language?: string;
   summary?: string;
   skills?: SkillCategory[];
   experience: NormalizedExperience[];

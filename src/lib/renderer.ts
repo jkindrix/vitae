@@ -1,46 +1,67 @@
 import nunjucks from 'nunjucks';
 import { loadTheme, readTemplate, readStyles } from './themes.js';
 import { formatDate, formatDateShort, formatDateRange } from './dates.js';
+import { getLocale } from './i18n.js';
+import type { Locale } from './i18n.js';
 import type { NormalizedResume, ThemeOverrides } from '../types/index.js';
 
-// Configure Nunjucks environment
-const env = new nunjucks.Environment(null, {
-  autoescape: true,
-  trimBlocks: true,
-  lstripBlocks: true,
-});
-
-// Add custom filters
-
-// Date formatting filters using shared utilities
-env.addFilter('formatDate', formatDate);
-env.addFilter('formatDateShort', formatDateShort);
-env.addFilter('formatDateRange', formatDateRange);
-
 /**
- * Join array items with a separator
+ * Create a Nunjucks environment with locale-bound date filters.
+ * Each render gets its own environment so that locale-specific filters
+ * don't leak across concurrent renders with different languages.
  */
-env.addFilter('joinItems', (items: string[] | undefined, separator = ', '): string => {
-  if (!items || items.length === 0) return '';
-  return items.join(separator);
-});
+function createEnvironment(locale: Locale): nunjucks.Environment {
+  const env = new nunjucks.Environment(null, {
+    autoescape: true,
+    trimBlocks: true,
+    lstripBlocks: true,
+  });
 
-/**
- * Extract domain from URL for display
- */
-env.addFilter('domain', (url: string | undefined): string => {
-  if (!url) return '';
-  try {
-    const parsed = new URL(url);
-    return parsed.hostname.replace(/^www\./, '');
-  } catch {
-    return url;
-  }
-});
+  // Date formatting filters bound to the current locale
+  env.addFilter('formatDate', (dateStr: string | undefined) => formatDate(dateStr, locale));
+  env.addFilter('formatDateShort', (dateStr: string | undefined) => formatDateShort(dateStr, locale));
+  env.addFilter('formatDateRange', (start: string | undefined, end: string | undefined) =>
+    formatDateRange(start, end, { locale }),
+  );
+
+  env.addFilter('joinItems', (items: string[] | undefined, separator = ', '): string => {
+    if (!items || items.length === 0) return '';
+    return items.join(separator);
+  });
+
+  env.addFilter('domain', (url: string | undefined): string => {
+    if (!url) return '';
+    try {
+      const parsed = new URL(url);
+      return parsed.hostname.replace(/^www\./, '');
+    } catch {
+      return url;
+    }
+  });
+
+  return env;
+}
 
 export interface RenderResult {
   html: string;
   css: string | null;
+}
+
+/**
+ * Build the labels context object. When the resume has no `language` set,
+ * labels is an empty object so templates fall through to their hardcoded
+ * English defaults via `{{ labels.xxx or "Fallback" }}`.
+ */
+function buildLabels(locale: Locale): Record<string, string> {
+  if (!locale.code) return {};
+  const labels: Record<string, string> = {};
+  for (const [key, value] of Object.entries(locale.labels)) {
+    if (value) labels[key] = value;
+  }
+  if (locale.keywords.present) {
+    labels['present'] = locale.keywords.present;
+  }
+  return labels;
 }
 
 /**
@@ -50,6 +71,8 @@ export async function renderHtml(resume: NormalizedResume, themeName: string): P
   const theme = await loadTheme(themeName);
   const template = await readTemplate(theme);
   const css = await readStyles(theme);
+  const locale = getLocale(resume.language);
+  const env = createEnvironment(locale);
 
   const html = env.renderString(template, {
     resume,
@@ -66,6 +89,7 @@ export async function renderHtml(resume: NormalizedResume, themeName: string): P
     volunteer: resume.volunteer,
     references: resume.references,
     sections: resume.sections,
+    labels: buildLabels(locale),
   });
 
   return { html, css };
@@ -112,9 +136,10 @@ export function generateThemeOverrideCss(theme: ThemeOverrides): string {
 export async function renderStandaloneHtml(resume: NormalizedResume, themeName: string): Promise<string> {
   const { html, css } = await renderHtml(resume, themeName);
   const overrideCss = resume.theme ? generateThemeOverrideCss(resume.theme) : '';
+  const lang = resume.language ?? 'en';
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

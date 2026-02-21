@@ -26,3 +26,5 @@ export { normalizeResume, DEFAULT_SECTION_ORDER } from './normalize.js';
 export { analyzeResume, extractKeywords, buildResumeTextBlocks, textContainsKeyword } from './ats.js';
 export { analyzeTailoring, generateVariant, serializeVariantWithComments } from './tailor.js';
 export { renderCoverLetterHtml, renderCoverLetterStandaloneHtml, coverLetterToMarkdown } from './cover-letter.js';
+export { getLocale, getSectionLabel } from './i18n.js';
+export type { Locale, LocaleLabels, LocaleMonths, LocaleKeywords } from './i18n.js';

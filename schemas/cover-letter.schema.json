@@ -37,6 +37,11 @@
         }
       }
     },
+    "language": {
+      "type": "string",
+      "description": "Locale code for date formatting (e.g., 'en', 'fr', 'es', 'de', 'pt'). When omitted, defaults to English.",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
     "recipient": {
       "type": "object",
       "description": "Recipient information",

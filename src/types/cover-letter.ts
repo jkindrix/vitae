@@ -16,6 +16,7 @@ export interface Recipient {
 export interface CoverLetter {
   type?: 'cover-letter';
   meta: Meta;
+  language?: string;
   recipient: Recipient;
   date?: string;
   subject?: string;

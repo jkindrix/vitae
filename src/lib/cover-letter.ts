@@ -62,8 +62,10 @@ export async function renderCoverLetterStandaloneHtml(
   const { html, css } = await renderCoverLetterHtml(coverLetter, themeName);
   const overrideCss = coverLetter.theme ? generateThemeOverrideCss(coverLetter.theme) : '';
 
+  const lang = coverLetter.language ?? 'en';
+
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${lang}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

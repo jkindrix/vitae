@@ -1,0 +1,31 @@
+{
+  "code": "pt",
+  "labels": {
+    "summary": "Resumo",
+    "skills": "Competências",
+    "experience": "Experiência Profissional",
+    "projects": "Projetos",
+    "education": "Formação",
+    "certifications": "Certificações",
+    "languages": "Idiomas",
+    "awards": "Prêmios",
+    "publications": "Publicações",
+    "volunteer": "Voluntariado",
+    "references": "Referências",
+    "contact": "Contato",
+    "profile": "Perfil"
+  },
+  "months": {
+    "full": [
+      "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+      "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+    ],
+    "short": [
+      "jan.", "fev.", "mar.", "abr.", "mai.", "jun.",
+      "jul.", "ago.", "set.", "out.", "nov.", "dez."
+    ]
+  },
+  "keywords": {
+    "present": "Presente"
+  }
+}

@@ -6,6 +6,8 @@ import { randomUUID } from 'crypto';
 import { loadTheme, getDocxReferencePath } from './themes.js';
 import { DocxError } from './errors.js';
 import { formatDateShort } from './dates.js';
+import { getLocale, getSectionLabel } from './i18n.js';
+import type { Locale } from './i18n.js';
 import type { NormalizedResume, SectionName } from '../types/index.js';
 
 /**
@@ -22,6 +24,14 @@ export async function checkPandoc(): Promise<boolean> {
 // ---------------------------------------------------------------------------
 // Section renderers for Markdown
 // ---------------------------------------------------------------------------
+
+function sectionHeading(locale: Locale, section: SectionName, fallback: string): string {
+  return getSectionLabel(locale, section) ?? fallback;
+}
+
+function presentKeyword(locale: Locale): string {
+  return locale.keywords.present || 'Present';
+}
 
 function renderMetaMarkdown(resume: NormalizedResume, lines: string[]): void {
   lines.push(`# ${resume.meta.name}`);
@@ -54,17 +64,17 @@ function renderMetaMarkdown(resume: NormalizedResume, lines: string[]): void {
   lines.push('');
 }
 
-function renderSummaryMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderSummaryMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.summary) return;
-  lines.push('## Summary');
+  lines.push(`## ${sectionHeading(locale, 'summary', 'Summary')}`);
   lines.push('');
   lines.push(resume.summary);
   lines.push('');
 }
 
-function renderSkillsMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderSkillsMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.skills || resume.skills.length === 0) return;
-  lines.push('## Skills');
+  lines.push(`## ${sectionHeading(locale, 'skills', 'Skills')}`);
   lines.push('');
   for (const category of resume.skills) {
     lines.push(`**${category.category}:** ${category.items.join(', ')}`);
@@ -72,9 +82,9 @@ function renderSkillsMarkdown(resume: NormalizedResume, lines: string[]): void {
   }
 }
 
-function renderExperienceMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderExperienceMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.experience || resume.experience.length === 0) return;
-  lines.push('## Experience');
+  lines.push(`## ${sectionHeading(locale, 'experience', 'Experience')}`);
   lines.push('');
 
   for (const exp of resume.experience) {
@@ -85,8 +95,8 @@ function renderExperienceMarkdown(resume: NormalizedResume, lines: string[]): vo
 
       const dateParts: string[] = [];
       if (role.start) {
-        const endDate = role.end ?? 'Present';
-        dateParts.push(`${formatDateShort(role.start)} - ${formatDateShort(endDate)}`);
+        const endDate = role.end ?? presentKeyword(locale);
+        dateParts.push(`${formatDateShort(role.start, locale)} - ${formatDateShort(endDate, locale)}`);
       }
       if (role.location) dateParts.push(role.location);
 
@@ -105,9 +115,9 @@ function renderExperienceMarkdown(resume: NormalizedResume, lines: string[]): vo
   }
 }
 
-function renderProjectsMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderProjectsMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.projects || resume.projects.length === 0) return;
-  lines.push('## Projects');
+  lines.push(`## ${sectionHeading(locale, 'projects', 'Projects')}`);
   lines.push('');
 
   for (const project of resume.projects) {
@@ -132,9 +142,9 @@ function renderProjectsMarkdown(resume: NormalizedResume, lines: string[]): void
   }
 }
 
-function renderEducationMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderEducationMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.education || resume.education.length === 0) return;
-  lines.push('## Education');
+  lines.push(`## ${sectionHeading(locale, 'education', 'Education')}`);
   lines.push('');
 
   for (const edu of resume.education) {
@@ -148,8 +158,8 @@ function renderEducationMarkdown(resume: NormalizedResume, lines: string[]): voi
 
     if (edu.start || edu.end) {
       const dateParts: string[] = [];
-      if (edu.start) dateParts.push(formatDateShort(edu.start));
-      if (edu.end) dateParts.push(formatDateShort(edu.end));
+      if (edu.start) dateParts.push(formatDateShort(edu.start, locale));
+      if (edu.end) dateParts.push(formatDateShort(edu.end, locale));
       lines.push(dateParts.join(' - '));
     }
     lines.push('');
@@ -163,9 +173,9 @@ function renderEducationMarkdown(resume: NormalizedResume, lines: string[]): voi
   }
 }
 
-function renderCertificationsMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderCertificationsMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.certifications || resume.certifications.length === 0) return;
-  lines.push('## Certifications');
+  lines.push(`## ${sectionHeading(locale, 'certifications', 'Certifications')}`);
   lines.push('');
 
   for (const cert of resume.certifications) {
@@ -177,9 +187,9 @@ function renderCertificationsMarkdown(resume: NormalizedResume, lines: string[])
   lines.push('');
 }
 
-function renderLanguagesMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderLanguagesMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.languages || resume.languages.length === 0) return;
-  lines.push('## Languages');
+  lines.push(`## ${sectionHeading(locale, 'languages', 'Languages')}`);
   lines.push('');
 
   for (const lang of resume.languages) {
@@ -190,9 +200,9 @@ function renderLanguagesMarkdown(resume: NormalizedResume, lines: string[]): voi
   lines.push('');
 }
 
-function renderAwardsMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderAwardsMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.awards || resume.awards.length === 0) return;
-  lines.push('## Awards');
+  lines.push(`## ${sectionHeading(locale, 'awards', 'Awards')}`);
   lines.push('');
 
   for (const award of resume.awards) {
@@ -207,9 +217,9 @@ function renderAwardsMarkdown(resume: NormalizedResume, lines: string[]): void {
   lines.push('');
 }
 
-function renderPublicationsMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderPublicationsMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.publications || resume.publications.length === 0) return;
-  lines.push('## Publications');
+  lines.push(`## ${sectionHeading(locale, 'publications', 'Publications')}`);
   lines.push('');
 
   for (const pub of resume.publications) {
@@ -228,9 +238,9 @@ function renderPublicationsMarkdown(resume: NormalizedResume, lines: string[]): 
   lines.push('');
 }
 
-function renderVolunteerMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderVolunteerMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.volunteer || resume.volunteer.length === 0) return;
-  lines.push('## Volunteer');
+  lines.push(`## ${sectionHeading(locale, 'volunteer', 'Volunteer')}`);
   lines.push('');
 
   for (const vol of resume.volunteer) {
@@ -259,9 +269,9 @@ function renderVolunteerMarkdown(resume: NormalizedResume, lines: string[]): voi
   }
 }
 
-function renderReferencesMarkdown(resume: NormalizedResume, lines: string[]): void {
+function renderReferencesMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
   if (!resume.references || resume.references.length === 0) return;
-  lines.push('## References');
+  lines.push(`## ${sectionHeading(locale, 'references', 'References')}`);
   lines.push('');
 
   for (const ref of resume.references) {
@@ -273,7 +283,7 @@ function renderReferencesMarkdown(resume: NormalizedResume, lines: string[]): vo
   }
 }
 
-const sectionRenderers: Record<SectionName, (resume: NormalizedResume, lines: string[]) => void> = {
+const sectionRenderers: Record<SectionName, (resume: NormalizedResume, lines: string[], locale: Locale) => void> = {
   summary: renderSummaryMarkdown,
   skills: renderSkillsMarkdown,
   experience: renderExperienceMarkdown,
@@ -291,6 +301,7 @@ const sectionRenderers: Record<SectionName, (resume: NormalizedResume, lines: st
  * Convert resume to Markdown format for Pandoc, respecting section ordering
  */
 export function resumeToMarkdown(resume: NormalizedResume): string {
+  const locale = getLocale(resume.language);
   const lines: string[] = [];
 
   // Meta is always first
@@ -300,7 +311,7 @@ export function resumeToMarkdown(resume: NormalizedResume): string {
   for (const section of resume.sections) {
     const renderer = sectionRenderers[section];
     if (renderer) {
-      renderer(resume, lines);
+      renderer(resume, lines, locale);
     }
   }
 

@@ -218,6 +218,7 @@ export function normalizeResume(
   if (resume.references && resume.references.length > 0) result.references = resume.references;
 
   if (resume.theme) result.theme = resume.theme;
+  if (resume.language) result.language = resume.language;
 
   return result;
 }

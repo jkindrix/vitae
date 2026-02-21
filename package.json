@@ -17,7 +17,8 @@
   "files": [
     "dist",
     "themes",
-    "schemas"
+    "schemas",
+    "locales"
   ],
   "scripts": {
     "build": "tsc",

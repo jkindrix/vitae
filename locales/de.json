@@ -1,0 +1,31 @@
+{
+  "code": "de",
+  "labels": {
+    "summary": "Zusammenfassung",
+    "skills": "Kenntnisse",
+    "experience": "Berufserfahrung",
+    "projects": "Projekte",
+    "education": "Ausbildung",
+    "certifications": "Zertifizierungen",
+    "languages": "Sprachen",
+    "awards": "Auszeichnungen",
+    "publications": "Publikationen",
+    "volunteer": "Ehrenamt",
+    "references": "Referenzen",
+    "contact": "Kontakt",
+    "profile": "Profil"
+  },
+  "months": {
+    "full": [
+      "Januar", "Februar", "März", "April", "Mai", "Juni",
+      "Juli", "August", "September", "Oktober", "November", "Dezember"
+    ],
+    "short": [
+      "Jan.", "Feb.", "März", "Apr.", "Mai", "Juni",
+      "Juli", "Aug.", "Sep.", "Okt.", "Nov.", "Dez."
+    ]
+  },
+  "keywords": {
+    "present": "Heute"
+  }
+}

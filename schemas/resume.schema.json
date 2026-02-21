@@ -83,6 +83,11 @@
         }
       }
     },
+    "language": {
+      "type": "string",
+      "description": "Locale code for section headings and date formatting (e.g., 'en', 'fr', 'es', 'de', 'pt'). When omitted, defaults to English.",
+      "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+    },
     "summary": {
       "type": "string",
       "description": "Professional summary or objective"

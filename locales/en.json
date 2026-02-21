@@ -1,0 +1,31 @@
+{
+  "code": "en",
+  "labels": {
+    "summary": "Summary",
+    "skills": "Skills",
+    "experience": "Experience",
+    "projects": "Projects",
+    "education": "Education",
+    "certifications": "Certifications",
+    "languages": "Languages",
+    "awards": "Awards",
+    "publications": "Publications",
+    "volunteer": "Volunteer",
+    "references": "References",
+    "contact": "Contact",
+    "profile": "Profile"
+  },
+  "months": {
+    "full": [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ],
+    "short": [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ]
+  },
+  "keywords": {
+    "present": "Present"
+  }
+}

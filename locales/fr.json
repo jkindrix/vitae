@@ -1,0 +1,31 @@
+{
+  "code": "fr",
+  "labels": {
+    "summary": "Profil",
+    "skills": "Compétences",
+    "experience": "Expérience Professionnelle",
+    "projects": "Projets",
+    "education": "Formation",
+    "certifications": "Certifications",
+    "languages": "Langues",
+    "awards": "Distinctions",
+    "publications": "Publications",
+    "volunteer": "Bénévolat",
+    "references": "Références",
+    "contact": "Contact",
+    "profile": "Profil"
+  },
+  "months": {
+    "full": [
+      "janvier", "février", "mars", "avril", "mai", "juin",
+      "juillet", "août", "septembre", "octobre", "novembre", "décembre"
+    ],
+    "short": [
+      "janv.", "févr.", "mars", "avr.", "mai", "juin",
+      "juil.", "août", "sept.", "oct.", "nov.", "déc."
+    ]
+  },
+  "keywords": {
+    "present": "Présent"
+  }
+}

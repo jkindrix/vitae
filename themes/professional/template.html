@@ -3,7 +3,7 @@
 {% macro render_summary() %}
 {% if summary %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Professional Summary</h2>
+  <h2 class="resume__section-title">{{ labels.summary or "Professional Summary" }}</h2>
   <p class="resume__summary">{{ summary }}</p>
 </section>
 {% endif %}
@@ -12,7 +12,7 @@
 {% macro render_experience() %}
 {% if experience and experience.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Professional Experience</h2>
+  <h2 class="resume__section-title">{{ labels.experience or "Professional Experience" }}</h2>
   {% for exp in experience %}
   <div class="resume__entry">
     {% for role in exp.roles %}
@@ -24,7 +24,7 @@
       <div class="resume__entry-secondary">
         <span class="resume__entry-dates">
           {% if role.start %}{{ role.start | formatDateShort }}{% endif %}
-          {% if role.end %} - {{ role.end | formatDateShort }}{% else %} - Present{% endif %}
+          {% if role.end %} - {{ role.end | formatDateShort }}{% else %} - {{ labels.present or "Present" }}{% endif %}
         </span>
         {% if role.location %}
         <span class="resume__entry-location">{{ role.location }}</span>
@@ -51,7 +51,7 @@
 {% macro render_education() %}
 {% if education and education.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Education</h2>
+  <h2 class="resume__section-title">{{ labels.education or "Education" }}</h2>
   {% for edu in education %}
   <div class="resume__entry">
     <div class="resume__entry-header">
@@ -86,7 +86,7 @@
 {% macro render_skills() %}
 {% if skills and skills.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Skills</h2>
+  <h2 class="resume__section-title">{{ labels.skills or "Skills" }}</h2>
   <div class="resume__skills">
     {% for category in skills %}
     <div class="resume__skill-category">
@@ -102,7 +102,7 @@
 {% macro render_projects() %}
 {% if projects and projects.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Projects</h2>
+  <h2 class="resume__section-title">{{ labels.projects or "Projects" }}</h2>
   {% for project in projects %}
   <div class="resume__entry">
     <div class="resume__entry-header">
@@ -133,7 +133,7 @@
 {% macro render_certifications() %}
 {% if certifications and certifications.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Certifications</h2>
+  <h2 class="resume__section-title">{{ labels.certifications or "Certifications" }}</h2>
   <ul class="resume__certifications">
     {% for cert in certifications %}
     <li>
@@ -150,7 +150,7 @@
 {% macro render_awards() %}
 {% if awards and awards.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Honors & Awards</h2>
+  <h2 class="resume__section-title">{{ labels.awards or "Honors & Awards" }}</h2>
   {% for award in awards %}
   <div class="resume__entry">
     <div class="resume__entry-header">
@@ -178,7 +178,7 @@
 {% macro render_publications() %}
 {% if publications and publications.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Publications</h2>
+  <h2 class="resume__section-title">{{ labels.publications or "Publications" }}</h2>
   {% for pub in publications %}
   <div class="resume__entry">
     <div class="resume__entry-header">
@@ -210,7 +210,7 @@
 {% macro render_volunteer() %}
 {% if volunteer and volunteer.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Volunteer Experience</h2>
+  <h2 class="resume__section-title">{{ labels.volunteer or "Volunteer Experience" }}</h2>
   {% for vol in volunteer %}
   <div class="resume__entry">
     <div class="resume__entry-header">
@@ -248,7 +248,7 @@
 {% macro render_languages() %}
 {% if languages and languages.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">Languages</h2>
+  <h2 class="resume__section-title">{{ labels.languages or "Languages" }}</h2>
   <div class="resume__languages">
     {% for lang in languages %}
     <span class="resume__language">
@@ -263,7 +263,7 @@
 {% macro render_references() %}
 {% if references and references.length > 0 %}
 <section class="resume__section">
-  <h2 class="resume__section-title">References</h2>
+  <h2 class="resume__section-title">{{ labels.references or "References" }}</h2>
   {% for ref in references %}
   <div class="resume__reference">
     <span class="resume__reference-name">{{ ref.name }}</span>
