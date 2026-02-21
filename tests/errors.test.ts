@@ -131,11 +131,12 @@ describe('error types', () => {
       expect(error.name).toBe('DocxError');
     });
 
-    it('creates pandocNotInstalled error', () => {
-      const error = DocxError.pandocNotInstalled();
+    it('creates generationFailed error', () => {
+      const cause = new Error('buffer write failed');
+      const error = DocxError.generationFailed(cause);
 
-      expect(error.message).toContain('Pandoc is not installed');
-      expect(error.message).toContain('pandoc.org');
+      expect(error.message).toContain('DOCX generation failed');
+      expect(error.cause).toBe(cause);
     });
   });
 
