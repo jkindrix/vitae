@@ -241,6 +241,57 @@ describe('renderer', () => {
     });
   });
 
+  describe('i18n / localization', () => {
+    it('uses dynamic lang attribute from resume.language', async () => {
+      const resume: Resume = {
+        meta: { name: 'Test' },
+        language: 'fr',
+        experience: [
+          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
+        ],
+      };
+      const html = await renderStandaloneHtml(normalizeResume(resume), 'minimal');
+      expect(html).toContain('<html lang="fr">');
+    });
+
+    it('defaults to lang="en" when language is not set', async () => {
+      const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal');
+      expect(html).toContain('<html lang="en">');
+    });
+
+    it('renders French section headings when language is "fr"', async () => {
+      const resume: Resume = {
+        ...testResume,
+        language: 'fr',
+      };
+      const { html } = await renderHtml(normalizeResume(resume), 'minimal');
+      expect(html).toContain('Compétences');
+      expect(html).toContain('Expérience Professionnelle');
+      expect(html).toContain('Formation');
+      expect(html).toContain('Certifications');
+    });
+
+    it('renders English section headings when language is not set', async () => {
+      const { html } = await renderHtml(normalizeResume(testResume), 'minimal');
+      expect(html).toContain('Skills');
+      expect(html).toContain('Experience');
+      expect(html).toContain('Education');
+    });
+
+    it('uses French month names in date formatting', async () => {
+      const resume: Resume = {
+        meta: { name: 'Test' },
+        language: 'fr',
+        experience: [
+          { company: 'Co', roles: [{ title: 'Dev', start: '2024-01', end: '2024-06' }] },
+        ],
+      };
+      const { html } = await renderHtml(normalizeResume(resume), 'minimal');
+      expect(html).toContain('janv.');
+      expect(html).toContain('juin');
+    });
+  });
+
   describe('URL domain filter', () => {
     it('extracts domain from URL for link labels', async () => {
       const resume: Resume = {

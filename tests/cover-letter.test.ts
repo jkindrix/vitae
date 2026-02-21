@@ -329,6 +329,18 @@ describe('renderCoverLetterStandaloneHtml', () => {
     expect(html).toContain('Jane Smith - Cover Letter');
   });
 
+  it('uses dynamic lang attribute from coverLetter.language', async () => {
+    const cl = { ...makeValidCoverLetter(), language: 'fr' };
+    const html = await renderCoverLetterStandaloneHtml(cl, 'minimal');
+    expect(html).toContain('<html lang="fr">');
+  });
+
+  it('defaults to lang="en" when language is not set', async () => {
+    const cl = makeValidCoverLetter();
+    const html = await renderCoverLetterStandaloneHtml(cl, 'minimal');
+    expect(html).toContain('<html lang="en">');
+  });
+
   it('includes theme override CSS when present', async () => {
     const cl = {
       ...makeValidCoverLetter(),

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatDate, formatDateShort, formatDateRange } from '../src/lib/dates.js';
+import { getLocale } from '../src/lib/i18n.js';
 
 describe('date utilities', () => {
   describe('formatDate', () => {
@@ -84,6 +85,49 @@ describe('date utilities', () => {
 
     it('handles year-only dates', () => {
       expect(formatDateRange('2020', '2024')).toBe('2020 - 2024');
+    });
+  });
+
+  describe('locale-aware formatting', () => {
+    it('formatDate uses French month names', () => {
+      const fr = getLocale('fr');
+      expect(formatDate('2024-01', fr)).toBe('janvier 2024');
+      expect(formatDate('2024-06', fr)).toBe('juin 2024');
+      expect(formatDate('2024-12', fr)).toBe('décembre 2024');
+    });
+
+    it('formatDate uses locale-specific "Present" keyword', () => {
+      const fr = getLocale('fr');
+      expect(formatDate('present', fr)).toBe('Présent');
+      const de = getLocale('de');
+      expect(formatDate('present', de)).toBe('Heute');
+    });
+
+    it('formatDateShort uses French abbreviated months', () => {
+      const fr = getLocale('fr');
+      expect(formatDateShort('2024-01', fr)).toBe('janv. 2024');
+      expect(formatDateShort('2024-03', fr)).toBe('mars 2024');
+    });
+
+    it('formatDateRange uses locale for both dates', () => {
+      const es = getLocale('es');
+      expect(formatDateRange('2020-01', '2024-06', { locale: es })).toBe('ene 2020 - jun 2024');
+    });
+
+    it('formatDateRange uses locale-specific Present', () => {
+      const fr = getLocale('fr');
+      expect(formatDateRange('2020-01', 'present', { locale: fr })).toBe('janv. 2020 - Présent');
+    });
+
+    it('formatDate without locale uses English (backward compat)', () => {
+      expect(formatDate('2024-01')).toBe('January 2024');
+      expect(formatDate('present')).toBe('Present');
+    });
+
+    it('formatDate with empty locale uses English defaults', () => {
+      const empty = getLocale(undefined);
+      expect(formatDate('2024-01', empty)).toBe('January 2024');
+      expect(formatDate('present', empty)).toBe('Present');
     });
   });
 });

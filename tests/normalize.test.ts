@@ -303,6 +303,25 @@ describe('normalizeResume', () => {
   });
 
   // -----------------------------------------------------------------------
+  // Language propagation
+  // -----------------------------------------------------------------------
+  describe('language propagation', () => {
+    it('propagates language field to normalized resume', () => {
+      const resume: Resume = {
+        ...makeResume(),
+        language: 'fr',
+      };
+      const result = normalizeResume(resume);
+      expect(result.language).toBe('fr');
+    });
+
+    it('omits language when not set', () => {
+      const result = normalizeResume(makeResume());
+      expect(result.language).toBeUndefined();
+    });
+  });
+
+  // -----------------------------------------------------------------------
   // DEFAULT_SECTION_ORDER
   // -----------------------------------------------------------------------
   describe('DEFAULT_SECTION_ORDER', () => {

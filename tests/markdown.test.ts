@@ -168,6 +168,45 @@ describe('resumeToMarkdown', () => {
     expect(md).not.toContain('backend');
   });
 
+  it('uses localized section headings when language is set', () => {
+    const frResume: Resume = {
+      ...fullResume,
+      language: 'fr',
+    };
+    const md = resumeToMarkdown(normalizeResume(frResume));
+    expect(md).toContain('## Profil');
+    expect(md).toContain('## Compétences');
+    expect(md).toContain('## Expérience Professionnelle');
+    expect(md).toContain('## Projets');
+    expect(md).toContain('## Formation');
+    expect(md).toContain('## Certifications');
+  });
+
+  it('uses English section headings when language is not set', () => {
+    const md = resumeToMarkdown(normalizeResume(fullResume));
+    expect(md).toContain('## Summary');
+    expect(md).toContain('## Skills');
+    expect(md).toContain('## Experience');
+  });
+
+  it('uses localized Present keyword in experience', () => {
+    const frResume: Resume = {
+      ...fullResume,
+      language: 'fr',
+    };
+    const md = resumeToMarkdown(normalizeResume(frResume));
+    expect(md).toContain('Présent');
+  });
+
+  it('uses localized month names in experience dates', () => {
+    const frResume: Resume = {
+      ...fullResume,
+      language: 'fr',
+    };
+    const md = resumeToMarkdown(normalizeResume(frResume));
+    expect(md).toContain('janv.');
+  });
+
   it('respects custom section order', () => {
     const md = resumeToMarkdown(
       normalizeResume(fullResume, ['education', 'experience', 'skills'])
