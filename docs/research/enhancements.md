@@ -60,13 +60,9 @@ These require meaningful implementation but have outsized impact on user value o
 
 **Effort:** Theme loader enhancement + config schema + documentation.
 
-### 11. Multi-Language / i18n Support
+### 11. Multi-Language / i18n Support — IMPLEMENTED
 
-**What:** Allow section headings and date formatting to be localized (e.g., "Experience" to "Exp&eacute;rience", "January" to "Janvier"). Support a `language` field in the resume or theme config.
-
-**Why:** brilliant-cv (Typst) markets multilingual support as a key feature. The date formatting in `src/lib/dates.ts` is English-only. Section headings are hardcoded in templates. For an international user base, this is essential.
-
-**Effort:** Locale-aware date formatting + translatable section heading strings in themes.
+**Status:** Shipped. An optional `language` field in `resume.yaml` (e.g., `language: fr`) triggers locale-aware rendering. Section headings, month names, and the "Present" keyword are localized across all output formats (HTML, PDF, PNG, Markdown, DOCX). Ships with 5 bundled locales: English, Spanish, French, German, and Portuguese. When `language` is not set, behavior is identical to before — zero breaking changes. Templates use `{{ labels.xxx or "Fallback" }}` pattern so themes retain their original English wording as defaults. Adding a new language requires only adding a JSON file to `locales/`.
 
 ### 12. Export to JSON Resume Format — IMPLEMENTED
 
@@ -152,7 +148,7 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 8 | ~~Job description tailoring~~ | ~~Very High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
 | 9 | ~~Resume variants~~ | ~~High~~ | ~~Medium~~ | ~~Novel in CLI space~~ | **DONE** |
 | 10 | Plugin system for themes | Medium | Very High | Enables ecosystem | Medium |
-| 11 | Multi-language / i18n | High | Low | Matches brilliant-cv | Medium |
+| 11 | ~~Multi-language / i18n~~ | ~~High~~ | ~~Low~~ | ~~Matches brilliant-cv~~ | **DONE** |
 | 12 | ~~Export to JSON Resume~~ | ~~Medium~~ | ~~Medium~~ | ~~Completes interop~~ | **DONE** |
 | 13 | Web theme configurator | High | Medium | Bridges CLI/GUI gap | High |
 | 14 | AI content assistant | High | Low | Matches commercial tier | Medium-High |
@@ -163,6 +159,6 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | Accessibility auditing | Medium | Low | Novel | Medium |
 
-**Completed (10 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #12 (JSON Resume export).
+**Completed (12 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #11 (multi-language / i18n), #12 (JSON Resume export), #17 (cover letter support).
 
-**Next highest-ROI items:** #17 (cover letter support), #11 (multi-language / i18n), #10 (plugin system for themes).
+**Next highest-ROI items:** #16 (native DOCX), #20 (accessibility auditing), #10 (plugin system for themes).

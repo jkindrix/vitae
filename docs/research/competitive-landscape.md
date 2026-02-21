@@ -80,6 +80,7 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 - **Watch mode** — `vitae build --watch` rebuilds on save alongside the existing hot-reload preview
 - **Hot-reload preview** — SSE-based live editing matches web builder UX expectations
 - **ATS compatibility analyzer** — `vitae check` scores resumes 0-100 with keyword matching against job descriptions; no CLI competitor offers this
+- **Multi-language / i18n** — `language: fr` in resume.yaml localizes section headings, month names, and "Present" keyword across all output formats; ships with en, es, fr, de, pt
 - **Job description tailoring** — `vitae tailor` generates a variant YAML from keyword analysis against a job posting; no AI required
 - **CI/CD ready** — ships a GitHub Actions workflow template for automated resume builds
 - **Free and open** — competes against $120-300/yr commercial tools at zero cost
@@ -106,7 +107,8 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 | Watch mode for build | Shipped — `vitae build --watch` rebuilds on file save with debounce |
 | Job description tailoring | Shipped — `vitae tailor` generates variant YAML from keyword analysis against a job posting |
 | Cover letter support | Shipped — `cover-letter.yaml` with auto-detection, per-theme templates, full build/preview pipeline |
+| Multi-language / i18n | Shipped — `language` field in resume.yaml localizes headings, months, and keywords; 5 bundled locales |
 
 ### Niche Summary
 
-Vitae is the only actively maintained, Node.js-based, YAML-to-{PDF, DOCX, HTML, MD, PNG} resume generator with accessible HTML/CSS theming, resume variants for role-targeted tailoring, cover letter generation, bidirectional JSON Resume interop, editor autocompletion, and no system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.
+Vitae is the only actively maintained, Node.js-based, YAML-to-{PDF, DOCX, HTML, MD, PNG} resume generator with accessible HTML/CSS theming, resume variants for role-targeted tailoring, cover letter generation, multi-language i18n (5 bundled locales), bidirectional JSON Resume interop, editor autocompletion, and no system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.
