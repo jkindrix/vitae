@@ -120,15 +120,8 @@ export class DocxError extends VitaeError {
     this.name = 'DocxError';
   }
 
-  static pandocNotInstalled(): DocxError {
-    return new DocxError(
-      'Pandoc is not installed. Please install Pandoc to generate DOCX files.\n' +
-        'Visit https://pandoc.org/installing.html for installation instructions.'
-    );
-  }
-
-  static conversionFailed(cause: Error): DocxError {
-    return new DocxError('DOCX conversion failed', cause);
+  static generationFailed(cause: Error): DocxError {
+    return new DocxError('DOCX generation failed', cause);
   }
 }
 

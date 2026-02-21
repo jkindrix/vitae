@@ -17,8 +17,8 @@ import {
   generatePdfFromHtml,
   generatePngFromHtml,
   generateDocx,
+  generateCoverLetterDocx,
   closeBrowser,
-  checkPandoc,
   listThemes,
   resumeToMarkdown,
 } from '../lib/index.js';
@@ -249,7 +249,12 @@ async function generateCoverLetterForTheme(
         }
 
         case 'docx': {
-          console.log(chalk.yellow('\u26A0 DOCX output is not yet supported for cover letters'));
+          console.log(
+            chalk.blue(`Generating DOCX${options.includeThemeInName ? ` (${themeName})` : ''}...`)
+          );
+          await generateCoverLetterDocx(coverLetter, outputPath);
+          results.push({ format: 'DOCX', path: outputPath });
+          console.log(chalk.green(`\u2713 DOCX: ${outputPath}`));
           break;
         }
 
@@ -389,17 +394,6 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
 
   // Ensure output directory exists
   await mkdir(outputDir, { recursive: true });
-
-  // Check Pandoc availability if DOCX is requested
-  if (formats.includes('docx')) {
-    const hasPandoc = await checkPandoc();
-    if (!hasPandoc) {
-      console.log(chalk.yellow('\u26A0 Pandoc not installed - skipping DOCX generation'));
-      console.log(chalk.dim('  Install from: https://pandoc.org/installing.html'));
-      const docxIndex = formats.indexOf('docx');
-      if (docxIndex > -1) formats.splice(docxIndex, 1);
-    }
-  }
 
   // Determine which themes to use
   let themesToBuild: string[];

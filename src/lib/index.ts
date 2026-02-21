@@ -5,7 +5,7 @@ export { listThemes, loadTheme, getThemesDir, readCoverLetterTemplate } from './
 export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss } from './renderer.js';
 export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser } from './pdf.js';
 export type { PdfOptions } from './pdf.js';
-export { generateDocx, checkPandoc, resumeToMarkdown } from './docx.js';
+export { generateDocx, generateCoverLetterDocx, resumeToMarkdown } from './docx.js';
 export type { DocxOptions } from './docx.js';
 export { parseDate, formatDate, formatDateShort, formatDateRange } from './dates.js';
 export type { ParsedDate } from './dates.js';
