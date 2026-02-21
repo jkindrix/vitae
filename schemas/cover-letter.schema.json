@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/jkindrix/vitae/main/schemas/cover-letter.schema.json",
+  "title": "Vitae Cover Letter Schema",
+  "description": "Schema for vitae cover letter YAML files",
+  "type": "object",
+  "required": ["meta", "recipient", "greeting", "body", "closing"],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "cover-letter",
+      "description": "Document type discriminator"
+    },
+    "meta": {
+      "type": "object",
+      "description": "Sender contact information",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "title": { "type": "string", "description": "Professional title" },
+        "email": { "type": "string", "format": "email", "description": "Email address" },
+        "phone": { "type": "string", "description": "Phone number" },
+        "location": { "type": "string", "description": "City, State" },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["url"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string", "description": "Display text for the link" },
+              "url": { "type": "string", "format": "uri", "description": "URL" }
+            }
+          }
+        }
+      }
+    },
+    "recipient": {
+      "type": "object",
+      "description": "Recipient information",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "description": "Recipient name" },
+        "title": { "type": "string", "description": "Recipient title" },
+        "company": { "type": "string", "description": "Company name" },
+        "address": { "type": "string", "description": "Company address" }
+      }
+    },
+    "date": { "type": "string", "description": "Letter date (free-form or YYYY-MM-DD)" },
+    "subject": { "type": "string", "description": "Subject line" },
+    "greeting": { "type": "string", "description": "Salutation (e.g., Dear Mr. Doe,)" },
+    "body": {
+      "type": "array",
+      "description": "Letter body paragraphs",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "closing": { "type": "string", "description": "Closing (e.g., Sincerely,)" },
+    "theme": {
+      "type": "object",
+      "description": "Theme color and font overrides",
+      "additionalProperties": false,
+      "properties": {
+        "colors": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "accent": { "type": "string" },
+            "text": { "type": "string" },
+            "textSecondary": { "type": "string" },
+            "textMuted": { "type": "string" },
+            "background": { "type": "string" },
+            "border": { "type": "string" }
+          }
+        },
+        "fonts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sans": { "type": "string" },
+            "serif": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

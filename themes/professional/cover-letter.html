@@ -1,0 +1,60 @@
+<article class="cover-letter">
+  <header class="cover-letter__header">
+    <h1 class="cover-letter__name">{{ meta.name }}</h1>
+    {% if meta.title %}
+    <p class="cover-letter__title">{{ meta.title }}</p>
+    {% endif %}
+
+    <div class="cover-letter__contact">
+      {% if meta.email %}
+      <span class="cover-letter__contact-item">{{ meta.email }}</span>
+      {% endif %}
+      {% if meta.phone %}
+      <span class="cover-letter__contact-item">{{ meta.phone }}</span>
+      {% endif %}
+      {% if meta.location %}
+      <span class="cover-letter__contact-item">{{ meta.location }}</span>
+      {% endif %}
+    </div>
+
+    {% if meta.links and meta.links.length > 0 %}
+    <div class="cover-letter__links">
+      {% for link in meta.links %}
+      <a href="{{ link.url }}" class="cover-letter__link" target="_blank" rel="noopener">
+        {{ link.label or link.url | domain }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  {% if date %}
+  <p class="cover-letter__date">{{ date }}</p>
+  {% endif %}
+
+  {% if recipient %}
+  <div class="cover-letter__recipient">
+    {% if recipient.name %}<p>{{ recipient.name }}</p>{% endif %}
+    {% if recipient.title %}<p>{{ recipient.title }}</p>{% endif %}
+    {% if recipient.company %}<p>{{ recipient.company }}</p>{% endif %}
+    {% if recipient.address %}<p>{{ recipient.address }}</p>{% endif %}
+  </div>
+  {% endif %}
+
+  {% if subject %}
+  <p class="cover-letter__subject"><strong>Re: {{ subject }}</strong></p>
+  {% endif %}
+
+  <p class="cover-letter__greeting">{{ greeting }}</p>
+
+  <div class="cover-letter__body">
+    {% for paragraph in body %}
+    <p>{{ paragraph }}</p>
+    {% endfor %}
+  </div>
+
+  <div class="cover-letter__closing">
+    <p>{{ closing }}</p>
+    <p class="cover-letter__signature">{{ meta.name }}</p>
+  </div>
+</article>

@@ -84,9 +84,10 @@ program
 // Init command
 program
   .command('init')
-  .description('Create a new resume.yaml file')
+  .description('Create a new resume.yaml or cover-letter.yaml file')
   .option('-f, --force', 'Overwrite existing file')
   .option('-i, --interactive', 'Build resume interactively with prompts')
+  .option('-c, --cover-letter', 'Create a cover letter template instead of a resume')
   .action(async (options) => {
     try {
       await initCommand(options);

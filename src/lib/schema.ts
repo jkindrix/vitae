@@ -4,13 +4,14 @@ import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { ValidationError as VitaeValidationError, type ValidationErrorDetail } from './errors.js';
-import type { Resume, Variant } from '../types/index.js';
+import type { Resume, Variant, CoverLetter } from '../types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 let validateFn: ValidateFunction | null = null;
 let variantValidateFn: ValidateFunction | null = null;
+let coverLetterValidateFn: ValidateFunction | null = null;
 
 /**
  * Load and compile the JSON schema
@@ -115,4 +116,54 @@ export async function assertValidVariant(data: unknown): Promise<Variant> {
   }
 
   return data as Variant;
+}
+
+/**
+ * Load and compile the cover letter JSON schema
+ */
+async function getCoverLetterValidator(): Promise<ValidateFunction> {
+  if (coverLetterValidateFn) return coverLetterValidateFn;
+
+  const schemaPath = join(__dirname, '../../schemas/cover-letter.schema.json');
+  const schemaContent = await readFile(schemaPath, 'utf-8');
+  const schema = JSON.parse(schemaContent) as object;
+
+  const ajv = new Ajv.default({ allErrors: true, strict: false });
+  addFormats.default(ajv);
+  coverLetterValidateFn = ajv.compile(schema);
+
+  return coverLetterValidateFn;
+}
+
+/**
+ * Validate cover letter data against the schema
+ */
+export async function validateCoverLetter(data: unknown): Promise<ValidationResult> {
+  const validate = await getCoverLetterValidator();
+  const valid = validate(data);
+
+  if (valid) {
+    return { valid: true, errors: [] };
+  }
+
+  const errors: ValidationErrorDetail[] = (validate.errors ?? []).map((err: ErrorObject) => ({
+    path: err.instancePath || '/',
+    message: err.message ?? 'Unknown validation error',
+    keyword: err.keyword,
+  }));
+
+  return { valid: false, errors };
+}
+
+/**
+ * Assert that data is a valid CoverLetter, throwing if invalid
+ */
+export async function assertValidCoverLetter(data: unknown): Promise<CoverLetter> {
+  const result = await validateCoverLetter(data);
+
+  if (!result.valid) {
+    throw VitaeValidationError.fromDetails(result.errors);
+  }
+
+  return data as CoverLetter;
 }

@@ -43,6 +43,7 @@ export async function loadTheme(themeName: string): Promise<Theme> {
   const hasTemplate = await fileExists(join(themePath, 'template.html'));
   const hasStyles = await fileExists(join(themePath, 'style.css'));
   const hasDocxReference = await fileExists(join(themePath, 'reference.docx'));
+  const hasCoverLetterTemplate = await fileExists(join(themePath, 'cover-letter.html'));
 
   if (!hasTemplate) {
     throw ThemeError.missingTemplate(themeName);
@@ -54,6 +55,7 @@ export async function loadTheme(themeName: string): Promise<Theme> {
     hasTemplate,
     hasStyles,
     hasDocxReference,
+    hasCoverLetterTemplate,
   };
 }
 
@@ -103,4 +105,18 @@ export async function readStyles(theme: Theme): Promise<string | null> {
 export function getDocxReferencePath(theme: Theme): string | null {
   if (!theme.hasDocxReference) return null;
   return join(theme.path, 'reference.docx');
+}
+
+/**
+ * Read a theme's cover letter template file
+ */
+export async function readCoverLetterTemplate(theme: Theme): Promise<string> {
+  if (!theme.hasCoverLetterTemplate) {
+    throw new ThemeError(
+      `Theme '${theme.name}' does not have a cover letter template (cover-letter.html)`,
+      theme.name,
+    );
+  }
+  const templatePath = join(theme.path, 'cover-letter.html');
+  return readFile(templatePath, 'utf-8');
 }

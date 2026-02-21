@@ -2,7 +2,14 @@ import { createServer, type ServerResponse } from 'http';
 import { resolve, dirname } from 'path';
 import { watch, type FSWatcher } from 'fs';
 import chalk from 'chalk';
-import { loadResume, loadVariant, applyVariant, normalizeResume, renderStandaloneHtml } from '../lib/index.js';
+import {
+  loadVariant,
+  loadDocument,
+  applyVariant,
+  normalizeResume,
+  renderStandaloneHtml,
+  renderCoverLetterStandaloneHtml,
+} from '../lib/index.js';
 
 export interface PreviewCommandOptions {
   theme: string;
@@ -95,21 +102,28 @@ export async function previewCommand(
         return;
       }
 
-      // Reload resume on each request for live updates
-      let resume = await loadResume(resolvedInput);
+      // Reload document on each request for live updates
+      const document = await loadDocument(resolvedInput);
 
-      // Apply variant if specified
-      let sectionOrder = undefined;
-      if (resolvedVariant) {
-        const variant = await loadVariant(resolvedVariant);
-        resume = applyVariant(resume, variant);
-        sectionOrder = variant.section_order;
+      let html: string;
+
+      if (document.type === 'cover-letter') {
+        html = await renderCoverLetterStandaloneHtml(document.coverLetter, options.theme);
+      } else {
+        let resume = document.resume;
+
+        // Apply variant if specified
+        let sectionOrder = undefined;
+        if (resolvedVariant) {
+          const variant = await loadVariant(resolvedVariant);
+          resume = applyVariant(resume, variant);
+          sectionOrder = variant.section_order;
+        }
+
+        // Normalize
+        const normalized = normalizeResume(resume, sectionOrder);
+        html = await renderStandaloneHtml(normalized, options.theme);
       }
-
-      // Normalize
-      const normalized = normalizeResume(resume, sectionOrder);
-
-      const html = await renderStandaloneHtml(normalized, options.theme);
 
       // Inject SSE-based hot reload script
       const hotReloadScript = `

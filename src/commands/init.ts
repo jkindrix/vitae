@@ -4,10 +4,52 @@ import { createInterface } from 'readline';
 import chalk from 'chalk';
 import { stringify as stringifyYaml } from 'yaml';
 
-const SCHEMA_URL =
+const RESUME_SCHEMA_URL =
   'https://raw.githubusercontent.com/jkindrix/vitae/main/schemas/resume.schema.json';
+const COVER_LETTER_SCHEMA_URL =
+  'https://raw.githubusercontent.com/jkindrix/vitae/main/schemas/cover-letter.schema.json';
 
-const EXAMPLE_RESUME = `# yaml-language-server: $schema=${SCHEMA_URL}
+const EXAMPLE_COVER_LETTER = `# yaml-language-server: $schema=${COVER_LETTER_SCHEMA_URL}
+# Vitae Cover Letter
+# Edit this file with your information
+
+meta:
+  name: Your Name
+  title: Your Title
+  email: your.email@example.com
+  phone: (555) 123-4567
+  location: City, State
+
+recipient:
+  name: Jane Smith
+  title: Hiring Manager
+  company: Acme Corp
+  address: 123 Main St, City, State 12345
+
+date: "${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}"
+
+subject: Application for Software Engineer Position
+
+greeting: "Dear Ms. Smith,"
+
+body:
+  - >-
+    I am writing to express my interest in the Software Engineer position
+    at Acme Corp. With my background in software development and passion
+    for building reliable systems, I believe I would be a strong addition
+    to your team.
+  - >-
+    In my current role, I have led development of key features and mentored
+    junior engineers. I am particularly drawn to Acme Corp's mission and
+    would welcome the opportunity to contribute to your engineering team.
+  - >-
+    I would love the opportunity to discuss how my skills and experience
+    align with your team's needs. Thank you for your time and consideration.
+
+closing: "Sincerely,"
+`;
+
+const EXAMPLE_RESUME = `# yaml-language-server: $schema=${RESUME_SCHEMA_URL}
 # Vitae Resume
 # Edit this file with your information
 
@@ -84,6 +126,7 @@ projects:
 export interface InitCommandOptions {
   force?: boolean;
   interactive?: boolean;
+  coverLetter?: boolean;
 }
 
 /**
@@ -204,16 +247,43 @@ async function buildInteractiveResume(): Promise<Record<string, unknown>> {
 }
 
 /**
- * Init command - create a new resume.yaml file
+ * Init command - create a new resume.yaml or cover-letter.yaml file
  */
 export async function initCommand(options: InitCommandOptions): Promise<void> {
+  if (options.coverLetter) {
+    const outputPath = resolve('cover-letter.yaml');
+
+    // Check if file exists
+    try {
+      await stat(outputPath);
+      if (!options.force) {
+        console.log(chalk.yellow(`\u26A0 File already exists: ${outputPath}`));
+        console.log(chalk.dim('  Use --force to overwrite'));
+        return;
+      }
+    } catch {
+      // File doesn't exist, which is fine
+    }
+
+    await writeFile(outputPath, EXAMPLE_COVER_LETTER, 'utf-8');
+
+    console.log('');
+    console.log(chalk.green(`\u2713 Created ${outputPath}`));
+    console.log('');
+    console.log('Next steps:');
+    console.log(chalk.dim('  1. Edit cover-letter.yaml with your information'));
+    console.log(chalk.dim('  2. Run: vitae build cover-letter.yaml'));
+    console.log(chalk.dim('  3. Or preview: vitae preview cover-letter.yaml'));
+    return;
+  }
+
   const outputPath = resolve('resume.yaml');
 
   // Check if file exists
   try {
     await stat(outputPath);
     if (!options.force) {
-      console.log(chalk.yellow(`⚠ File already exists: ${outputPath}`));
+      console.log(chalk.yellow(`\u26A0 File already exists: ${outputPath}`));
       console.log(chalk.dim('  Use --force to overwrite'));
       return;
     }
@@ -227,7 +297,7 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
     // Interactive mode
     const resume = await buildInteractiveResume();
     content =
-      `# yaml-language-server: $schema=${SCHEMA_URL}\n` +
+      `# yaml-language-server: $schema=${RESUME_SCHEMA_URL}\n` +
       '# Vitae Resume\n# Generated interactively - edit to add more details\n\n' +
       stringifyYaml(resume, { indent: 2, lineWidth: 0 });
   } else {
@@ -238,7 +308,7 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
   await writeFile(outputPath, content, 'utf-8');
 
   console.log('');
-  console.log(chalk.green(`✓ Created ${outputPath}`));
+  console.log(chalk.green(`\u2713 Created ${outputPath}`));
   console.log('');
   console.log('Next steps:');
   console.log(chalk.dim('  1. Edit resume.yaml to add more details'));

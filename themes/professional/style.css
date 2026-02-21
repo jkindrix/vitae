@@ -413,8 +413,142 @@ a.resume__entry-title {
     background: #f0f0f0;
   }
 
-  .resume {
+  .resume,
+  .cover-letter {
     background: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+}
+
+.cover-letter__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.cover-letter__name {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.cover-letter__contact {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border-light);
+}
+
+.cover-letter__links {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.cover-letter__link:hover {
+  text-decoration: underline;
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border-light);
+}
+
+.cover-letter__date {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.cover-letter__recipient {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  margin-bottom: var(--space-md);
+  color: var(--color-accent);
+}
+
+.cover-letter__greeting {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  margin-top: var(--space-lg);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+@media print {
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__link {
+    color: var(--color-text);
+    text-decoration: none;
   }
 }

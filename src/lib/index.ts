@@ -1,8 +1,9 @@
-export { loadResume, parseResume, loadVariant } from './loader.js';
-export { validateResume, assertValidResume, validateVariant, assertValidVariant } from './schema.js';
-export { listThemes, loadTheme, getThemesDir } from './themes.js';
+export { loadResume, parseResume, loadVariant, loadCoverLetter, loadDocument, isCoverLetterFormat } from './loader.js';
+export type { DocumentResult } from './loader.js';
+export { validateResume, assertValidResume, validateVariant, assertValidVariant, validateCoverLetter, assertValidCoverLetter } from './schema.js';
+export { listThemes, loadTheme, getThemesDir, readCoverLetterTemplate } from './themes.js';
 export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss } from './renderer.js';
-export { generatePdf, generatePdfBuffer, generatePng, closeBrowser } from './pdf.js';
+export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser } from './pdf.js';
 export type { PdfOptions } from './pdf.js';
 export { generateDocx, checkPandoc, resumeToMarkdown } from './docx.js';
 export type { DocxOptions } from './docx.js';
@@ -24,3 +25,4 @@ export { applyVariant } from './variant.js';
 export { normalizeResume, DEFAULT_SECTION_ORDER } from './normalize.js';
 export { analyzeResume, extractKeywords, buildResumeTextBlocks, textContainsKeyword } from './ats.js';
 export { analyzeTailoring, generateVariant, serializeVariantWithComments } from './tailor.js';
+export { renderCoverLetterHtml, renderCoverLetterStandaloneHtml, coverLetterToMarkdown } from './cover-letter.js';

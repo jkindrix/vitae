@@ -5,20 +5,24 @@ import { platform } from 'os';
 import { watch, type FSWatcher } from 'fs';
 import chalk from 'chalk';
 import {
-  loadResume,
   loadVariant,
+  loadDocument,
   applyVariant,
   normalizeResume,
   renderStandaloneHtml,
+  renderCoverLetterStandaloneHtml,
+  coverLetterToMarkdown,
   generatePdf,
   generatePng,
+  generatePdfFromHtml,
+  generatePngFromHtml,
   generateDocx,
   closeBrowser,
   checkPandoc,
   listThemes,
   resumeToMarkdown,
 } from '../lib/index.js';
-import type { OutputFormat, NormalizedResume } from '../types/index.js';
+import type { OutputFormat, NormalizedResume, CoverLetter } from '../types/index.js';
 
 export interface BuildCommandOptions {
   theme: string;
@@ -163,18 +167,201 @@ async function generateForTheme(
 }
 
 /**
+ * Generate cover letter outputs for a single theme
+ */
+async function generateCoverLetterForTheme(
+  coverLetter: CoverLetter,
+  themeName: string,
+  formats: OutputFormat[],
+  outputDir: string,
+  outputBasename: string,
+  options: { debug?: boolean; includeThemeInName?: boolean }
+): Promise<{ format: string; path: string }[]> {
+  const results: { format: string; path: string }[] = [];
+  const namePrefix = options.includeThemeInName ? `${outputBasename}-${themeName}` : outputBasename;
+
+  for (const format of formats) {
+    const outputPath = `${outputDir}/${namePrefix}.${format}`;
+
+    try {
+      switch (format) {
+        case 'html': {
+          console.log(
+            chalk.blue(`Generating HTML${options.includeThemeInName ? ` (${themeName})` : ''}...`)
+          );
+          const html = await renderCoverLetterStandaloneHtml(coverLetter, themeName);
+          await writeFile(outputPath, html, 'utf-8');
+          results.push({ format: 'HTML', path: outputPath });
+          console.log(chalk.green(`\u2713 HTML: ${outputPath}`));
+          break;
+        }
+
+        case 'pdf': {
+          console.log(
+            chalk.blue(`Generating PDF${options.includeThemeInName ? ` (${themeName})` : ''}...`)
+          );
+          const html = await renderCoverLetterStandaloneHtml(coverLetter, themeName);
+          const pdfOptions = options.debug
+            ? {
+                debug: true,
+                saveHtml: outputPath.replace('.pdf', '-debug.html'),
+                screenshot: outputPath.replace('.pdf', '-debug.png'),
+              }
+            : {};
+          await generatePdfFromHtml(html, outputPath, pdfOptions);
+          results.push({ format: 'PDF', path: outputPath });
+          console.log(chalk.green(`\u2713 PDF: ${outputPath}`));
+          break;
+        }
+
+        case 'png': {
+          console.log(
+            chalk.blue(`Generating PNG${options.includeThemeInName ? ` (${themeName})` : ''}...`)
+          );
+          const html = await renderCoverLetterStandaloneHtml(coverLetter, themeName);
+          const pngOptions = options.debug ? { debug: true } : {};
+          await generatePngFromHtml(html, outputPath, pngOptions);
+          results.push({ format: 'PNG', path: outputPath });
+          console.log(chalk.green(`\u2713 PNG: ${outputPath}`));
+          break;
+        }
+
+        case 'md': {
+          if (!options.includeThemeInName) {
+            console.log(chalk.blue(`Generating Markdown...`));
+            const markdown = coverLetterToMarkdown(coverLetter);
+            await writeFile(outputPath, markdown, 'utf-8');
+            results.push({ format: 'Markdown', path: outputPath });
+            console.log(chalk.green(`\u2713 Markdown: ${outputPath}`));
+          }
+          break;
+        }
+
+        case 'json': {
+          if (!options.includeThemeInName) {
+            console.log(chalk.blue(`Generating JSON...`));
+            const json = JSON.stringify(coverLetter, null, 2);
+            await writeFile(outputPath, json, 'utf-8');
+            results.push({ format: 'JSON', path: outputPath });
+            console.log(chalk.green(`\u2713 JSON: ${outputPath}`));
+          }
+          break;
+        }
+
+        case 'docx': {
+          console.log(chalk.yellow('\u26A0 DOCX output is not yet supported for cover letters'));
+          break;
+        }
+
+        default:
+          console.log(chalk.yellow(`\u26A0 Unknown format: ${format}`));
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.log(chalk.red(`\u2717 Failed to generate ${format}: ${message}`));
+    }
+  }
+
+  return results;
+}
+
+/**
  * Core build logic — load, normalize, generate outputs
  */
 async function runBuild(inputPath: string, options: BuildCommandOptions): Promise<void> {
   const startTime = Date.now();
 
-  console.log(chalk.blue('Loading resume...'));
+  console.log(chalk.blue('Loading document...'));
 
   // Resolve input path
   const resolvedInput = resolve(inputPath);
 
-  // Load and validate resume
-  let resume = await loadResume(resolvedInput);
+  // Auto-detect document type
+  const document = await loadDocument(resolvedInput);
+
+  if (document.type === 'cover-letter') {
+    // Cover letter build path
+    const coverLetter = document.coverLetter;
+    console.log(chalk.green(`\u2713 Loaded cover letter for ${coverLetter.meta.name}`));
+
+    // Determine output formats (cover letters default to pdf,html)
+    const formatStr = options.formats ?? 'pdf,html';
+    const formats = formatStr.split(',').map((f) => f.trim().toLowerCase()) as OutputFormat[];
+
+    // Determine output directory and basename
+    const inputBasename = basename(resolvedInput, extname(resolvedInput));
+    const outputBasename = options.name ?? inputBasename;
+    const outputDir = options.output ? resolve(options.output) : dirname(resolvedInput);
+
+    await mkdir(outputDir, { recursive: true });
+
+    // Determine themes
+    let themesToBuild: string[];
+    if (options.allThemes) {
+      const availableThemes = await listThemes();
+      themesToBuild = availableThemes.map((t) => t.name);
+      console.log(
+        chalk.blue(`Building for ${themesToBuild.length} themes: ${themesToBuild.join(', ')}`)
+      );
+    } else {
+      themesToBuild = [options.theme];
+    }
+
+    const allResults: { format: string; path: string }[] = [];
+
+    for (const themeName of themesToBuild) {
+      const results = await generateCoverLetterForTheme(
+        coverLetter,
+        themeName,
+        formats,
+        outputDir,
+        outputBasename,
+        {
+          debug: options.debug ?? false,
+          includeThemeInName: options.allThemes ?? false,
+        }
+      );
+      allResults.push(...results);
+    }
+
+    // For --all-themes, generate theme-independent formats once
+    if (options.allThemes) {
+      if (formats.includes('json')) {
+        const jsonPath = `${outputDir}/${outputBasename}.json`;
+        console.log(chalk.blue('Generating JSON...'));
+        const json = JSON.stringify(coverLetter, null, 2);
+        await writeFile(jsonPath, json, 'utf-8');
+        allResults.push({ format: 'JSON', path: jsonPath });
+        console.log(chalk.green(`\u2713 JSON: ${jsonPath}`));
+      }
+      if (formats.includes('md')) {
+        const mdPath = `${outputDir}/${outputBasename}.md`;
+        console.log(chalk.blue('Generating Markdown...'));
+        const markdown = coverLetterToMarkdown(coverLetter);
+        await writeFile(mdPath, markdown, 'utf-8');
+        allResults.push({ format: 'Markdown', path: mdPath });
+        console.log(chalk.green(`\u2713 Markdown: ${mdPath}`));
+      }
+    }
+
+    await closeBrowser();
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+    console.log('');
+    console.log(chalk.green(`\u2713 Generated ${allResults.length} file(s) in ${elapsed}s`));
+
+    if (options.open && !options.watch) {
+      const firstFile = allResults[0];
+      if (firstFile) {
+        console.log(chalk.blue(`Opening ${firstFile.path}...`));
+        openFile(firstFile.path);
+      }
+    }
+    return;
+  }
+
+  // Resume build path
+  let resume = document.resume;
   console.log(chalk.green(`\u2713 Loaded resume for ${resume.meta.name}`));
 
   // Load and apply variant if specified

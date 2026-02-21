@@ -137,12 +137,11 @@ interface PreparedPage {
 }
 
 /**
- * Render HTML and prepare a browser page for PDF generation
- * This is the common setup logic shared by generatePdf and generatePdfBuffer
+ * Prepare a browser page from raw HTML string
+ * This is the low-level setup shared by all PDF/PNG generation functions
  */
-async function preparePdfPage(
-  resume: NormalizedResume,
-  themeName: string,
+async function prepareHtmlPage(
+  html: string,
   options: PdfOptions
 ): Promise<PreparedPage> {
   const mergedOptions: DefaultPdfOptions = {
@@ -158,22 +157,7 @@ async function preparePdfPage(
   };
   const debug = createDebugLogger(options.debug ?? false);
 
-  debug.log(`Starting PDF preparation for ${resume.meta.name}`);
-  debug.log(`Theme: ${themeName}`);
   debug.log(`Options: format=${mergedOptions.format}, scale=${mergedOptions.scale}`);
-
-  // Render HTML
-  let html: string;
-  try {
-    const renderStart = Date.now();
-    html = await renderStandaloneHtml(resume, themeName);
-    debug.timing('HTML rendering', renderStart);
-  } catch (error) {
-    throw new PdfError(
-      `Failed to render HTML: ${error instanceof Error ? error.message : String(error)}`,
-      error instanceof Error ? error : undefined
-    );
-  }
 
   // Save intermediate HTML if requested
   if (options.debug && options.saveHtml) {
@@ -244,6 +228,33 @@ async function preparePdfPage(
       error instanceof Error ? error : undefined
     );
   }
+}
+
+/**
+ * Render resume HTML and prepare a browser page for PDF generation
+ */
+async function preparePdfPage(
+  resume: NormalizedResume,
+  themeName: string,
+  options: PdfOptions
+): Promise<PreparedPage> {
+  const debug = createDebugLogger(options.debug ?? false);
+  debug.log(`Starting PDF preparation for ${resume.meta.name}`);
+  debug.log(`Theme: ${themeName}`);
+
+  let html: string;
+  try {
+    const renderStart = Date.now();
+    html = await renderStandaloneHtml(resume, themeName);
+    debug.timing('HTML rendering', renderStart);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to render HTML: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  }
+
+  return prepareHtmlPage(html, options);
 }
 
 /**
@@ -329,6 +340,71 @@ export async function generatePng(
 
   try {
     // Use screen media for PNG (preparePdfPage sets print media for PDF)
+    await page.emulateMedia({ media: 'screen', colorScheme: 'light' });
+
+    await page.screenshot({
+      path: outputPath,
+      fullPage: true,
+    });
+
+    debug.log(`PNG saved to ${outputPath}`);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to generate PNG: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  } finally {
+    await page.close();
+  }
+}
+
+/**
+ * Generate a PDF from a standalone HTML string and save to file
+ */
+export async function generatePdfFromHtml(
+  html: string,
+  outputPath: string,
+  options: PdfOptions = {}
+): Promise<void> {
+  const totalStart = Date.now();
+  const { page, mergedOptions, debug } = await prepareHtmlPage(html, options);
+
+  debug.log(`Output: ${outputPath}`);
+
+  try {
+    const pdfStart = Date.now();
+    await page.pdf({
+      path: outputPath,
+      format: mergedOptions.format,
+      margin: mergedOptions.margin,
+      printBackground: mergedOptions.printBackground,
+      scale: mergedOptions.scale,
+    });
+    debug.timing('PDF generation', pdfStart);
+    debug.timing('Total PDF generation', totalStart);
+  } catch (error) {
+    throw new PdfError(
+      `Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
+  } finally {
+    await page.close();
+  }
+}
+
+/**
+ * Generate a PNG screenshot from a standalone HTML string
+ */
+export async function generatePngFromHtml(
+  html: string,
+  outputPath: string,
+  options: PdfOptions = {}
+): Promise<void> {
+  const { page, debug } = await prepareHtmlPage(html, options);
+
+  debug.log(`Generating PNG: ${outputPath}`);
+
+  try {
     await page.emulateMedia({ media: 'screen', colorScheme: 'light' });
 
     await page.screenshot({
