@@ -122,11 +122,9 @@ These are larger investments that would significantly shift Vitae's competitive 
 
 **Why:** Reactive Resume offers shareable links. A deploy command would give CLI users the same capability without a hosted service.
 
-### 20. Accessibility Auditing
+### 20. Accessibility Auditing — IMPLEMENTED
 
-**What:** WCAG compliance checking for HTML output — color contrast, heading hierarchy, screen reader compatibility, semantic HTML validation.
-
-**Why:** Differentiator that no competitor offers. Demonstrates the tool's quality standards and makes HTML output genuinely usable as a web resume.
+**Status:** Shipped. `vitae audit <input>` scores rendered HTML 0-100 for WCAG accessibility compliance across 6 weighted categories: document structure (20%), color contrast (25%), links & navigation (15%), semantic HTML (20%), typography & readability (10%), and images & media (10%). Uses linkedom for lightweight DOM analysis — no browser required. Supports `--theme` to audit specific themes, `--level AAA` for stricter WCAG AAA conformance, `--variant` for role-specific auditing, and `--json` for machine-readable output. Works with both resumes and cover letters (auto-detected). Color contrast checking extracts CSS custom properties and validates foreground/background pairs against WCAG 2.1 luminance thresholds. Colored terminal output with progress bars, categorized findings (errors/warnings/suggestions), and contrast pair details. Exit code 1 if score < 60. Also available as library function `auditAccessibility(html, options)`.
 
 ---
 
@@ -153,8 +151,8 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 17 | ~~Cover letter support~~ | ~~High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
 | 18 | Resume analytics | Medium | Low | Novel | High |
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
-| 20 | Accessibility auditing | Medium | Low | Novel | Medium |
+| 20 | ~~Accessibility auditing~~ | ~~Medium~~ | ~~Low~~ | ~~Novel~~ | **DONE** |
 
-**Completed (13 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #11 (multi-language / i18n), #12 (JSON Resume export), #16 (native DOCX generation), #17 (cover letter support).
+**Completed (14 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #11 (multi-language / i18n), #12 (JSON Resume export), #16 (native DOCX generation), #17 (cover letter support), #20 (accessibility auditing).
 
-**Next highest-ROI items:** #20 (accessibility auditing), #14 (AI content assistant), #10 (plugin system for themes).
+**Next highest-ROI items:** #10 (plugin system for themes), #14 (AI content assistant), #19 (hosted deploy).

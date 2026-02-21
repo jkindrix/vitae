@@ -9,6 +9,7 @@ A resume generator that converts YAML to PDF, DOCX, HTML, JSON, Markdown, and PN
 - **Cover letters** — Generate cover letters in all output formats from a dedicated YAML schema
 - **Resume variants** — Tag highlights, skills, and sections; filter with variant YAML for role-targeted resumes
 - **ATS analyzer** — Score resume for ATS compatibility with optional job description keyword matching
+- **Accessibility auditing** — WCAG compliance scoring for rendered HTML (contrast, headings, semantics, links)
 - **Job tailoring** — Generate a variant YAML automatically from a job description
 - **Multi-language** — Localized section headings and date formatting (en, es, fr, de, pt)
 - **JSON Resume** — Bidirectional import/export with the [JSON Resume](https://jsonresume.org/) standard
@@ -158,6 +159,27 @@ vitae check resume.yaml --json                    # Machine-readable JSON output
 |--------|-------------|---------|
 | `-j, --job <file>` | Job description text file for keyword matching | — |
 | `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
+| `--json` | Output results as JSON | — |
+
+### `vitae audit <input>`
+
+Audit rendered HTML output for WCAG accessibility compliance. Scores across 6 categories: document structure, color contrast, links & navigation, semantic HTML, typography & readability, and images & media.
+
+```bash
+vitae audit resume.yaml                           # Accessibility score (AA level)
+vitae audit resume.yaml -t modern                 # Audit a specific theme
+vitae audit resume.yaml --level AAA               # Stricter AAA conformance
+vitae audit resume.yaml -v backend.variant.yaml   # Audit a variant
+vitae audit resume.yaml --json                    # Machine-readable JSON output
+vitae audit cover-letter.yaml                     # Audit a cover letter (auto-detected)
+```
+
+**Options:**
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-t, --theme <name>` | Theme to audit against | `minimal` |
+| `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
+| `--level <level>` | WCAG conformance level: `AA` or `AAA` | `AA` |
 | `--json` | Output results as JSON | — |
 
 ### `vitae tailor <input>`
@@ -643,6 +665,7 @@ import {
   analyzeResume,
   analyzeTailoring,
   generateVariant,
+  auditAccessibility,
 
   // JSON Resume interop
   fromJsonResume,
@@ -703,6 +726,11 @@ const filtered = applyVariant(resume, variant);
 // ATS analysis
 const result = analyzeResume(resume);
 const resultWithJob = analyzeResume(resume, { jobDescription: jobText });
+
+// Accessibility audit
+const standaloneHtml = await renderStandaloneHtml(resume, 'minimal');
+const a11yResult = auditAccessibility(standaloneHtml);            // WCAG AA
+const a11yStrict = auditAccessibility(standaloneHtml, { level: 'AAA' }); // WCAG AAA
 
 // Clean up browser instance when done
 await closeBrowser();
@@ -767,6 +795,15 @@ import type {
   LocaleLabels,
   LocaleMonths,
   LocaleKeywords,
+
+  // Accessibility
+  A11ySeverity,
+  A11yCategory,
+  A11yFinding,
+  A11yCategoryScore,
+  A11yContrastPair,
+  A11yAuditOptions,
+  A11yResult,
 
   // Other
   DocumentResult,
@@ -917,3 +954,4 @@ MIT License — see [LICENSE](./LICENSE) for details.
 - [AJV](https://ajv.js.org/) for schema validation
 - [Commander.js](https://github.com/tj/commander.js) for CLI
 - [docx](https://www.npmjs.com/package/docx) for DOCX generation
+- [linkedom](https://github.com/WebReflection/linkedom) for HTML accessibility analysis
