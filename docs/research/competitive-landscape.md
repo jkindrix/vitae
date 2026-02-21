@@ -69,9 +69,9 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 ### Strengths Relative to the Field
 
 - **Widest output format support** — PDF, DOCX, HTML, JSON, Markdown, PNG from a single YAML source
-- **DOCX output** — rare among active CLI tools; important for recruiter compatibility
+- **Native DOCX output** — rare among active CLI tools; important for recruiter compatibility. Uses the `docx` npm package for styled output (no Pandoc required). Cover letter DOCX also supported.
 - **Accessible theming** — HTML/CSS via Nunjucks is the lowest barrier to custom themes
-- **No system deps beyond Node** — no LaTeX or Typst installation required (unlike YAMLResume, RenderCV)
+- **No system deps beyond Node** — no LaTeX, Typst, or Pandoc installation required (unlike YAMLResume, RenderCV, HackMyResume)
 - **Dual interface** — works as both CLI and importable library
 - **Bidirectional JSON Resume interop** — import from and export to the dominant data standard
 - **Resume variants** — tagged highlights with include/exclude filtering for role-targeted resumes from a single source
@@ -108,7 +108,8 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 | Job description tailoring | Shipped — `vitae tailor` generates variant YAML from keyword analysis against a job posting |
 | Cover letter support | Shipped — `cover-letter.yaml` with auto-detection, per-theme templates, full build/preview pipeline |
 | Multi-language / i18n | Shipped — `language` field in resume.yaml localizes headings, months, and keywords; 5 bundled locales |
+| Native DOCX (drop Pandoc) | Shipped — `docx` npm package replaces Pandoc subprocess; styled output with theme-aware colors/fonts; cover letter DOCX now supported |
 
 ### Niche Summary
 
-Vitae is the only actively maintained, Node.js-based, YAML-to-{PDF, DOCX, HTML, MD, PNG} resume generator with accessible HTML/CSS theming, resume variants for role-targeted tailoring, cover letter generation, multi-language i18n (5 bundled locales), bidirectional JSON Resume interop, editor autocompletion, and no system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.
+Vitae is the only actively maintained, Node.js-based, YAML-to-{PDF, DOCX, HTML, MD, PNG} resume generator with native styled DOCX output (no Pandoc), accessible HTML/CSS theming, resume variants for role-targeted tailoring, cover letter generation (including DOCX), multi-language i18n (5 bundled locales), bidirectional JSON Resume interop, editor autocompletion, and zero system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.

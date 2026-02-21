@@ -98,13 +98,9 @@ These are larger investments that would significantly shift Vitae's competitive 
 
 **Effort:** Theme discovery/install logic + naming convention + documentation + starter theme template.
 
-### 16. Native DOCX Generation (Drop Pandoc Dependency)
+### 16. Native DOCX Generation (Drop Pandoc Dependency) — IMPLEMENTED
 
-**What:** Replace the Pandoc subprocess with a native Node.js DOCX library (e.g., `docx` npm package) for direct resume-to-DOCX generation with full styling control.
-
-**Why:** Pandoc is the only external system dependency. Removing it means zero-install beyond `npm install`. It also gives full control over DOCX styling — the current Markdown-to-DOCX pipeline loses all CSS styling. Native generation could produce DOCX that matches the theme's visual design.
-
-**Effort:** Replace `src/lib/docx.ts` with a DOCX builder using the `docx` npm package, mapping resume structure to styled document elements.
+**Status:** Shipped. Replaced the Pandoc subprocess with the `docx` npm package for pure-Node.js DOCX generation. No system dependencies beyond Node. Resume DOCX output now has professional styling (Calibri font, accent-colored section headings with bottom borders, 1" margins) that respects `theme.colors.accent` and `theme.fonts.sans` overrides. Section ordering, i18n (localized headings, dates, "Present" keyword), and all 11 section types are fully supported. Cover letter DOCX generation is now supported (previously unsupported). The `resumeToMarkdown()` function is preserved unchanged for `--format md` output.
 
 ### 17. Cover Letter Generation — IMPLEMENTED
 
@@ -153,12 +149,12 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 13 | Web theme configurator | High | Medium | Bridges CLI/GUI gap | High |
 | 14 | AI content assistant | High | Low | Matches commercial tier | Medium-High |
 | 15 | Theme registry | Medium | Very High | Matches JSON Resume | High |
-| 16 | Native DOCX (drop Pandoc) | High | High | Zero-install goal | High |
+| 16 | ~~Native DOCX (drop Pandoc)~~ | ~~High~~ | ~~High~~ | ~~Zero-install goal~~ | **DONE** |
 | 17 | Cover letter support | High | Low | Matches commercial tier | Medium |
 | 18 | Resume analytics | Medium | Low | Novel | High |
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | Accessibility auditing | Medium | Low | Novel | Medium |
 
-**Completed (12 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #11 (multi-language / i18n), #12 (JSON Resume export), #17 (cover letter support).
+**Completed (13 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #11 (multi-language / i18n), #12 (JSON Resume export), #16 (native DOCX generation), #17 (cover letter support).
 
-**Next highest-ROI items:** #16 (native DOCX), #20 (accessibility auditing), #10 (plugin system for themes).
+**Next highest-ROI items:** #20 (accessibility auditing), #14 (AI content assistant), #10 (plugin system for themes).
