@@ -105,7 +105,8 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 | Theme color/font overrides | Shipped — `theme` key in resume.yaml overrides CSS custom properties (colors + fonts) |
 | Watch mode for build | Shipped — `vitae build --watch` rebuilds on file save with debounce |
 | Job description tailoring | Shipped — `vitae tailor` generates variant YAML from keyword analysis against a job posting |
+| Cover letter support | Shipped — `cover-letter.yaml` with auto-detection, per-theme templates, full build/preview pipeline |
 
 ### Niche Summary
 
-Vitae is the only actively maintained, Node.js-based, YAML-to-{PDF, DOCX, HTML, MD, PNG} resume generator with accessible HTML/CSS theming, resume variants for role-targeted tailoring, bidirectional JSON Resume interop, editor autocompletion, and no system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.
+Vitae is the only actively maintained, Node.js-based, YAML-to-{PDF, DOCX, HTML, MD, PNG} resume generator with accessible HTML/CSS theming, resume variants for role-targeted tailoring, cover letter generation, bidirectional JSON Resume interop, editor autocompletion, and no system dependencies beyond Node — filling a gap that RenderCV (Python/Typst) and YAMLResume (Node/LaTeX) leave open.

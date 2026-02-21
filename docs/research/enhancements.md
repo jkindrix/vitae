@@ -110,13 +110,9 @@ These are larger investments that would significantly shift Vitae's competitive 
 
 **Effort:** Replace `src/lib/docx.ts` with a DOCX builder using the `docx` npm package, mapping resume structure to styled document elements.
 
-### 17. Cover Letter Generation
+### 17. Cover Letter Generation — IMPLEMENTED
 
-**What:** Support a `cover-letter.yaml` (or a `coverLetter` section) that generates a formatted cover letter using the same theme system.
-
-**Why:** Every commercial tool bundles cover letters. The existing theme/rendering pipeline can handle this with a second template per theme. Resume + cover letter is the standard job application package.
-
-**Effort:** New schema section or file format + cover letter templates per theme + build command integration.
+**Status:** Shipped. Standalone `cover-letter.yaml` file format with its own JSON Schema. Auto-detection in `build` and `preview` commands — if the input contains `recipient` + `body` + `greeting` (and no `experience`), it's treated as a cover letter. Explicit `type: cover-letter` discriminator also supported. Each theme (minimal, modern, professional) has a `cover-letter.html` template with matching `.cover-letter` CSS. Reuses the existing theme CSS custom properties and theme override system. PDF/PNG generation via extracted `generatePdfFromHtml`/`generatePngFromHtml` helpers. Markdown output for DOCX pipeline. `vitae init --cover-letter` creates a template. 38 tests covering schema validation, format detection, loading, rendering, and markdown output.
 
 ---
 
