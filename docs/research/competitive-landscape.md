@@ -81,6 +81,7 @@ A serious job seeker spends **$120-$300/year** on these platforms. Vitae is free
 - **Hot-reload preview** — SSE-based live editing matches web builder UX expectations
 - **ATS compatibility analyzer** — `vitae check` scores resumes 0-100 with keyword matching against job descriptions; no CLI competitor offers this
 - **Multi-language / i18n** — `language: fr` in resume.yaml localizes section headings, month names, and "Present" keyword across all output formats; ships with en, es, fr, de, pt
+- **Cover letter generation** — `cover-letter.yaml` with auto-detection, per-theme templates, full build/preview pipeline across all output formats including DOCX
 - **Job description tailoring** — `vitae tailor` generates a variant YAML from keyword analysis against a job posting; no AI required
 - **CI/CD ready** — ships a GitHub Actions workflow template for automated resume builds
 - **Free and open** — competes against $120-300/yr commercial tools at zero cost

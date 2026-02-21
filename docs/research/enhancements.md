@@ -150,7 +150,7 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 14 | AI content assistant | High | Low | Matches commercial tier | Medium-High |
 | 15 | Theme registry | Medium | Very High | Matches JSON Resume | High |
 | 16 | ~~Native DOCX (drop Pandoc)~~ | ~~High~~ | ~~High~~ | ~~Zero-install goal~~ | **DONE** |
-| 17 | Cover letter support | High | Low | Matches commercial tier | Medium |
+| 17 | ~~Cover letter support~~ | ~~High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
 | 18 | Resume analytics | Medium | Low | Novel | High |
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | Accessibility auditing | Medium | Low | Novel | Medium |
