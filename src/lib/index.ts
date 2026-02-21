@@ -28,3 +28,4 @@ export { analyzeTailoring, generateVariant, serializeVariantWithComments } from 
 export { renderCoverLetterHtml, renderCoverLetterStandaloneHtml, coverLetterToMarkdown } from './cover-letter.js';
 export { getLocale, getSectionLabel } from './i18n.js';
 export type { Locale, LocaleLabels, LocaleMonths, LocaleKeywords } from './i18n.js';
+export { auditAccessibility, parseColor, relativeLuminance, contrastRatio, extractCssCustomProperties } from './a11y.js';
