@@ -8,6 +8,7 @@ import {
   exportCommand,
   checkCommand,
   tailorCommand,
+  auditCommand,
   initCommand,
   themesCommand,
   validateCommand,
@@ -158,6 +159,25 @@ program
   .action(async (input: string, options) => {
     try {
       await tailorCommand(input, options);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(chalk.red(`Error: ${message}`));
+      process.exitCode = 1;
+    }
+  });
+
+// Audit command (Accessibility)
+program
+  .command('audit')
+  .description('Audit rendered HTML output for WCAG accessibility compliance')
+  .argument('<input>', 'Path to resume.yaml or cover-letter.yaml file')
+  .option('-t, --theme <name>', 'Theme to audit against', 'minimal')
+  .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
+  .option('--level <level>', 'WCAG conformance level: AA or AAA', 'AA')
+  .option('--json', 'Output results as JSON')
+  .action(async (input: string, options) => {
+    try {
+      await auditCommand(input, options);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(chalk.red(`Error: ${message}`));

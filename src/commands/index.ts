@@ -7,3 +7,4 @@ export { previewCommand } from './preview.js';
 export { exportCommand } from './export.js';
 export { checkCommand } from './check.js';
 export { tailorCommand } from './tailor.js';
+export { auditCommand } from './audit.js';
