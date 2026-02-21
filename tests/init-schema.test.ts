@@ -13,20 +13,28 @@ describe('init command schema directive', () => {
     'utf-8'
   );
 
-  it('defines SCHEMA_URL constant pointing to raw GitHub schema', () => {
-    expect(initSource).toContain('SCHEMA_URL');
+  it('defines schema URL constants pointing to raw GitHub schemas', () => {
+    expect(initSource).toContain('RESUME_SCHEMA_URL');
     expect(initSource).toContain(
       'raw.githubusercontent.com/jkindrix/vitae/main/schemas/resume.schema.json'
     );
+    expect(initSource).toContain('COVER_LETTER_SCHEMA_URL');
+    expect(initSource).toContain(
+      'raw.githubusercontent.com/jkindrix/vitae/main/schemas/cover-letter.schema.json'
+    );
   });
 
-  it('includes yaml-language-server directive in template', () => {
-    expect(initSource).toContain('# yaml-language-server: $schema=${SCHEMA_URL}');
+  it('includes yaml-language-server directive in resume template', () => {
+    expect(initSource).toContain('# yaml-language-server: $schema=${RESUME_SCHEMA_URL}');
+  });
+
+  it('includes yaml-language-server directive in cover letter template', () => {
+    expect(initSource).toContain('# yaml-language-server: $schema=${COVER_LETTER_SCHEMA_URL}');
   });
 
   it('includes directive in both template and interactive mode', () => {
-    // Count occurrences of the schema directive pattern
-    const matches = initSource.match(/yaml-language-server: \$schema=\$\{SCHEMA_URL\}/g);
+    // Count occurrences of the resume schema directive pattern
+    const matches = initSource.match(/yaml-language-server: \$schema=\$\{RESUME_SCHEMA_URL\}/g);
     // Should appear at least twice: EXAMPLE_RESUME template + interactive output
     expect(matches?.length).toBeGreaterThanOrEqual(2);
   });
