@@ -17,6 +17,7 @@ export {
   FileError,
   PdfError,
   DocxError,
+  LlmError,
   isVitaeError,
   formatError,
 } from './errors.js';
@@ -30,3 +31,5 @@ export { renderCoverLetterHtml, renderCoverLetterStandaloneHtml, coverLetterToMa
 export { getLocale, getSectionLabel } from './i18n.js';
 export type { Locale, LocaleLabels, LocaleMonths, LocaleKeywords } from './i18n.js';
 export { auditAccessibility, parseColor, relativeLuminance, contrastRatio, extractCssCustomProperties } from './a11y.js';
+export { resolveLlmConfig, callLlm } from './llm.js';
+export { generateSuggestions } from './suggest.js';
