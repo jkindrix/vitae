@@ -72,7 +72,7 @@ program
   .description('Convert Vitae YAML to other resume formats (e.g., JSON Resume)')
   .argument('<input>', 'Path to resume.yaml file')
   .option('-o, --output <path>', 'Output file path (defaults to <input>.resume.json)')
-  .option('--format <format>', 'Output format: json-resume (default: json-resume)', 'json-resume')
+  .option('--format <format>', 'Output format: json-resume (or json) (default: json-resume)', 'json-resume')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .action(async (input: string, options) => {
     try {
@@ -88,6 +88,7 @@ program
 program
   .command('init')
   .description('Create a new resume.yaml or cover-letter.yaml file')
+  .option('-o, --output <path>', 'Output file path (defaults to resume.yaml or cover-letter.yaml in current directory)')
   .option('-f, --force', 'Overwrite existing file')
   .option('-i, --interactive', 'Build resume interactively with prompts')
   .option('-c, --cover-letter', 'Create a cover letter template instead of a resume')
@@ -195,9 +196,9 @@ program
   .argument('<input>', 'Path to resume.yaml file')
   .option('-s, --section <name>', 'Focus on a specific section (summary, experience, skills, etc.)')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
-  .option('--provider <name>', 'LLM provider: openai, anthropic, ollama')
-  .option('--model <name>', 'LLM model to use')
-  .option('--api-key <key>', 'API key (prefer env var for security)')
+  .option('--provider <name>', 'LLM provider: openai, anthropic, ollama (auto-detected from env vars if omitted)')
+  .option('--model <name>', 'LLM model to use (defaults: gpt-4o-mini, claude-sonnet-4-5-20250929, llama3.2)')
+  .option('--api-key <key>', 'API key (prefer ANTHROPIC_API_KEY or OPENAI_API_KEY env vars)')
   .option('--base-url <url>', 'Custom API base URL (for Ollama or proxies)')
   .option('--json', 'Output results as JSON')
   .action(async (input: string, options) => {

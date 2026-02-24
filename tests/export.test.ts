@@ -1,6 +1,36 @@
 import { describe, it, expect } from 'vitest';
 import { toJsonResume } from '../src/lib/json-resume.js';
+import { exportCommand } from '../src/commands/export.js';
+import { writeFile, readFile, rm } from 'fs/promises';
+import { join } from 'path';
+import { tmpdir } from 'os';
+import { randomUUID } from 'crypto';
 import type { Resume } from '../src/types/index.js';
+
+describe('exportCommand format alias', () => {
+  it('accepts "json" as alias for "json-resume"', async () => {
+    const testDir = join(tmpdir(), `vitae-export-${randomUUID()}`);
+    const inputPath = join(testDir, 'resume.yaml');
+    const outputPath = join(testDir, 'out.json');
+
+    const { mkdir } = await import('fs/promises');
+    await mkdir(testDir, { recursive: true });
+
+    await writeFile(
+      inputPath,
+      `meta:\n  name: Test\nexperience:\n  - company: Co\n    roles:\n      - title: Dev\n        start: "2020"\n`,
+      'utf-8'
+    );
+
+    await exportCommand(inputPath, { format: 'json', output: outputPath });
+
+    const content = await readFile(outputPath, 'utf-8');
+    const parsed = JSON.parse(content);
+    expect(parsed.basics?.name).toBe('Test');
+
+    await rm(testDir, { recursive: true, force: true });
+  });
+});
 
 describe('export to JSON Resume', () => {
   const fullResume: Resume = {

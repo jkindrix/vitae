@@ -5,7 +5,7 @@ import { loadResume, loadVariant, applyVariant, toJsonResume } from '../lib/inde
 
 export interface ExportCommandOptions {
   output?: string;
-  format?: 'json-resume';
+  format?: 'json-resume' | 'json';
   variant?: string;
 }
 
@@ -33,7 +33,8 @@ export async function exportCommand(
     console.log(chalk.green('✓ Applied variant'));
   }
 
-  const format = options.format ?? 'json-resume';
+  const rawFormat = options.format ?? 'json-resume';
+  const format = rawFormat === 'json' ? 'json-resume' : rawFormat;
 
   switch (format) {
     case 'json-resume': {
