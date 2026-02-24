@@ -4,8 +4,9 @@
 
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
+import { parse as parseYaml } from 'yaml';
 import chalk from 'chalk';
-import { loadResume, loadVariant, applyVariant } from '../lib/index.js';
+import { loadResume, loadVariant, applyVariant, isCoverLetterFormat } from '../lib/index.js';
 import { analyzeResume } from '../lib/ats.js';
 import type {
   AtsResult,
@@ -24,6 +25,20 @@ export async function checkCommand(
   options: CheckCommandOptions
 ): Promise<void> {
   const resolvedInput = resolve(inputPath);
+
+  // Detect cover letters early — ATS analysis is not applicable
+  const raw = await readFile(resolvedInput, 'utf-8');
+  const parsed = parseYaml(raw);
+  if (isCoverLetterFormat(parsed)) {
+    console.log('');
+    console.log(
+      chalk.blue('ATS analysis is not applicable to cover letters.')
+    );
+    console.log(
+      chalk.dim('Use `vitae validate` to check cover letter schema.')
+    );
+    return;
+  }
 
   let resume = await loadResume(resolvedInput);
 
