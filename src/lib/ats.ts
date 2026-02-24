@@ -673,6 +673,7 @@ export function extractKeywords(text: string): string[] {
 
   const words = normalized
     .split(' ')
+    .map((w) => w.replace(/\.+$/g, ''))
     .filter((w) => w.length > 1 && !STOP_WORDS.has(w));
 
   const freq = new Map<string, number>();

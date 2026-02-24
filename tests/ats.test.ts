@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeResume } from '../src/lib/ats.js';
+import { analyzeResume, extractKeywords } from '../src/lib/ats.js';
 import type { Resume } from '../src/types/index.js';
 
 // ---------------------------------------------------------------------------
@@ -661,6 +661,31 @@ describe('analyzeResume', () => {
         jobDescription: 'the a an is are',
       });
       expect(result.keywords!.matchPercentage).toBe(100);
+    });
+  });
+
+  describe('extractKeywords punctuation', () => {
+    it('strips trailing periods from tokens', () => {
+      const keywords = extractKeywords('microservices architecture. Must have 5+ years');
+      expect(keywords).toContain('architecture');
+      expect(keywords).not.toContain('architecture.');
+    });
+
+    it('preserves interior periods in tech names', () => {
+      const keywords = extractKeywords('Experience with Node.js and React.js required.');
+      expect(keywords).toContain('node.js');
+      expect(keywords).toContain('react.js');
+    });
+
+    it('preserves leading periods for .NET-style tokens', () => {
+      const keywords = extractKeywords('Experience with .NET framework');
+      expect(keywords.some((k) => k.includes('.net'))).toBe(true);
+    });
+
+    it('does not produce bigrams with trailing periods', () => {
+      const keywords = extractKeywords('cloud infrastructure. 5+ years experience');
+      const hasPeriodBigram = keywords.some((k) => k.includes(' ') && k.includes('.'));
+      expect(hasPeriodBigram).toBe(false);
     });
   });
 
