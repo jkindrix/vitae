@@ -27,4 +27,7 @@ export default {
     })(),
     skillCount: (resume.skills ?? []).reduce((sum, cat) => sum + cat.items.length, 0),
   }),
+  variants: [
+    { name: 'compact', description: 'Condensed single-page layout', template: 'template-compact.html' },
+  ],
 };

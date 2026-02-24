@@ -246,12 +246,11 @@ describe('theme config', () => {
       ).rejects.toThrow(/variant.*nonexistent.*not found/i);
     });
 
-    it('throws for variant when theme has no variants', async () => {
-      // Current bundled themes have no variants defined, so this should throw
+    it('renders compact variant for minimal theme', async () => {
       const resume = minimalResume();
-      await expect(
-        renderHtml(resume, 'minimal', { variant: 'compact' })
-      ).rejects.toThrow(/variant/i);
+      const { html } = await renderHtml(resume, 'minimal', { variant: 'compact' });
+      expect(html).toContain('resume--compact');
+      expect(html).toContain('Test User');
     });
   });
 

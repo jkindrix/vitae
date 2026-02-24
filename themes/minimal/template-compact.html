@@ -1,0 +1,438 @@
+{# --- Compact layout variant for the minimal theme --- #}
+{# Tighter spacing, inline skills, no role summaries #}
+
+<style>
+  .resume--compact {
+    padding: 1rem;
+  }
+  .resume--compact .resume__header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+  .resume--compact .resume__name {
+    font-size: 16pt;
+    margin-bottom: 0;
+  }
+  .resume--compact .resume__title {
+    font-size: 10pt;
+    margin-bottom: 0.25rem;
+  }
+  .resume--compact .resume__section {
+    margin-bottom: 0.75rem;
+  }
+  .resume--compact .resume__section-title {
+    font-size: 10pt;
+    margin-bottom: 0.5rem;
+    padding-bottom: 2px;
+    border-bottom-width: 1px;
+  }
+  .resume--compact .resume__skills {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.125rem 1rem;
+  }
+  .resume--compact .resume__skill-category {
+    font-size: 9pt;
+    line-height: 1.3;
+  }
+  .resume--compact .resume__company {
+    margin-bottom: 0.5rem;
+  }
+  .resume--compact .resume__company-name {
+    font-size: 10pt;
+    margin-bottom: 0;
+  }
+  .resume--compact .resume__role {
+    margin-bottom: 0.25rem;
+  }
+  .resume--compact .resume__role-header {
+    margin-bottom: 0;
+  }
+  .resume--compact .resume__role-title {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__role-meta {
+    font-size: 8pt;
+  }
+  .resume--compact .resume__highlights {
+    padding-left: 1rem;
+    margin: 0;
+  }
+  .resume--compact .resume__highlights li {
+    font-size: 9pt;
+    line-height: 1.3;
+    margin-bottom: 0;
+  }
+  .resume--compact .resume__summary {
+    font-size: 9pt;
+    line-height: 1.4;
+  }
+  .resume--compact .resume__project-header {
+    margin-bottom: 0;
+  }
+  .resume--compact .resume__project-name,
+  .resume--compact .resume__project-desc {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__education {
+    margin-bottom: 0.25rem;
+  }
+  .resume--compact .resume__education-institution {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__education-dates {
+    font-size: 8pt;
+  }
+  .resume--compact .resume__education-degree {
+    font-size: 9pt;
+    margin-top: 0;
+  }
+  .resume--compact .resume__certifications li {
+    font-size: 9pt;
+    margin-bottom: 0;
+  }
+  .resume--compact .resume__cert-date {
+    font-size: 8pt;
+  }
+  .resume--compact .resume__languages {
+    gap: 0.25rem 1rem;
+  }
+  .resume--compact .resume__languages li {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__award-title {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__award-meta {
+    font-size: 8pt;
+  }
+  .resume--compact .resume__award-summary {
+    font-size: 9pt;
+    margin-top: 0;
+  }
+  .resume--compact .resume__publication-name {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__publication-meta {
+    font-size: 8pt;
+  }
+  .resume--compact .resume__publication-summary {
+    font-size: 9pt;
+    margin-top: 0;
+  }
+  .resume--compact .resume__volunteer {
+    margin-bottom: 0.25rem;
+  }
+  .resume--compact .resume__volunteer-org {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__volunteer-dates {
+    font-size: 8pt;
+  }
+  .resume--compact .resume__volunteer-position,
+  .resume--compact .resume__volunteer-summary {
+    font-size: 9pt;
+    margin-top: 0;
+  }
+  .resume--compact .resume__reference-name {
+    font-size: 9pt;
+  }
+  .resume--compact .resume__reference-quote {
+    font-size: 9pt;
+    margin: 0 0 0 0.75rem;
+    padding-left: 0.25rem;
+  }
+  .resume--compact .resume__references {
+    gap: 0.5rem;
+  }
+</style>
+
+{# --- Section macros (compact variants) --- #}
+
+{% macro render_summary() %}
+{% if summary %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.summary or "Summary" }}</h2>
+  <p class="resume__summary">{{ summary }}</p>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_skills() %}
+{% if skills and skills.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.skills or "Skills" }}</h2>
+  <div class="resume__skills">
+    {% for category in skills %}
+    <div class="resume__skill-category">
+      <span class="resume__skill-label">{{ category.category }}:</span>
+      <span class="resume__skill-items">{{ category.items | joinItems }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_experience() %}
+{% if experience and experience.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.experience or "Experience" }}</h2>
+  {% for exp in experience %}
+  <div class="resume__company">
+    <h3 class="resume__company-name">{{ exp.company }}</h3>
+    {% for role in exp.roles %}
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">{{ role.title }}</span>
+        <span class="resume__role-meta">
+          {% if role.start %}{{ role.start | formatDateShort }}{% endif %}
+          {% if role.end %} – {{ role.end | formatDateShort }}{% endif %}
+          {% if role.location %} | {{ role.location }}{% endif %}
+        </span>
+      </div>
+      {# No role summary in compact layout #}
+      {% if role.highlights and role.highlights.length > 0 %}
+      <ul class="resume__highlights">
+        {% for highlight in role.highlights %}
+        <li>{{ highlight }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_projects() %}
+{% if projects and projects.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.projects or "Projects" }}</h2>
+  <div class="resume__projects">
+    {% for project in projects %}
+    <div class="resume__project">
+      <div class="resume__project-header">
+        {% if project.url %}
+        <a href="{{ project.url }}" class="resume__project-name" target="_blank" rel="noopener">{{ project.name }}</a>
+        {% else %}
+        <span class="resume__project-name">{{ project.name }}</span>
+        {% endif %}
+        {% if project.description %}
+        <span class="resume__project-desc">— {{ project.description }}</span>
+        {% endif %}
+      </div>
+      {% if project.highlights and project.highlights.length > 0 %}
+      <ul class="resume__highlights">
+        {% for highlight in project.highlights %}
+        <li>{{ highlight }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_education() %}
+{% if education and education.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.education or "Education" }}</h2>
+  {% for edu in education %}
+  <div class="resume__education">
+    <div class="resume__education-header">
+      <span class="resume__education-institution">{{ edu.institution }}</span>
+      {% if edu.start or edu.end %}
+      <span class="resume__education-dates">
+        {% if edu.start %}{{ edu.start }}{% endif %}
+        {% if edu.end %} – {{ edu.end }}{% endif %}
+      </span>
+      {% endif %}
+    </div>
+    {% if edu.degree or edu.field %}
+    <p class="resume__education-degree">
+      {{ edu.degree }}{% if edu.field %} in {{ edu.field }}{% endif %}
+    </p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_certifications() %}
+{% if certifications and certifications.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.certifications or "Certifications" }}</h2>
+  <ul class="resume__certifications">
+    {% for cert in certifications %}
+    <li>
+      <span class="resume__cert-name">{{ cert.name }}</span>
+      {% if cert.issuer %}<span class="resume__cert-issuer"> — {{ cert.issuer }}</span>{% endif %}
+      {% if cert.date %}<span class="resume__cert-date"> ({{ cert.date }})</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_languages() %}
+{% if languages and languages.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.languages or "Languages" }}</h2>
+  <ul class="resume__languages">
+    {% for lang in languages %}
+    <li>
+      <span class="resume__lang-name">{{ lang.language }}</span>
+      {% if lang.fluency %}<span class="resume__lang-fluency"> — {{ lang.fluency }}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_awards() %}
+{% if awards and awards.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.awards or "Awards" }}</h2>
+  <div class="resume__awards">
+    {% for award in awards %}
+    <div class="resume__award">
+      <div class="resume__award-header">
+        <span class="resume__award-title">{{ award.title }}</span>
+        {% if award.awarder or award.date %}
+        <span class="resume__award-meta">
+          {% if award.awarder %}{{ award.awarder }}{% endif %}
+          {% if award.date %} ({{ award.date }}){% endif %}
+        </span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_publications() %}
+{% if publications and publications.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.publications or "Publications" }}</h2>
+  <div class="resume__publications">
+    {% for pub in publications %}
+    <div class="resume__publication">
+      <div class="resume__publication-header">
+        {% if pub.url %}
+        <a href="{{ pub.url }}" class="resume__publication-name" target="_blank" rel="noopener">{{ pub.name }}</a>
+        {% else %}
+        <span class="resume__publication-name">{{ pub.name }}</span>
+        {% endif %}
+        {% if pub.publisher or pub.releaseDate %}
+        <span class="resume__publication-meta">
+          {% if pub.publisher %}{{ pub.publisher }}{% endif %}
+          {% if pub.releaseDate %} ({{ pub.releaseDate }}){% endif %}
+        </span>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_volunteer() %}
+{% if volunteer and volunteer.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.volunteer or "Volunteer Experience" }}</h2>
+  {% for vol in volunteer %}
+  <div class="resume__volunteer">
+    <div class="resume__volunteer-header">
+      <span class="resume__volunteer-org">{{ vol.organization }}</span>
+      {% if vol.start or vol.end %}
+      <span class="resume__volunteer-dates">
+        {% if vol.start %}{{ vol.start }}{% endif %}
+        {% if vol.end %} – {{ vol.end }}{% endif %}
+      </span>
+      {% endif %}
+    </div>
+    {% if vol.position %}
+    <p class="resume__volunteer-position">{{ vol.position }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endmacro %}
+
+{% macro render_references() %}
+{% if references and references.length > 0 %}
+<section class="resume__section">
+  <h2 class="resume__section-title">{{ labels.references or "References" }}</h2>
+  <div class="resume__references">
+    {% for ref in references %}
+    <div class="resume__reference">
+      <span class="resume__reference-name">{{ ref.name }}</span>
+      {% if ref.reference %}
+      <blockquote class="resume__reference-quote">"{{ ref.reference }}"</blockquote>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}
+
+{# --- Layout --- #}
+
+<article class="resume resume--compact">
+  <header class="resume__header">
+    <h1 class="resume__name">{{ meta.name }}</h1>
+    {% if meta.title %}
+    <p class="resume__title">{{ meta.title }}</p>
+    {% endif %}
+
+    <div class="resume__contact">
+      {% if meta.email %}
+      <span class="resume__contact-item">{{ meta.email }}</span>
+      {% endif %}
+      {% if meta.phone %}
+      <span class="resume__contact-item">{{ meta.phone }}</span>
+      {% endif %}
+      {% if meta.location %}
+      <span class="resume__contact-item">{{ meta.location }}</span>
+      {% endif %}
+    </div>
+
+    {% if meta.links and meta.links.length > 0 %}
+    <div class="resume__links">
+      {% for link in meta.links %}
+      <a href="{{ link.url }}" class="resume__link" target="_blank" rel="noopener">
+        {{ link.label or link.url | domain }}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </header>
+
+  {% for section in sections %}
+    {% if section == "summary" %}{{ render_summary() }}
+    {% elif section == "skills" %}{{ render_skills() }}
+    {% elif section == "experience" %}{{ render_experience() }}
+    {% elif section == "projects" %}{{ render_projects() }}
+    {% elif section == "education" %}{{ render_education() }}
+    {% elif section == "certifications" %}{{ render_certifications() }}
+    {% elif section == "languages" %}{{ render_languages() }}
+    {% elif section == "awards" %}{{ render_awards() }}
+    {% elif section == "publications" %}{{ render_publications() }}
+    {% elif section == "volunteer" %}{{ render_volunteer() }}
+    {% elif section == "references" %}{{ render_references() }}
+    {% endif %}
+  {% endfor %}
+</article>
