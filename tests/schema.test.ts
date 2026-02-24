@@ -109,6 +109,95 @@ describe('schema validation', () => {
       expect(result.errors.some((e) => e.message.includes('experience'))).toBe(true);
     });
 
+    it('rejects resume with empty name', async () => {
+      const invalid = {
+        meta: { name: '' },
+        experience: [
+          {
+            company: 'Company',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
+        ],
+      };
+      const result = await validateResume(invalid);
+      expect(result.valid).toBe(false);
+      expect(result.errors.some((e) => e.path.includes('name'))).toBe(true);
+    });
+
+    it('rejects resume with empty experience array', async () => {
+      const invalid = {
+        meta: { name: 'John Doe' },
+        experience: [],
+      };
+      const result = await validateResume(invalid);
+      expect(result.valid).toBe(false);
+      expect(result.errors.some((e) => e.path.includes('experience'))).toBe(true);
+    });
+
+    it('rejects resume with unknown top-level properties', async () => {
+      const invalid = {
+        meta: { name: 'John Doe' },
+        experience: [
+          {
+            company: 'Company',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
+        ],
+        unknownField: 'should fail',
+      };
+      const result = await validateResume(invalid);
+      expect(result.valid).toBe(false);
+      expect(result.errors.some((e) => e.keyword === 'additionalProperties')).toBe(true);
+    });
+
+    it('rejects resume with unknown meta properties', async () => {
+      const invalid = {
+        meta: { name: 'John Doe', unknownField: 'oops' },
+        experience: [
+          {
+            company: 'Company',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
+        ],
+      };
+      const result = await validateResume(invalid);
+      expect(result.valid).toBe(false);
+      expect(
+        result.errors.some(
+          (e) => e.path.includes('meta') && e.keyword === 'additionalProperties'
+        )
+      ).toBe(true);
+    });
+
+    it('rejects experience entry with unknown properties', async () => {
+      const invalid = {
+        meta: { name: 'John Doe' },
+        experience: [
+          {
+            company: 'Company',
+            roles: [{ title: 'Dev', start: '2020' }],
+            bonus: true,
+          },
+        ],
+      };
+      const result = await validateResume(invalid);
+      expect(result.valid).toBe(false);
+    });
+
+    it('rejects role with unknown properties', async () => {
+      const invalid = {
+        meta: { name: 'John Doe' },
+        experience: [
+          {
+            company: 'Company',
+            roles: [{ title: 'Dev', start: '2020', salary: '100k' }],
+          },
+        ],
+      };
+      const result = await validateResume(invalid);
+      expect(result.valid).toBe(false);
+    });
+
     it('validates email format', async () => {
       const invalid = {
         meta: { name: 'John', email: 'not-an-email' },
