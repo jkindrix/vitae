@@ -101,6 +101,11 @@ export interface PdfOptions {
    * Only used when debug is true
    */
   screenshot?: string;
+
+  /**
+   * Theme layout variant name
+   */
+  layout?: string;
 }
 
 interface DefaultPdfOptions {
@@ -245,7 +250,7 @@ async function preparePdfPage(
   let html: string;
   try {
     const renderStart = Date.now();
-    html = await renderStandaloneHtml(resume, themeName);
+    html = await renderStandaloneHtml(resume, themeName, options.layout ? { variant: options.layout } : undefined);
     debug.timing('HTML rendering', renderStart);
   } catch (error) {
     throw new PdfError(

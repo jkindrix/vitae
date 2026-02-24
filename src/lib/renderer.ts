@@ -1,16 +1,28 @@
 import nunjucks from 'nunjucks';
-import { loadTheme, readTemplate, readStyles } from './themes.js';
+import { loadTheme, readTemplate, readStyles, loadThemeConfig, readVariantTemplate } from './themes.js';
+import { ThemeError } from './errors.js';
 import { formatDate, formatDateShort, formatDateRange } from './dates.js';
 import { getLocale } from './i18n.js';
 import type { Locale } from './i18n.js';
-import type { NormalizedResume, ThemeOverrides } from '../types/index.js';
+import type { NormalizedResume, ThemeOverrides, ThemeConfig } from '../types/index.js';
+
+/**
+ * Options for rendering HTML
+ */
+export interface RenderOptions {
+  /** Theme layout variant name */
+  variant?: string;
+}
 
 /**
  * Create a Nunjucks environment with locale-bound date filters.
  * Each render gets its own environment so that locale-specific filters
  * don't leak across concurrent renders with different languages.
+ *
+ * When a theme config is provided, its custom filters and globals are
+ * registered on the environment after the built-in ones.
  */
-function createEnvironment(locale: Locale): nunjucks.Environment {
+function createEnvironment(locale: Locale, config?: ThemeConfig | null): nunjucks.Environment {
   const env = new nunjucks.Environment(null, {
     autoescape: true,
     trimBlocks: true,
@@ -38,6 +50,20 @@ function createEnvironment(locale: Locale): nunjucks.Environment {
       return url;
     }
   });
+
+  // Register theme-provided filters
+  if (config?.filters) {
+    for (const f of config.filters) {
+      env.addFilter(f.name, f.filter);
+    }
+  }
+
+  // Register theme-provided globals
+  if (config?.globals) {
+    for (const [key, value] of Object.entries(config.globals)) {
+      env.addGlobal(key, value);
+    }
+  }
 
   return env;
 }
@@ -67,14 +93,35 @@ function buildLabels(locale: Locale): Record<string, string> {
 /**
  * Render a normalized resume to HTML using a theme
  */
-export async function renderHtml(resume: NormalizedResume, themeName: string): Promise<RenderResult> {
+export async function renderHtml(
+  resume: NormalizedResume,
+  themeName: string,
+  options?: RenderOptions,
+): Promise<RenderResult> {
   const theme = await loadTheme(themeName);
-  const template = await readTemplate(theme);
+  const config = await loadThemeConfig(theme);
+
+  // Select template: use layout variant if specified, otherwise default
+  let template: string;
+  if (options?.variant) {
+    if (!config?.variants) {
+      throw ThemeError.variantNotFound(themeName, options.variant);
+    }
+    const v = config.variants.find((lv) => lv.name === options.variant);
+    if (!v) {
+      throw ThemeError.variantNotFound(themeName, options.variant);
+    }
+    template = await readVariantTemplate(theme, v.template);
+  } else {
+    template = await readTemplate(theme);
+  }
+
   const css = await readStyles(theme);
   const locale = getLocale(resume.language);
-  const env = createEnvironment(locale);
+  const env = createEnvironment(locale, config);
 
-  const html = env.renderString(template, {
+  // Build template context
+  const context: Record<string, unknown> = {
     resume,
     meta: resume.meta,
     summary: resume.summary,
@@ -90,7 +137,15 @@ export async function renderHtml(resume: NormalizedResume, themeName: string): P
     references: resume.references,
     sections: resume.sections,
     labels: buildLabels(locale),
-  });
+  };
+
+  // Merge helper-computed context from theme config
+  if (config?.helpers) {
+    const helperContext = config.helpers(resume);
+    Object.assign(context, helperContext);
+  }
+
+  const html = env.renderString(template, context);
 
   return { html, css };
 }
@@ -133,8 +188,12 @@ export function generateThemeOverrideCss(theme: ThemeOverrides): string {
 /**
  * Render a complete standalone HTML document
  */
-export async function renderStandaloneHtml(resume: NormalizedResume, themeName: string): Promise<string> {
-  const { html, css } = await renderHtml(resume, themeName);
+export async function renderStandaloneHtml(
+  resume: NormalizedResume,
+  themeName: string,
+  options?: RenderOptions,
+): Promise<string> {
+  const { html, css } = await renderHtml(resume, themeName, options);
   const overrideCss = resume.theme ? generateThemeOverrideCss(resume.theme) : '';
   const lang = resume.language ?? 'en';
 

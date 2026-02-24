@@ -1,27 +1,45 @@
 import nunjucks from 'nunjucks';
-import { loadTheme, readCoverLetterTemplate, readStyles } from './themes.js';
+import { loadTheme, readCoverLetterTemplate, readStyles, loadThemeConfig } from './themes.js';
 import { generateThemeOverrideCss } from './renderer.js';
-import type { CoverLetter } from '../types/index.js';
-
-// Configure Nunjucks environment for cover letters
-const env = new nunjucks.Environment(null, {
-  autoescape: true,
-  trimBlocks: true,
-  lstripBlocks: true,
-});
+import type { CoverLetter, ThemeConfig } from '../types/index.js';
 
 /**
- * Extract domain from URL for display
+ * Create a Nunjucks environment for cover letter rendering.
+ * When a theme config is provided, its filters and globals are registered.
  */
-env.addFilter('domain', (url: string | undefined): string => {
-  if (!url) return '';
-  try {
-    const parsed = new URL(url);
-    return parsed.hostname.replace(/^www\./, '');
-  } catch {
-    return url;
+function createCoverLetterEnvironment(config?: ThemeConfig | null): nunjucks.Environment {
+  const env = new nunjucks.Environment(null, {
+    autoescape: true,
+    trimBlocks: true,
+    lstripBlocks: true,
+  });
+
+  env.addFilter('domain', (url: string | undefined): string => {
+    if (!url) return '';
+    try {
+      const parsed = new URL(url);
+      return parsed.hostname.replace(/^www\./, '');
+    } catch {
+      return url;
+    }
+  });
+
+  // Register theme-provided filters
+  if (config?.filters) {
+    for (const f of config.filters) {
+      env.addFilter(f.name, f.filter);
+    }
   }
-});
+
+  // Register theme-provided globals
+  if (config?.globals) {
+    for (const [key, value] of Object.entries(config.globals)) {
+      env.addGlobal(key, value);
+    }
+  }
+
+  return env;
+}
 
 export interface CoverLetterRenderResult {
   html: string;
@@ -36,8 +54,11 @@ export async function renderCoverLetterHtml(
   themeName: string
 ): Promise<CoverLetterRenderResult> {
   const theme = await loadTheme(themeName);
+  const config = await loadThemeConfig(theme);
   const template = await readCoverLetterTemplate(theme);
   const css = await readStyles(theme);
+
+  const env = createCoverLetterEnvironment(config);
 
   const html = env.renderString(template, {
     meta: coverLetter.meta,
