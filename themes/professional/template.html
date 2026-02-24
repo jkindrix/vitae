@@ -137,9 +137,7 @@
   <ul class="resume__certifications">
     {% for cert in certifications %}
     <li>
-      <span class="resume__cert-name">{{ cert.name }}</span>
-      {% if cert.issuer %}, {{ cert.issuer }}{% endif %}
-      {% if cert.date %} ({{ cert.date }}){% endif %}
+      <span class="resume__cert-name">{{ cert.name }}</span>{% if cert.issuer %}, {{ cert.issuer }}{% endif %}{% if cert.date %} ({{ cert.date }}){% endif %}
     </li>
     {% endfor %}
   </ul>
