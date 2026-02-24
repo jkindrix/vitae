@@ -1,5 +1,5 @@
 import { writeFile, stat } from 'fs/promises';
-import { resolve } from 'path';
+import { resolve, basename } from 'path';
 import { createInterface } from 'readline';
 import chalk from 'chalk';
 import { stringify as stringifyYaml } from 'yaml';
@@ -124,6 +124,7 @@ projects:
 `;
 
 export interface InitCommandOptions {
+  output?: string;
   force?: boolean;
   interactive?: boolean;
   coverLetter?: boolean;
@@ -251,7 +252,7 @@ async function buildInteractiveResume(): Promise<Record<string, unknown>> {
  */
 export async function initCommand(options: InitCommandOptions): Promise<void> {
   if (options.coverLetter) {
-    const outputPath = resolve('cover-letter.yaml');
+    const outputPath = options.output ? resolve(options.output) : resolve('cover-letter.yaml');
 
     // Check if file exists
     try {
@@ -270,14 +271,15 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
     console.log('');
     console.log(chalk.green(`\u2713 Created ${outputPath}`));
     console.log('');
+    const clFilename = basename(outputPath);
     console.log('Next steps:');
-    console.log(chalk.dim('  1. Edit cover-letter.yaml with your information'));
-    console.log(chalk.dim('  2. Run: vitae build cover-letter.yaml'));
-    console.log(chalk.dim('  3. Or preview: vitae preview cover-letter.yaml'));
+    console.log(chalk.dim(`  1. Edit ${clFilename} with your information`));
+    console.log(chalk.dim(`  2. Run: vitae build ${clFilename}`));
+    console.log(chalk.dim(`  3. Or preview: vitae preview ${clFilename}`));
     return;
   }
 
-  const outputPath = resolve('resume.yaml');
+  const outputPath = options.output ? resolve(options.output) : resolve('resume.yaml');
 
   // Check if file exists
   try {
@@ -310,8 +312,9 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
   console.log('');
   console.log(chalk.green(`\u2713 Created ${outputPath}`));
   console.log('');
+  const filename = basename(outputPath);
   console.log('Next steps:');
-  console.log(chalk.dim('  1. Edit resume.yaml to add more details'));
-  console.log(chalk.dim('  2. Run: vitae build resume.yaml'));
-  console.log(chalk.dim('  3. Or preview: vitae preview resume.yaml'));
+  console.log(chalk.dim(`  1. Edit ${filename} to add more details`));
+  console.log(chalk.dim(`  2. Run: vitae build ${filename}`));
+  console.log(chalk.dim(`  3. Or preview: vitae preview ${filename}`));
 }
