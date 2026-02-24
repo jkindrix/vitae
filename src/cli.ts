@@ -9,6 +9,7 @@ import {
   checkCommand,
   tailorCommand,
   auditCommand,
+  suggestCommand,
   initCommand,
   themesCommand,
   validateCommand,
@@ -180,6 +181,28 @@ program
   .action(async (input: string, options) => {
     try {
       await auditCommand(input, options);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(chalk.red(`Error: ${message}`));
+      process.exitCode = 1;
+    }
+  });
+
+// Suggest command (AI content assistant)
+program
+  .command('suggest')
+  .description('Get AI-powered suggestions for improving resume content')
+  .argument('<input>', 'Path to resume.yaml file')
+  .option('-s, --section <name>', 'Focus on a specific section (summary, experience, skills, etc.)')
+  .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
+  .option('--provider <name>', 'LLM provider: openai, anthropic, ollama')
+  .option('--model <name>', 'LLM model to use')
+  .option('--api-key <key>', 'API key (prefer env var for security)')
+  .option('--base-url <url>', 'Custom API base URL (for Ollama or proxies)')
+  .option('--json', 'Output results as JSON')
+  .action(async (input: string, options) => {
+    try {
+      await suggestCommand(input, options);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(chalk.red(`Error: ${message}`));
