@@ -11,6 +11,7 @@ A resume generator that converts YAML to PDF, DOCX, HTML, JSON, Markdown, and PN
 - **Resume variants** — Tag highlights, skills, and sections; filter with variant YAML for role-targeted resumes
 - **ATS analyzer** — Score resume for ATS compatibility with optional job description keyword matching
 - **Accessibility auditing** — WCAG compliance scoring for rendered HTML (contrast, headings, semantics, links)
+- **AI content assistant** — LLM-powered suggestions for stronger action verbs, metrics, and impact framing (bring-your-own-key)
 - **Job tailoring** — Generate a variant YAML automatically from a job description
 - **Multi-language** — Localized section headings and date formatting (en, es, fr, de, pt)
 - **JSON Resume** — Bidirectional import/export with the [JSON Resume](https://jsonresume.org/) standard
@@ -185,6 +186,37 @@ vitae audit cover-letter.yaml                     # Audit a cover letter (auto-d
 | `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
 | `--level <level>` | WCAG conformance level: `AA` or `AAA` | `AA` |
 | `-l, --layout <name>` | Theme layout variant to use | — |
+| `--json` | Output results as JSON | — |
+
+### `vitae suggest <input>`
+
+Get AI-powered suggestions for improving resume content. Requires an LLM API key — supports OpenAI, Anthropic, and Ollama (local).
+
+```bash
+vitae suggest resume.yaml                         # Auto-detect provider from env vars
+vitae suggest resume.yaml -s experience            # Focus on experience section only
+vitae suggest resume.yaml --provider anthropic     # Explicit provider
+vitae suggest resume.yaml --model gpt-4            # Specific model
+vitae suggest resume.yaml -v backend.variant.yaml  # Suggest for a variant
+vitae suggest resume.yaml --json                   # Machine-readable JSON output
+```
+
+**Environment variables** (set one to enable):
+| Variable | Provider |
+|----------|----------|
+| `ANTHROPIC_API_KEY` | Anthropic (Claude) — checked first |
+| `OPENAI_API_KEY` | OpenAI (GPT) — checked second |
+| `OLLAMA_URL` or `OLLAMA_HOST` | Ollama (local) — checked third |
+
+**Options:**
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-s, --section <name>` | Focus on a specific section (`summary`, `experience`, `skills`, etc.) | All sections |
+| `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
+| `--provider <name>` | LLM provider: `openai`, `anthropic`, `ollama` | Auto-detect |
+| `--model <name>` | LLM model to use | Provider default |
+| `--api-key <key>` | API key (prefer env var for security) | From env |
+| `--base-url <url>` | Custom API base URL (for Ollama or proxies) | Provider default |
 | `--json` | Output results as JSON | — |
 
 ### `vitae tailor <input>`
@@ -744,6 +776,10 @@ import {
   getLocale,
   getSectionLabel,
 
+  // AI suggestions
+  generateSuggestions,
+  resolveLlmConfig,
+
   // Themes
   listThemes,
   loadTheme,
@@ -804,6 +840,10 @@ const a11yStrict = auditAccessibility(standaloneHtml, { level: 'AAA' }); // WCAG
 // Clean up browser instance when done
 await closeBrowser();
 
+// AI content suggestions (requires LLM API key in env)
+const suggestions = await generateSuggestions(resume);
+const focused = await generateSuggestions(resume, { section: 'experience' });
+
 // Theme management
 const themes = await listThemes();
 const theme = await loadTheme('minimal');
@@ -848,6 +888,15 @@ import type {
   ThemeColors,
   ThemeFonts,
   Theme,
+
+  // AI suggestions
+  LlmProvider,
+  LlmConfig,
+  SuggestionCategory,
+  Suggestion,
+  SectionSuggestions,
+  SuggestResult,
+  SuggestOptions,
 
   // Theme config (plugin system)
   ThemeConfig,

@@ -78,13 +78,9 @@ These are larger investments that would significantly shift Vitae's competitive 
 
 **Effort:** Frontend work (HTML/CSS/JS panel injected alongside the preview), theme config schema, two-way binding with resume data.
 
-### 14. Optional AI Content Assistant
+### 14. Optional AI Content Assistant — IMPLEMENTED
 
-**What:** `vitae suggest <input> [--section experience]` that uses an LLM API (user-provided key) to suggest improvements — stronger action verbs, quantified achievements, concise phrasing.
-
-**Why:** AI content assistance is table stakes in commercial tools. Making it optional (bring-your-own-key) keeps the tool free and avoids vendor lock-in. The structured data format makes prompt engineering straightforward.
-
-**Effort:** New command + LLM API integration (OpenAI/Anthropic/Ollama) with prompt templates per section type.
+**Status:** Shipped. `vitae suggest <input>` analyzes resume content via LLM and returns structured improvement suggestions — stronger action verbs, quantified achievements, impact framing, conciseness, clarity, and keyword optimization. Supports three providers: OpenAI, Anthropic, and Ollama (local). Bring-your-own-key via environment variables (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `OLLAMA_URL`). Auto-detects provider from env with `--provider` override. Section-specific analysis via `--section <name>`. Uses native `fetch()` with zero new dependencies. Per-section prompt templates guide the LLM to produce JSON-structured suggestions with categories, current text, improved text, and reasoning. Supports `--json` for machine-readable output and `--variant` for role-specific analysis. Also available as library function `generateSuggestions(resume, options)`.
 
 ### 15. Community Theme Registry
 
@@ -141,7 +137,7 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 11 | ~~Multi-language / i18n~~ | ~~High~~ | ~~Low~~ | ~~Matches brilliant-cv~~ | **DONE** |
 | 12 | ~~Export to JSON Resume~~ | ~~Medium~~ | ~~Medium~~ | ~~Completes interop~~ | **DONE** |
 | 13 | Web theme configurator | High | Medium | Bridges CLI/GUI gap | High |
-| 14 | AI content assistant | High | Low | Matches commercial tier | Medium-High |
+| 14 | ~~AI content assistant~~ | ~~High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
 | 15 | Theme registry | Medium | Very High | Matches JSON Resume | High |
 | 16 | ~~Native DOCX (drop Pandoc)~~ | ~~High~~ | ~~High~~ | ~~Zero-install goal~~ | **DONE** |
 | 17 | ~~Cover letter support~~ | ~~High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
@@ -149,6 +145,6 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | ~~Accessibility auditing~~ | ~~Medium~~ | ~~Low~~ | ~~Novel~~ | **DONE** |
 
-**Completed (15 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #10 (plugin system for themes), #11 (multi-language / i18n), #12 (JSON Resume export), #16 (native DOCX generation), #17 (cover letter support), #20 (accessibility auditing).
+**Completed (16 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #10 (plugin system for themes), #11 (multi-language / i18n), #12 (JSON Resume export), #14 (AI content assistant), #16 (native DOCX generation), #17 (cover letter support), #20 (accessibility auditing).
 
-**Next highest-ROI items:** #14 (AI content assistant), #19 (hosted deploy), #15 (community theme registry).
+**Next highest-ROI items:** #19 (hosted deploy), #15 (community theme registry), #18 (resume analytics).
