@@ -39,9 +39,15 @@ program
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .option('-w, --watch', 'Watch for changes and rebuild automatically')
   .option('-l, --layout <name>', 'Theme layout variant to use')
+  .option('--fit', 'Auto-scale PDF to fit target page count')
+  .option('--pages <count>', 'Target page count for PDF (default: 1)', parseInt)
+  .option('--no-page-warn', 'Suppress page count warnings')
   .action(async (input: string, options) => {
     try {
-      await buildCommand(input, options);
+      await buildCommand(input, {
+        ...options,
+        noPageWarn: options.pageWarn === false,
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(chalk.red(`Error: ${message}`));

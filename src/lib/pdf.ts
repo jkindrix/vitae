@@ -4,6 +4,22 @@ import { renderStandaloneHtml } from './renderer.js';
 import { PdfError } from './errors.js';
 import type { NormalizedResume } from '../types/index.js';
 
+/**
+ * Result metadata from PDF generation
+ */
+export interface PdfResult {
+  pageCount: number;
+  scale: number;
+  outputPath?: string;
+}
+
+/**
+ * Result metadata from PDF buffer generation
+ */
+export interface PdfBufferResult extends PdfResult {
+  buffer: Buffer;
+}
+
 let browser: Browser | null = null;
 
 /**
@@ -106,6 +122,21 @@ export interface PdfOptions {
    * Theme layout variant name
    */
   layout?: string;
+
+  /**
+   * Target number of pages (default: 1). Used for warnings and fit scaling.
+   */
+  targetPages?: number;
+
+  /**
+   * Auto-scale content to fit within targetPages (default: false)
+   */
+  fit?: boolean;
+
+  /**
+   * Minimum scale factor when fit is enabled (default: 0.80)
+   */
+  scaleFloor?: number;
 }
 
 interface DefaultPdfOptions {
@@ -131,6 +162,76 @@ const defaultOptions: DefaultPdfOptions = {
   printBackground: true,
   scale: 1,
 };
+
+/**
+ * Page dimensions in inches for supported paper formats
+ */
+const PAGE_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  Letter: { width: 8.5, height: 11 },
+  A4: { width: 8.27, height: 11.69 },
+  Legal: { width: 8.5, height: 14 },
+};
+
+/**
+ * Parse a CSS inch value (e.g., "0.5in") to a number
+ */
+function parseInches(value: string | undefined): number {
+  if (!value) return 0;
+  const match = value.match(/^([\d.]+)in$/);
+  return match?.[1] != null ? parseFloat(match[1]) : 0;
+}
+
+/**
+ * Count the number of pages in a PDF buffer by scanning for /Type /Page markers.
+ * Excludes /Type /Pages (the page tree root).
+ */
+export function countPdfPages(buffer: Buffer): number {
+  const str = buffer.toString('binary');
+  const matches = str.match(/\/Type\s*\/Page(?!s)/g);
+  return matches ? matches.length : 0;
+}
+
+/**
+ * Measure the content height of a page in pixels.
+ * Sets viewport width to match the paper's usable width for accurate reflow.
+ */
+async function measureContentHeight(
+  page: Page,
+  mergedOptions: DefaultPdfOptions
+): Promise<number> {
+  const dims = PAGE_DIMENSIONS[mergedOptions.format] ?? PAGE_DIMENSIONS['Letter']!;
+  const marginLeft = parseInches(mergedOptions.margin.left);
+  const marginRight = parseInches(mergedOptions.margin.right);
+  const usableWidthInches = dims.width - marginLeft - marginRight;
+  const usableWidthPx = Math.floor(usableWidthInches * 96);
+
+  await page.setViewportSize({ width: usableWidthPx, height: 800 });
+  await page.emulateMedia({ media: 'print', colorScheme: 'light' });
+
+  return page.evaluate('document.documentElement.scrollHeight') as Promise<number>;
+}
+
+/**
+ * Calculate the scale factor needed to fit content within targetPages.
+ * Returns a value clamped between scaleFloor and 1.0.
+ */
+function calculateFitScale(
+  contentHeightPx: number,
+  mergedOptions: DefaultPdfOptions,
+  targetPages: number,
+  scaleFloor: number
+): number {
+  const dims = PAGE_DIMENSIONS[mergedOptions.format] ?? PAGE_DIMENSIONS['Letter']!;
+  const marginTop = parseInches(mergedOptions.margin.top);
+  const marginBottom = parseInches(mergedOptions.margin.bottom);
+  const usableHeightInches = dims.height - marginTop - marginBottom;
+  const usableHeightPx = usableHeightInches * 96;
+
+  const totalUsableHeight = usableHeightPx * targetPages;
+  const scale = totalUsableHeight / contentHeightPx;
+
+  return Math.max(scaleFloor, Math.min(1.0, scale));
+}
 
 /**
  * Prepared page context for PDF generation
@@ -270,23 +371,45 @@ export async function generatePdf(
   themeName: string,
   outputPath: string,
   options: PdfOptions = {}
-): Promise<void> {
+): Promise<PdfResult> {
   const totalStart = Date.now();
   const { page, mergedOptions, debug } = await preparePdfPage(resume, themeName, options);
 
   debug.log(`Output: ${outputPath}`);
 
+  const targetPages = options.targetPages ?? 1;
+  const scaleFloor = options.scaleFloor ?? 0.80;
+  let finalScale = mergedOptions.scale;
+
   try {
+    // If fit mode is enabled, measure content and calculate scale
+    if (options.fit) {
+      const measureStart = Date.now();
+      const contentHeight = await measureContentHeight(page, mergedOptions);
+      debug.timing('Content measurement', measureStart);
+      debug.log(`Content height: ${contentHeight}px`);
+
+      finalScale = calculateFitScale(contentHeight, mergedOptions, targetPages, scaleFloor);
+      debug.log(`Fit scale: ${finalScale.toFixed(3)}`);
+    }
+
     const pdfStart = Date.now();
-    await page.pdf({
-      path: outputPath,
+    const buffer = await page.pdf({
       format: mergedOptions.format,
       margin: mergedOptions.margin,
       printBackground: mergedOptions.printBackground,
-      scale: mergedOptions.scale,
+      scale: finalScale,
     });
     debug.timing('PDF generation', pdfStart);
+
+    const pdfBuffer = Buffer.from(buffer);
+    const pageCount = countPdfPages(pdfBuffer);
+    debug.log(`Page count: ${pageCount}`);
+
+    await writeFile(outputPath, pdfBuffer);
     debug.timing('Total PDF generation', totalStart);
+
+    return { pageCount, scale: finalScale, outputPath };
   } catch (error) {
     throw new PdfError(
       `Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`,
@@ -304,22 +427,41 @@ export async function generatePdfBuffer(
   resume: NormalizedResume,
   themeName: string,
   options: PdfOptions = {}
-): Promise<Buffer> {
+): Promise<PdfBufferResult> {
   const totalStart = Date.now();
   const { page, mergedOptions, debug } = await preparePdfPage(resume, themeName, options);
 
+  const targetPages = options.targetPages ?? 1;
+  const scaleFloor = options.scaleFloor ?? 0.80;
+  let finalScale = mergedOptions.scale;
+
   try {
+    // If fit mode is enabled, measure content and calculate scale
+    if (options.fit) {
+      const measureStart = Date.now();
+      const contentHeight = await measureContentHeight(page, mergedOptions);
+      debug.timing('Content measurement', measureStart);
+      debug.log(`Content height: ${contentHeight}px`);
+
+      finalScale = calculateFitScale(contentHeight, mergedOptions, targetPages, scaleFloor);
+      debug.log(`Fit scale: ${finalScale.toFixed(3)}`);
+    }
+
     const pdfStart = Date.now();
     const buffer = await page.pdf({
       format: mergedOptions.format,
       margin: mergedOptions.margin,
       printBackground: mergedOptions.printBackground,
-      scale: mergedOptions.scale,
+      scale: finalScale,
     });
     debug.timing('PDF generation', pdfStart);
     debug.timing('Total PDF buffer generation', totalStart);
 
-    return Buffer.from(buffer);
+    const pdfBuffer = Buffer.from(buffer);
+    const pageCount = countPdfPages(pdfBuffer);
+    debug.log(`Page count: ${pageCount}`);
+
+    return { buffer: pdfBuffer, pageCount, scale: finalScale };
   } catch (error) {
     throw new PdfError(
       `Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`,
@@ -370,23 +512,45 @@ export async function generatePdfFromHtml(
   html: string,
   outputPath: string,
   options: PdfOptions = {}
-): Promise<void> {
+): Promise<PdfResult> {
   const totalStart = Date.now();
   const { page, mergedOptions, debug } = await prepareHtmlPage(html, options);
 
   debug.log(`Output: ${outputPath}`);
 
+  const targetPages = options.targetPages ?? 1;
+  const scaleFloor = options.scaleFloor ?? 0.80;
+  let finalScale = mergedOptions.scale;
+
   try {
+    // If fit mode is enabled, measure content and calculate scale
+    if (options.fit) {
+      const measureStart = Date.now();
+      const contentHeight = await measureContentHeight(page, mergedOptions);
+      debug.timing('Content measurement', measureStart);
+      debug.log(`Content height: ${contentHeight}px`);
+
+      finalScale = calculateFitScale(contentHeight, mergedOptions, targetPages, scaleFloor);
+      debug.log(`Fit scale: ${finalScale.toFixed(3)}`);
+    }
+
     const pdfStart = Date.now();
-    await page.pdf({
-      path: outputPath,
+    const buffer = await page.pdf({
       format: mergedOptions.format,
       margin: mergedOptions.margin,
       printBackground: mergedOptions.printBackground,
-      scale: mergedOptions.scale,
+      scale: finalScale,
     });
     debug.timing('PDF generation', pdfStart);
+
+    const pdfBuffer = Buffer.from(buffer);
+    const pageCount = countPdfPages(pdfBuffer);
+    debug.log(`Page count: ${pageCount}`);
+
+    await writeFile(outputPath, pdfBuffer);
     debug.timing('Total PDF generation', totalStart);
+
+    return { pageCount, scale: finalScale, outputPath };
   } catch (error) {
     throw new PdfError(
       `Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`,

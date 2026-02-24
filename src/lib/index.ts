@@ -4,8 +4,8 @@ export { validateResume, assertValidResume, validateVariant, assertValidVariant,
 export { listThemes, loadTheme, getThemesDir, readCoverLetterTemplate, loadThemeConfig } from './themes.js';
 export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss } from './renderer.js';
 export type { RenderOptions } from './renderer.js';
-export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser } from './pdf.js';
-export type { PdfOptions } from './pdf.js';
+export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser, countPdfPages } from './pdf.js';
+export type { PdfOptions, PdfResult, PdfBufferResult } from './pdf.js';
 export { generateDocx, generateCoverLetterDocx, resumeToMarkdown } from './docx.js';
 export type { DocxOptions } from './docx.js';
 export { parseDate, formatDate, formatDateShort, formatDateRange } from './dates.js';

@@ -35,6 +35,9 @@ export interface BuildCommandOptions {
   variant?: string;
   watch?: boolean;
   layout?: string;
+  pages?: number;
+  fit?: boolean;
+  noPageWarn?: boolean;
 }
 
 /**
@@ -64,6 +67,27 @@ function openFile(filePath: string): void {
 }
 
 /**
+ * Log page count warning or fit scale info after PDF generation
+ */
+function logPdfPageInfo(
+  pageCount: number,
+  scale: number,
+  targetPages: number,
+  options: { fit?: boolean; noPageWarn?: boolean }
+): void {
+  if (options.fit && scale < 1.0) {
+    console.log(chalk.cyan(`  Scaled to ${Math.round(scale * 100)}% to fit ${targetPages} page${targetPages > 1 ? 's' : ''}`));
+  }
+  if (pageCount > targetPages && !options.noPageWarn) {
+    console.log(
+      chalk.yellow(`  \u26A0 Output is ${pageCount} page${pageCount > 1 ? 's' : ''} (target: ${targetPages})`)
+    );
+    console.log(chalk.dim('    Tips: use --fit to auto-scale, --pages <n> to change target,'));
+    console.log(chalk.dim('    trim content, or --no-page-warn to suppress this warning'));
+  }
+}
+
+/**
  * Generate outputs for a single theme
  */
 async function generateForTheme(
@@ -72,7 +96,7 @@ async function generateForTheme(
   formats: OutputFormat[],
   outputDir: string,
   outputBasename: string,
-  options: { debug?: boolean; includeThemeInName?: boolean; layout?: string }
+  options: { debug?: boolean; includeThemeInName?: boolean; layout?: string; pages?: number; fit?: boolean; noPageWarn?: boolean }
 ): Promise<{ format: string; path: string }[]> {
   const results: { format: string; path: string }[] = [];
   const namePrefix = options.includeThemeInName ? `${outputBasename}-${themeName}` : outputBasename;
@@ -98,6 +122,7 @@ async function generateForTheme(
           console.log(
             chalk.blue(`Generating PDF${options.includeThemeInName ? ` (${themeName})` : ''}...`)
           );
+          const targetPages = options.pages ?? 1;
           const pdfOptions = {
             ...(options.debug
               ? {
@@ -107,10 +132,12 @@ async function generateForTheme(
                 }
               : {}),
             ...(options.layout ? { layout: options.layout } : {}),
+            ...(options.fit ? { fit: true, targetPages } : { targetPages }),
           };
-          await generatePdf(resume, themeName, outputPath, pdfOptions);
+          const pdfResult = await generatePdf(resume, themeName, outputPath, pdfOptions);
           results.push({ format: 'PDF', path: outputPath });
           console.log(chalk.green(`\u2713 PDF: ${outputPath}`));
+          logPdfPageInfo(pdfResult.pageCount, pdfResult.scale, targetPages, options);
           break;
         }
 
@@ -183,7 +210,7 @@ async function generateCoverLetterForTheme(
   formats: OutputFormat[],
   outputDir: string,
   outputBasename: string,
-  options: { debug?: boolean; includeThemeInName?: boolean }
+  options: { debug?: boolean; includeThemeInName?: boolean; pages?: number; fit?: boolean; noPageWarn?: boolean }
 ): Promise<{ format: string; path: string }[]> {
   const results: { format: string; path: string }[] = [];
   const namePrefix = options.includeThemeInName ? `${outputBasename}-${themeName}` : outputBasename;
@@ -209,16 +236,21 @@ async function generateCoverLetterForTheme(
             chalk.blue(`Generating PDF${options.includeThemeInName ? ` (${themeName})` : ''}...`)
           );
           const html = await renderCoverLetterStandaloneHtml(coverLetter, themeName);
-          const pdfOptions = options.debug
-            ? {
-                debug: true,
-                saveHtml: outputPath.replace('.pdf', '-debug.html'),
-                screenshot: outputPath.replace('.pdf', '-debug.png'),
-              }
-            : {};
-          await generatePdfFromHtml(html, outputPath, pdfOptions);
+          const clTargetPages = options.pages ?? 1;
+          const pdfOptions = {
+            ...(options.debug
+              ? {
+                  debug: true,
+                  saveHtml: outputPath.replace('.pdf', '-debug.html'),
+                  screenshot: outputPath.replace('.pdf', '-debug.png'),
+                }
+              : {}),
+            ...(options.fit ? { fit: true, targetPages: clTargetPages } : { targetPages: clTargetPages }),
+          };
+          const pdfResult = await generatePdfFromHtml(html, outputPath, pdfOptions);
           results.push({ format: 'PDF', path: outputPath });
           console.log(chalk.green(`\u2713 PDF: ${outputPath}`));
+          logPdfPageInfo(pdfResult.pageCount, pdfResult.scale, clTargetPages, options);
           break;
         }
 
@@ -332,6 +364,9 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
         {
           debug: options.debug ?? false,
           includeThemeInName: options.allThemes ?? false,
+          ...(options.pages != null ? { pages: options.pages } : {}),
+          ...(options.fit != null ? { fit: options.fit } : {}),
+          ...(options.noPageWarn != null ? { noPageWarn: options.noPageWarn } : {}),
         }
       );
       allResults.push(...results);
@@ -433,6 +468,9 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
         debug: options.debug ?? false,
         includeThemeInName: options.allThemes ?? false,
         ...(options.layout ? { layout: options.layout } : {}),
+        ...(options.pages != null ? { pages: options.pages } : {}),
+        ...(options.fit != null ? { fit: options.fit } : {}),
+        ...(options.noPageWarn != null ? { noPageWarn: options.noPageWarn } : {}),
       }
     );
     allResults.push(...results);
