@@ -19,6 +19,7 @@ export interface AuditCommandOptions {
   theme?: string;
   variant?: string;
   level?: string;
+  layout?: string;
   json?: boolean;
 }
 
@@ -43,7 +44,8 @@ export async function auditCommand(
       resume = applyVariant(resume, variant);
     }
     const normalized = normalizeResume(resume);
-    html = await renderStandaloneHtml(normalized, themeName);
+    const renderOpts = options.layout ? { variant: options.layout } : undefined;
+    html = await renderStandaloneHtml(normalized, themeName, renderOpts);
   }
 
   const result = auditAccessibility(html, { level });

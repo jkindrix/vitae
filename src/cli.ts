@@ -37,6 +37,7 @@ program
   .option('-d, --debug', 'Enable debug mode with verbose logging and intermediate files')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .option('-w, --watch', 'Watch for changes and rebuild automatically')
+  .option('-l, --layout <name>', 'Theme layout variant to use')
   .action(async (input: string, options) => {
     try {
       await buildCommand(input, options);
@@ -174,6 +175,7 @@ program
   .option('-t, --theme <name>', 'Theme to audit against', 'minimal')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .option('--level <level>', 'WCAG conformance level: AA or AAA', 'AA')
+  .option('-l, --layout <name>', 'Theme layout variant to use')
   .option('--json', 'Output results as JSON')
   .action(async (input: string, options) => {
     try {
@@ -193,12 +195,14 @@ program
   .option('-t, --theme <name>', 'Theme to use', 'minimal')
   .option('-p, --port <number>', 'Port to run on', '3000')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
+  .option('-l, --layout <name>', 'Theme layout variant to use')
   .action(async (input: string, options) => {
     try {
       await previewCommand(input, {
         theme: options.theme,
         port: parseInt(options.port, 10),
         variant: options.variant,
+        layout: options.layout,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

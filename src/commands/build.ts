@@ -34,6 +34,7 @@ export interface BuildCommandOptions {
   debug?: boolean;
   variant?: string;
   watch?: boolean;
+  layout?: string;
 }
 
 /**
@@ -71,7 +72,7 @@ async function generateForTheme(
   formats: OutputFormat[],
   outputDir: string,
   outputBasename: string,
-  options: { debug?: boolean; includeThemeInName?: boolean }
+  options: { debug?: boolean; includeThemeInName?: boolean; layout?: string }
 ): Promise<{ format: string; path: string }[]> {
   const results: { format: string; path: string }[] = [];
   const namePrefix = options.includeThemeInName ? `${outputBasename}-${themeName}` : outputBasename;
@@ -85,7 +86,8 @@ async function generateForTheme(
           console.log(
             chalk.blue(`Generating HTML${options.includeThemeInName ? ` (${themeName})` : ''}...`)
           );
-          const html = await renderStandaloneHtml(resume, themeName);
+          const renderOpts = options.layout ? { variant: options.layout } : undefined;
+          const html = await renderStandaloneHtml(resume, themeName, renderOpts);
           await writeFile(outputPath, html, 'utf-8');
           results.push({ format: 'HTML', path: outputPath });
           console.log(chalk.green(`\u2713 HTML: ${outputPath}`));
@@ -96,13 +98,16 @@ async function generateForTheme(
           console.log(
             chalk.blue(`Generating PDF${options.includeThemeInName ? ` (${themeName})` : ''}...`)
           );
-          const pdfOptions = options.debug
-            ? {
-                debug: true,
-                saveHtml: outputPath.replace('.pdf', '-debug.html'),
-                screenshot: outputPath.replace('.pdf', '-debug.png'),
-              }
-            : {};
+          const pdfOptions = {
+            ...(options.debug
+              ? {
+                  debug: true,
+                  saveHtml: outputPath.replace('.pdf', '-debug.html'),
+                  screenshot: outputPath.replace('.pdf', '-debug.png'),
+                }
+              : {}),
+            ...(options.layout ? { layout: options.layout } : {}),
+          };
           await generatePdf(resume, themeName, outputPath, pdfOptions);
           results.push({ format: 'PDF', path: outputPath });
           console.log(chalk.green(`\u2713 PDF: ${outputPath}`));
@@ -147,7 +152,10 @@ async function generateForTheme(
           console.log(
             chalk.blue(`Generating PNG${options.includeThemeInName ? ` (${themeName})` : ''}...`)
           );
-          const pngOptions = options.debug ? { debug: true } : {};
+          const pngOptions = {
+            ...(options.debug ? { debug: true } : {}),
+            ...(options.layout ? { layout: options.layout } : {}),
+          };
           await generatePng(resume, themeName, outputPath, pngOptions);
           results.push({ format: 'PNG', path: outputPath });
           console.log(chalk.green(`\u2713 PNG: ${outputPath}`));
@@ -420,6 +428,7 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
       {
         debug: options.debug ?? false,
         includeThemeInName: options.allThemes ?? false,
+        ...(options.layout ? { layout: options.layout } : {}),
       }
     );
     allResults.push(...results);

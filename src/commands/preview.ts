@@ -15,6 +15,7 @@ export interface PreviewCommandOptions {
   theme: string;
   port?: number;
   variant?: string;
+  layout?: string;
 }
 
 // Store connected SSE clients
@@ -122,7 +123,8 @@ export async function previewCommand(
 
         // Normalize
         const normalized = normalizeResume(resume, sectionOrder);
-        html = await renderStandaloneHtml(normalized, options.theme);
+        const renderOpts = options.layout ? { variant: options.layout } : undefined;
+        html = await renderStandaloneHtml(normalized, options.theme, renderOpts);
       }
 
       // Inject SSE-based hot reload script
