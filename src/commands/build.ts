@@ -361,6 +361,10 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log('');
+    if (allResults.length === 0) {
+      console.log(chalk.red(`\u2717 Build failed — no files generated`));
+      throw new Error('Build produced no output files');
+    }
     console.log(chalk.green(`\u2713 Generated ${allResults.length} file(s) in ${elapsed}s`));
 
     if (options.open && !options.watch) {
@@ -460,6 +464,10 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
   // Summary
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
   console.log('');
+  if (allResults.length === 0) {
+    console.log(chalk.red(`\u2717 Build failed — no files generated`));
+    throw new Error('Build produced no output files');
+  }
   console.log(chalk.green(`\u2713 Generated ${allResults.length} file(s) in ${elapsed}s`));
 
   // Open first file if requested (only on first build, not in watch mode)
