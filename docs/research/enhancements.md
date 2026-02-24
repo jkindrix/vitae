@@ -52,13 +52,9 @@ These require meaningful implementation but have outsized impact on user value o
 
 **What was built:** Tagged highlights (`string | {text, tags}`), variant YAML files with `include_tags`/`exclude_tags` filtering, meta deep-merge, summary override, skill name-based filtering, section ordering, empty container pruning, and a normalize-before-render pipeline. Wired into `build` and `preview` via `--variant` flag.
 
-### 10. Plugin/Extension System for Themes
+### 10. Plugin/Extension System for Themes — IMPLEMENTED
 
-**What:** Allow themes to include a `theme.config.js` or `theme.ts` that exports configuration (color options, layout variants, custom filters, custom Nunjucks extensions).
-
-**Why:** The current theme system is file-based (HTML + CSS only). A programmatic layer would enable themes to declare their own configuration options, custom template helpers, and layout variants — making community themes richer without changing the core.
-
-**Effort:** Theme loader enhancement + config schema + documentation.
+**Status:** Shipped. Themes can now include an optional `theme.config.js` file that exports a `ThemeConfig` object with five capabilities: metadata (description, author, version, tags — displayed by `vitae themes`), custom Nunjucks filters (registered automatically in the template environment), global variables (available in all templates), computed helpers (a function receiving the resume that returns derived context like `totalExperienceYears`), and layout variants (named alternative templates selectable via `--layout <name>` on `build`, `preview`, and `audit` commands). Theme configs are loaded via dynamic `import()` with mtime-based cache busting for hot-reload compatibility. Variant template paths are validated against path traversal. All 3 bundled themes (minimal, modern, professional) ship with config files. Fully backwards compatible — themes without a config file work identically to before. Also available as library function `loadThemeConfig(theme)`.
 
 ### 11. Multi-Language / i18n Support — IMPLEMENTED
 
@@ -141,7 +137,7 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 7 | ~~ATS analyzer~~ | ~~Very High~~ | ~~Low~~ | ~~Category-defining~~ | **DONE** |
 | 8 | ~~Job description tailoring~~ | ~~Very High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
 | 9 | ~~Resume variants~~ | ~~High~~ | ~~Medium~~ | ~~Novel in CLI space~~ | **DONE** |
-| 10 | Plugin system for themes | Medium | Very High | Enables ecosystem | Medium |
+| 10 | ~~Plugin system for themes~~ | ~~Medium~~ | ~~Very High~~ | ~~Enables ecosystem~~ | **DONE** |
 | 11 | ~~Multi-language / i18n~~ | ~~High~~ | ~~Low~~ | ~~Matches brilliant-cv~~ | **DONE** |
 | 12 | ~~Export to JSON Resume~~ | ~~Medium~~ | ~~Medium~~ | ~~Completes interop~~ | **DONE** |
 | 13 | Web theme configurator | High | Medium | Bridges CLI/GUI gap | High |
@@ -153,6 +149,6 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
 | 20 | ~~Accessibility auditing~~ | ~~Medium~~ | ~~Low~~ | ~~Novel~~ | **DONE** |
 
-**Completed (14 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #11 (multi-language / i18n), #12 (JSON Resume export), #16 (native DOCX generation), #17 (cover letter support), #20 (accessibility auditing).
+**Completed (15 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #10 (plugin system for themes), #11 (multi-language / i18n), #12 (JSON Resume export), #16 (native DOCX generation), #17 (cover letter support), #20 (accessibility auditing).
 
-**Next highest-ROI items:** #10 (plugin system for themes), #14 (AI content assistant), #19 (hosted deploy).
+**Next highest-ROI items:** #14 (AI content assistant), #19 (hosted deploy), #15 (community theme registry).

@@ -6,6 +6,7 @@ A resume generator that converts YAML to PDF, DOCX, HTML, JSON, Markdown, and PN
 
 - **6 output formats** — PDF, DOCX, HTML, JSON, Markdown, PNG
 - **Theming system** — Customizable Nunjucks templates with CSS; override colors and fonts in `resume.yaml`
+- **Theme plugins** — Optional `theme.config.js` for custom filters, globals, helpers, layout variants, and metadata
 - **Cover letters** — Generate cover letters in all output formats from a dedicated YAML schema
 - **Resume variants** — Tag highlights, skills, and sections; filter with variant YAML for role-targeted resumes
 - **ATS analyzer** — Score resume for ATS compatibility with optional job description keyword matching
@@ -100,6 +101,7 @@ vitae build resume.yaml -a                        # All themes
 vitae build resume.yaml --open                    # Open PDF after generation
 vitae build resume.yaml -v backend.variant.yaml   # Apply variant for role filtering
 vitae build resume.yaml -w                        # Watch for changes and rebuild
+vitae build resume.yaml -l compact                # Use a theme layout variant
 vitae build resume.yaml -d                        # Debug mode with verbose logging
 vitae build cover-letter.yaml                     # Build a cover letter (auto-detected)
 ```
@@ -115,6 +117,7 @@ vitae build cover-letter.yaml                     # Build a cover letter (auto-d
 | `--open` | Open the first generated file after build | — |
 | `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
 | `-w, --watch` | Watch for changes and rebuild automatically | — |
+| `-l, --layout <name>` | Theme layout variant to use | — |
 | `-d, --debug` | Debug mode with verbose logging and intermediate files | — |
 
 ### `vitae preview <input>`
@@ -134,6 +137,7 @@ vitae preview resume.yaml -v backend.variant.yaml # Preview with variant applied
 | `-p, --port <number>` | Port to run server on | `3000` |
 | `-t, --theme <name>` | Theme to use | `minimal` |
 | `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
+| `-l, --layout <name>` | Theme layout variant to use | — |
 
 ### `vitae validate <input>`
 
@@ -180,6 +184,7 @@ vitae audit cover-letter.yaml                     # Audit a cover letter (auto-d
 | `-t, --theme <name>` | Theme to audit against | `minimal` |
 | `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
 | `--level <level>` | WCAG conformance level: `AA` or `AAA` | `AA` |
+| `-l, --layout <name>` | Theme layout variant to use | — |
 | `--json` | Output results as JSON | — |
 
 ### `vitae tailor <input>`
@@ -544,14 +549,15 @@ Works across all output formats (PDF, DOCX, HTML, JSON, Markdown, PNG).
 
 ## Themes
 
-Themes are directories containing templates and styles:
+Themes are directories containing templates, styles, and an optional plugin config:
 
 ```
 themes/
 └── minimal/
     ├── template.html         # Required: Nunjucks template for resume
     ├── style.css             # Optional: CSS styles
-    └── cover-letter.html     # Optional: Nunjucks template for cover letters
+    ├── cover-letter.html     # Optional: Nunjucks template for cover letters
+    └── theme.config.js       # Optional: Plugin config (filters, helpers, variants, metadata)
 ```
 
 ### Creating a Custom Theme
@@ -587,10 +593,72 @@ themes/
 
 4. Add optional `cover-letter.html` for cover letter support
 
-5. Use your theme:
+5. Optionally add `theme.config.js` for custom filters, helpers, and metadata (see [Theme Plugin Config](#theme-plugin-config) below)
+
+6. Use your theme:
    ```bash
    vitae build resume.yaml -t mytheme
    ```
+
+### Theme Plugin Config
+
+Themes can export a `theme.config.js` to declare metadata, custom Nunjucks filters, global variables, computed helpers, and layout variants:
+
+```javascript
+/** @type {import('@jkindrix/vitae').ThemeConfig} */
+export default {
+  metadata: {
+    description: 'A clean, single-column resume layout',
+    author: 'Vitae',
+    version: '1.0.0',
+    license: 'MIT',
+    tags: ['single-column', 'clean', 'minimal'],
+  },
+
+  // Custom Nunjucks filters available in templates
+  filters: [
+    {
+      name: 'initials',
+      filter: (name) => name?.split(' ').map(w => w[0]).join('') ?? '',
+    },
+  ],
+
+  // Static globals available in all templates
+  globals: {
+    appName: 'Vitae',
+  },
+
+  // Computed context derived from resume data
+  helpers: (resume) => ({
+    totalExperienceYears: (() => {
+      const starts = resume.experience
+        .flatMap(e => e.roles)
+        .map(r => parseInt(r.start?.split('-')[0] ?? '0', 10))
+        .filter(y => y > 0);
+      if (starts.length === 0) return 0;
+      return new Date().getFullYear() - Math.min(...starts);
+    })(),
+    skillCount: (resume.skills ?? []).reduce((n, c) => n + c.items.length, 0),
+  }),
+
+  // Layout variants (alternative templates)
+  variants: [
+    { name: 'compact', description: 'Compact layout', template: 'template-compact.html' },
+  ],
+};
+```
+
+**Config capabilities:**
+
+| Field | Description |
+|-------|-------------|
+| `metadata` | Theme description, author, version, tags — displayed by `vitae themes` |
+| `filters` | Custom Nunjucks filters (e.g., `{{ meta.name \| initials }}`) |
+| `globals` | Static values available in all templates (e.g., `{{ appName }}`) |
+| `helpers` | Function receiving the resume, returns computed context (e.g., `{{ totalExperienceYears }}`) |
+| `variants` | Named layout alternatives, selected with `--layout <name>` |
+
+Themes without a `theme.config.js` work identically to before — the config is entirely optional.
 
 ### Template Variables
 
@@ -679,6 +747,7 @@ import {
   // Themes
   listThemes,
   loadTheme,
+  loadThemeConfig,
   readCoverLetterTemplate,
 } from '@jkindrix/vitae';
 ```
@@ -738,6 +807,10 @@ await closeBrowser();
 // Theme management
 const themes = await listThemes();
 const theme = await loadTheme('minimal');
+const config = await loadThemeConfig(theme); // Load theme.config.js (null if absent)
+
+// Render with a layout variant
+const { html } = await renderHtml(resume, 'mytheme', { variant: 'compact' });
 ```
 
 ## TypeScript Types
@@ -776,6 +849,12 @@ import type {
   ThemeFonts,
   Theme,
 
+  // Theme config (plugin system)
+  ThemeConfig,
+  ThemeMetadata,
+  ThemeLayoutVariant,
+  ThemeFilter,
+
   // Variant
   Variant,
   SectionName,
@@ -784,11 +863,12 @@ import type {
   CoverLetter,
   Recipient,
 
-  // Build
+  // Build / Render
   OutputFormat,
   BuildOptions,
   PdfOptions,
   DocxOptions,
+  RenderOptions,
 
   // i18n
   Locale,
