@@ -333,4 +333,5 @@ export interface Theme {
   hasStyles: boolean;
   hasDocxReference: boolean;
   hasCoverLetterTemplate: boolean;
+  hasConfig: boolean;
 }
