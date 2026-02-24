@@ -42,6 +42,13 @@ export class ThemeError extends VitaeError {
   static missingTemplate(themeName: string): ThemeError {
     return new ThemeError(`Theme '${themeName}' is missing required template.html`, themeName);
   }
+
+  static variantNotFound(themeName: string, variantName: string): ThemeError {
+    return new ThemeError(
+      `Layout variant '${variantName}' not found in theme '${themeName}'`,
+      themeName,
+    );
+  }
 }
 
 /**

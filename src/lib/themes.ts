@@ -1,8 +1,8 @@
 import { readdir, readFile, stat } from 'fs/promises';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join, dirname, resolve, relative } from 'path';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { ThemeError } from './errors.js';
-import type { Theme } from '../types/index.js';
+import type { Theme, ThemeConfig } from '../types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,6 +44,7 @@ export async function loadTheme(themeName: string): Promise<Theme> {
   const hasStyles = await fileExists(join(themePath, 'style.css'));
   const hasDocxReference = await fileExists(join(themePath, 'reference.docx'));
   const hasCoverLetterTemplate = await fileExists(join(themePath, 'cover-letter.html'));
+  const hasConfig = await fileExists(join(themePath, 'theme.config.js'));
 
   if (!hasTemplate) {
     throw ThemeError.missingTemplate(themeName);
@@ -56,6 +57,7 @@ export async function loadTheme(themeName: string): Promise<Theme> {
     hasStyles,
     hasDocxReference,
     hasCoverLetterTemplate,
+    hasConfig,
   };
 }
 
@@ -119,4 +121,41 @@ export async function readCoverLetterTemplate(theme: Theme): Promise<string> {
   }
   const templatePath = join(theme.path, 'cover-letter.html');
   return readFile(templatePath, 'utf-8');
+}
+
+/**
+ * Load a theme's configuration file (theme.config.js)
+ * Returns null if the theme has no config file.
+ */
+export async function loadThemeConfig(theme: Theme): Promise<ThemeConfig | null> {
+  if (!theme.hasConfig) return null;
+  const configPath = join(theme.path, 'theme.config.js');
+  const configUrl = pathToFileURL(configPath).href;
+  // Bust Node module cache with mtime so config changes are picked up
+  const { mtimeMs } = await stat(configPath);
+  const mod = await import(`${configUrl}?v=${mtimeMs}`);
+  return (mod.default ?? mod) as ThemeConfig;
+}
+
+/**
+ * Read a variant template file from a theme directory.
+ * The filename must resolve to a path within the theme directory.
+ */
+export async function readVariantTemplate(theme: Theme, filename: string): Promise<string> {
+  const resolved = resolve(theme.path, filename);
+  const rel = relative(theme.path, resolved);
+  if (rel.startsWith('..') || resolve(theme.path, rel) !== resolved) {
+    throw new ThemeError(
+      `Variant template '${filename}' resolves outside theme directory`,
+      theme.name,
+    );
+  }
+  const exists = await fileExists(resolved);
+  if (!exists) {
+    throw new ThemeError(
+      `Variant template '${filename}' not found in theme '${theme.name}'`,
+      theme.name,
+    );
+  }
+  return readFile(resolved, 'utf-8');
 }

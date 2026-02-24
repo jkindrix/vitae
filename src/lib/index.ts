@@ -1,8 +1,9 @@
 export { loadResume, parseResume, loadVariant, loadCoverLetter, loadDocument, isCoverLetterFormat } from './loader.js';
 export type { DocumentResult } from './loader.js';
 export { validateResume, assertValidResume, validateVariant, assertValidVariant, validateCoverLetter, assertValidCoverLetter } from './schema.js';
-export { listThemes, loadTheme, getThemesDir, readCoverLetterTemplate } from './themes.js';
+export { listThemes, loadTheme, getThemesDir, readCoverLetterTemplate, loadThemeConfig } from './themes.js';
 export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss } from './renderer.js';
+export type { RenderOptions } from './renderer.js';
 export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser } from './pdf.js';
 export type { PdfOptions } from './pdf.js';
 export { generateDocx, generateCoverLetterDocx, resumeToMarkdown } from './docx.js';
