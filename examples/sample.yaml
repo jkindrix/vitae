@@ -1,5 +1,6 @@
 # Sample Resume
-# This example demonstrates all supported fields in vitae
+# This example demonstrates all supported fields in vitae, including
+# id fields and tags for use with the v2 variant system.
 
 meta:
   name: Jane Smith
@@ -22,7 +23,9 @@ summary: >
   projects from concept to production.
 
 skills:
-  - category: Languages
+  - id: languages
+    category: Languages
+    tags: [backend, frontend]
     items:
       - TypeScript
       - Python
@@ -30,7 +33,9 @@ skills:
       - Rust
       - SQL
 
-  - category: Frontend
+  - id: frontend
+    category: Frontend
+    tags: [frontend]
     items:
       - React
       - Next.js
@@ -38,7 +43,9 @@ skills:
       - Tailwind CSS
       - WebSockets
 
-  - category: Backend
+  - id: backend
+    category: Backend
+    tags: [backend]
     items:
       - Node.js
       - Django
@@ -46,7 +53,9 @@ skills:
       - GraphQL
       - gRPC
 
-  - category: Infrastructure
+  - id: infra
+    category: Infrastructure
+    tags: [backend, devops]
     items:
       - AWS
       - Docker
@@ -55,63 +64,86 @@ skills:
       - PostgreSQL
 
 experience:
-  - company: Tech Innovations Inc.
+  - id: tech-innovations
+    company: Tech Innovations Inc.
     roles:
-      - title: Senior Software Engineer
+      - id: senior-swe
+        title: Senior Software Engineer
         start: 2021-03
         end: present
         location: San Francisco, CA
         highlights:
-          - Led architecture and implementation of real-time collaboration features serving 50K+ daily active users
-          - Reduced API response times by 60% through query optimization and caching strategies
+          - text: Led architecture and implementation of real-time collaboration features serving 50K+ daily active users
+            tags: [backend, leadership]
+          - text: Reduced API response times by 60% through query optimization and caching strategies
+            tags: [backend]
           - Mentored team of 4 engineers; established code review practices that reduced production bugs by 40%
-          - Designed event-driven microservices architecture handling 10M+ events per day
+          - text: Designed event-driven microservices architecture handling 10M+ events per day
+            tags: [backend, devops]
 
-      - title: Software Engineer
+      - id: swe
+        title: Software Engineer
         start: 2019-01
         end: 2021-03
         location: San Francisco, CA
         highlights:
-          - Built customer-facing dashboard with React and GraphQL, improving user engagement by 25%
-          - Implemented CI/CD pipelines reducing deployment time from 2 hours to 15 minutes
+          - text: Built customer-facing dashboard with React and GraphQL, improving user engagement by 25%
+            tags: [frontend]
+          - text: Implemented CI/CD pipelines reducing deployment time from 2 hours to 15 minutes
+            tags: [devops]
           - Developed internal tools that automated manual processes, saving 20 engineering hours per week
 
-  - company: StartupCo
+  - id: startupco
+    company: StartupCo
+    tags: [frontend, backend]
     roles:
-      - title: Full-Stack Developer
+      - id: fullstack-dev
+        title: Full-Stack Developer
         start: 2017-06
         end: 2018-12
         location: Austin, TX
         highlights:
-          - Developed MVP for B2B SaaS platform from scratch using Node.js and React
+          - text: Developed MVP for B2B SaaS platform from scratch using Node.js and React
+            tags: [frontend, backend]
           - Integrated third-party APIs for payment processing and analytics
           - Collaborated directly with founders to translate business requirements into technical specifications
 
-  - company: Digital Agency LLC
+  - id: digital-agency
+    company: Digital Agency LLC
+    tags: [frontend]
     roles:
-      - title: Junior Developer
+      - id: junior-dev
+        title: Junior Developer
         start: 2015-09
         end: 2017-05
         location: Austin, TX
         highlights:
-          - Built responsive web applications for clients across healthcare and finance sectors
+          - text: Built responsive web applications for clients across healthcare and finance sectors
+            tags: [frontend]
           - Maintained and improved legacy PHP applications while migrating to modern stack
 
 projects:
-  - name: fastcache
+  - id: fastcache
+    name: fastcache
+    tags: [backend]
     url: https://github.com/janesmith/fastcache
     description: High-performance distributed caching library for Node.js with Redis and Memcached backends
 
-  - name: react-form-builder
+  - id: react-form-builder
+    name: react-form-builder
+    tags: [frontend]
     url: https://github.com/janesmith/react-form-builder
     description: Drag-and-drop form builder component with JSON schema support and validation
 
-  - name: cli-toolkit
+  - id: cli-toolkit
+    name: cli-toolkit
+    tags: [backend, devops]
     url: https://github.com/janesmith/cli-toolkit
     description: Collection of utilities for building beautiful command-line applications in TypeScript
 
 education:
-  - institution: University of Texas at Austin
+  - id: ut-austin
+    institution: University of Texas at Austin
     degree: Bachelor of Science
     field: Computer Science
     start: "2011"
@@ -121,9 +153,13 @@ education:
       - Dean's List all semesters
 
 certifications:
-  - name: AWS Solutions Architect Professional
+  - id: aws-sa
+    name: AWS Solutions Architect Professional
+    tags: [devops]
     issuer: Amazon Web Services
     date: "2023"
-  - name: Certified Kubernetes Administrator
+  - id: cka
+    name: Certified Kubernetes Administrator
+    tags: [devops]
     issuer: Cloud Native Computing Foundation
     date: "2022"

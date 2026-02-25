@@ -1,0 +1,17 @@
+# Base one-page variant
+# Demonstrates: density controls via limit and style overrides.
+# Designed to be extended by role-specific variants.
+
+layout: [summary, skills, experience, education]
+
+experience:
+  limit: 2
+  roles:
+    limit: 2
+  highlights:
+    limit: 3
+
+style:
+  --line-height-normal: "1.2"
+  --space-md: "0.5rem"
+  --space-lg: "0.75rem"

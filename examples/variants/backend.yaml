@@ -1,0 +1,36 @@
+# Backend-focused variant
+# Demonstrates: per-section tag filtering, id-based pick, omit, limit,
+# nested role/highlight selectors, and style overrides.
+
+meta:
+  title: "Senior Backend Engineer | Distributed Systems"
+
+summary: >-
+  Senior Backend Engineer with 8+ years building scalable distributed systems
+  and APIs. Led architecture of event-driven microservices handling 10M+ daily
+  events. Core stack: Python, Go, Node.js, PostgreSQL, AWS.
+
+layout: [summary, skills, experience, projects, certifications, education]
+
+skills:
+  pick: [backend, infra]
+
+experience:
+  tags: [backend]
+  omit: [digital-agency]
+  roles:
+    tags: [backend]
+    limit: 3
+  highlights:
+    tags: [backend]
+    limit: 4
+
+projects:
+  pick: [fastcache, cli-toolkit]
+  limit: 2
+
+certifications:
+  tags: [devops]
+
+style:
+  --line-height-normal: "1.2"

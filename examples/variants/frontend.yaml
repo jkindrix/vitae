@@ -1,0 +1,34 @@
+# Frontend-focused variant
+# Demonstrates: tag filtering with TagExpr (any/not), pick bypassing tags,
+# global tags fallback, and highlight-level filtering.
+
+meta:
+  title: "Senior Frontend Engineer | React & UI Architecture"
+
+summary: >-
+  Senior Frontend Engineer specializing in React-based UI architecture with
+  8+ years of experience. Built real-time collaboration features for 50K+
+  users. Passionate about component design, accessibility, and developer
+  experience.
+
+layout: [summary, skills, experience, projects, education]
+
+# Global tags for sections without their own config
+tags: [frontend]
+
+skills:
+  # pick bypasses tag filtering — Languages appears despite not being
+  # tagged [frontend]-only, because pick is explicit
+  pick: [frontend, languages]
+
+experience:
+  tags:
+    any: [frontend]
+    not: [devops]
+  highlights:
+    tags: [frontend]
+    limit: 3
+
+projects:
+  pick: [react-form-builder]
+  tags: [frontend]

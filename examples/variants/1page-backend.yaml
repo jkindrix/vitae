@@ -1,0 +1,21 @@
+# One-page backend variant (composition example)
+# Demonstrates: extends for variant composition.
+# Inherits: experience limits and style from base-1page.yaml.
+# Overrides: layout (adds projects), skills, and projects with backend config.
+
+extends: ./base-1page.yaml
+
+meta:
+  title: "Senior Backend Engineer"
+
+summary: >-
+  Senior Backend Engineer with 8+ years building distributed systems and APIs
+  at scale. Core stack: Python, Go, Node.js, PostgreSQL, AWS.
+
+layout: [summary, skills, experience, projects, education]
+
+skills:
+  pick: [backend, infra]
+
+projects:
+  pick: [fastcache]
