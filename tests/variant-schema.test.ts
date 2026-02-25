@@ -11,31 +11,59 @@ describe('variant schema validation', () => {
 
     it('validates a complete variant', async () => {
       const result = await validateVariant({
-        include_tags: ['frontend', 'ui'],
-        exclude_tags: ['legacy'],
+        extends: './base.yaml',
         meta: {
           title: 'Frontend Engineer',
           location: 'Remote',
         },
         summary: 'Focused on UI/UX development.',
-        section_order: ['summary', 'skills', 'experience', 'education'],
+        layout: ['summary', 'skills', 'experience', 'education'],
+        tags: ['frontend'],
         skills: {
-          include: ['Languages', 'Frameworks'],
+          pick: ['Languages', 'Frameworks'],
+          limit: 3,
+        },
+        experience: {
+          tags: ['backend'],
+          roles: { tags: ['backend'], limit: 4 },
+          highlights: { tags: ['backend'], limit: 3 },
+        },
+        projects: {
+          pick: ['oss-cli'],
+          tags: ['backend'],
+          limit: 2,
+        },
+        style: {
+          '--line-height-normal': '1.2',
         },
       });
       expect(result.valid).toBe(true);
     });
 
-    it('validates variant with exclude_tags only', async () => {
+    it('validates variant with global tags as array', async () => {
       const result = await validateVariant({
-        exclude_tags: ['irrelevant'],
+        tags: ['backend', 'frontend'],
       });
       expect(result.valid).toBe(true);
     });
 
-    it('validates variant with skills.exclude', async () => {
+    it('validates variant with global tags as TagExpr', async () => {
       const result = await validateVariant({
-        skills: { exclude: ['Soft Skills'] },
+        tags: { any: ['backend'], all: ['web'], not: ['legacy'] },
+      });
+      expect(result.valid).toBe(true);
+    });
+
+    it('validates variant with skills.pick', async () => {
+      const result = await validateVariant({
+        skills: { pick: ['Languages', 'Frameworks'] },
+      });
+      expect(result.valid).toBe(true);
+    });
+
+    it('validates variant with skills.omit', async () => {
+      const result = await validateVariant({
+        skills: { omit: ['Soft Skills'] },
       });
       expect(result.valid).toBe(true);
     });
@@ -48,19 +76,9 @@ describe('variant schema validation', () => {
     });
 
     // Invalid cases
-    it('rejects skills with both include and exclude', async () => {
+    it('rejects invalid section names in layout', async () => {
       const result = await validateVariant({
-        skills: {
-          include: ['Languages'],
-          exclude: ['DevOps'],
-        },
-      });
-      expect(result.valid).toBe(false);
-    });
-
-    it('rejects invalid section names in section_order', async () => {
-      const result = await validateVariant({
-        section_order: ['summary', 'invalid_section' as never],
+        layout: ['summary', 'invalid_section' as never],
       });
       expect(result.valid).toBe(false);
     });
@@ -77,7 +95,6 @@ describe('variant schema validation', () => {
         meta: { name: 'Jane' },
       });
       expect(result.valid).toBe(false);
-      // meta.name is not allowed in variant (you can't override name)
     });
 
     it('rejects invalid email format in meta', async () => {
@@ -87,16 +104,16 @@ describe('variant schema validation', () => {
       expect(result.valid).toBe(false);
     });
 
-    it('rejects non-string include_tags items', async () => {
+    it('rejects non-string tags items', async () => {
       const result = await validateVariant({
-        include_tags: [123 as unknown as string],
+        tags: [123 as unknown as string],
       });
       expect(result.valid).toBe(false);
     });
 
-    it('rejects duplicate section_order items', async () => {
+    it('rejects duplicate layout items', async () => {
       const result = await validateVariant({
-        section_order: ['summary', 'summary'],
+        layout: ['summary', 'summary'],
       });
       expect(result.valid).toBe(false);
     });
@@ -108,28 +125,61 @@ describe('variant schema validation', () => {
         'volunteer', 'references',
       ];
       const result = await validateVariant({
-        section_order: allSections,
+        layout: allSections,
       });
       expect(result.valid).toBe(true);
     });
 
     it('rejects additional properties in skills', async () => {
       const result = await validateVariant({
-        skills: { include: ['Languages'], sort: true },
+        skills: { pick: ['Languages'], sort: true },
       });
       expect(result.valid).toBe(false);
+    });
+
+    it('validates experience with nested selectors', async () => {
+      const result = await validateVariant({
+        experience: {
+          pick: ['company-id'],
+          tags: { any: ['backend'] },
+          omit: ['old-company'],
+          limit: 3,
+          roles: {
+            pick: ['role-id'],
+            tags: ['backend'],
+            omit: ['intern'],
+            limit: 2,
+          },
+          highlights: {
+            tags: { any: ['backend'], not: ['legacy'] },
+            limit: 4,
+          },
+        },
+      });
+      expect(result.valid).toBe(true);
+    });
+
+    it('validates style overrides', async () => {
+      const result = await validateVariant({
+        style: {
+          '--line-height-normal': '1.2',
+          '--space-md': '0.5rem',
+          '--font-size-sm': '9.5pt',
+        },
+      });
+      expect(result.valid).toBe(true);
     });
   });
 
   describe('assertValidVariant', () => {
     it('returns variant data for valid input', async () => {
-      const input = { include_tags: ['frontend'] };
+      const input = { tags: ['frontend'] };
       const result = await assertValidVariant(input);
       expect(result).toEqual(input);
     });
 
     it('throws on invalid input', async () => {
-      const invalid = { skills: { include: ['A'], exclude: ['B'] } };
+      const invalid = { unknown: true };
       await expect(assertValidVariant(invalid)).rejects.toThrow();
     });
   });
@@ -305,6 +355,50 @@ describe('variant schema validation', () => {
         }],
       });
       expect(result.valid).toBe(false);
+    });
+
+    it('accepts id field on experience', async () => {
+      const result = await validateResume({
+        meta: { name: 'Test' },
+        experience: [{
+          id: 'company-1',
+          company: 'Co',
+          roles: [{
+            id: 'role-1',
+            title: 'Dev',
+            start: '2020',
+          }],
+        }],
+      });
+      expect(result.valid).toBe(true);
+    });
+
+    it('accepts id field on skills', async () => {
+      const result = await validateResume({
+        meta: { name: 'Test' },
+        experience: [{
+          company: 'Co',
+          roles: [{ title: 'Dev', start: '2020' }],
+        }],
+        skills: [
+          { id: 'langs', category: 'Languages', items: ['TS'] },
+        ],
+      });
+      expect(result.valid).toBe(true);
+    });
+
+    it('accepts id field on projects', async () => {
+      const result = await validateResume({
+        meta: { name: 'Test' },
+        experience: [{
+          company: 'Co',
+          roles: [{ title: 'Dev', start: '2020' }],
+        }],
+        projects: [
+          { id: 'proj-1', name: 'Tool' },
+        ],
+      });
+      expect(result.valid).toBe(true);
     });
   });
 });

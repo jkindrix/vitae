@@ -280,19 +280,19 @@ describe('analyzeTailoring', () => {
 // ---------------------------------------------------------------------------
 
 describe('generateVariant', () => {
-  it('produces a variant with section_order', () => {
+  it('produces a variant with layout', () => {
     const analysis = analyzeTailoring(fullResume(), backendJobDescription);
     const variant = generateVariant(analysis);
-    expect(variant.section_order).toBeDefined();
-    expect(variant.section_order!.length).toBeGreaterThan(0);
+    expect(variant.layout).toBeDefined();
+    expect(variant.layout!.length).toBeGreaterThan(0);
   });
 
-  it('produces a variant with skills.include', () => {
+  it('produces a variant with skills.pick', () => {
     const analysis = analyzeTailoring(fullResume(), backendJobDescription);
     const variant = generateVariant(analysis);
     expect(variant.skills).toBeDefined();
-    expect(variant.skills!.include).toBeDefined();
-    expect(variant.skills!.include!.length).toBe(4);
+    expect(variant.skills!.pick).toBeDefined();
+    expect(variant.skills!.pick!.length).toBe(4);
   });
 
   it('omits skills when resume has no skills', () => {
@@ -316,7 +316,7 @@ describe('generateVariant', () => {
     // Skills should be reordered per variant
     expect(tailored.skills).toBeDefined();
     expect(tailored.skills!.length).toBe(4);
-    expect(tailored.skills![0]!.category).toBe(variant.skills!.include![0]);
+    expect(tailored.skills![0]!.category).toBe(variant.skills!.pick![0]);
   });
 });
 
@@ -332,7 +332,7 @@ describe('serializeVariantWithComments', () => {
 
     const parsed = yaml.parse(yamlStr);
     expect(parsed).toBeDefined();
-    expect(parsed.section_order).toBeDefined();
+    expect(parsed.layout).toBeDefined();
   });
 
   it('includes job file name in header comment', () => {
@@ -374,8 +374,8 @@ describe('serializeVariantWithComments', () => {
     const yamlStr = serializeVariantWithComments(variant, analysis, 'test.txt');
 
     const parsed = yaml.parse(yamlStr);
-    expect(parsed.section_order).toEqual(variant.section_order);
-    expect(parsed.skills.include).toEqual(variant.skills!.include);
+    expect(parsed.layout).toEqual(variant.layout);
+    expect(parsed.skills.pick).toEqual(variant.skills!.pick);
   });
 });
 
