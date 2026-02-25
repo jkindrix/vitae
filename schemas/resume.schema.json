@@ -104,6 +104,10 @@
         "required": ["category", "items"],
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for variant pick selection"
+          },
           "category": {
             "type": "string",
             "description": "Skill category name"
@@ -128,6 +132,10 @@
         "required": ["company", "roles"],
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for variant pick selection"
+          },
           "company": {
             "type": "string",
             "description": "Company or organization name"
@@ -142,6 +150,10 @@
               "required": ["title", "start"],
               "additionalProperties": false,
               "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Stable identifier for variant pick selection"
+                },
                 "title": {
                   "type": "string",
                   "description": "Job title"
@@ -184,6 +196,10 @@
         "required": ["name"],
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for variant pick selection"
+          },
           "name": {
             "type": "string",
             "description": "Project name"
@@ -214,6 +230,10 @@
         "required": ["institution"],
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for variant pick selection"
+          },
           "institution": {
             "type": "string",
             "description": "School or institution name"
@@ -251,6 +271,10 @@
         "required": ["name"],
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for variant pick selection"
+          },
           "name": {
             "type": "string",
             "description": "Certification name"
@@ -358,6 +382,10 @@
         "required": ["organization"],
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for variant pick selection"
+          },
           "organization": {
             "type": "string",
             "description": "Organization name"

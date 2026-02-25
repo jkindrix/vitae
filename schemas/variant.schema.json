@@ -1,24 +1,148 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/jkindrix/vitae/schemas/variant.schema.json",
-  "title": "Vitae Variant Schema",
-  "description": "Schema for vitae variant YAML files — filters and overrides applied to a base resume",
+  "title": "Vitae Variant Schema v2",
+  "description": "Schema for vitae variant YAML files — per-section selection with composition support",
   "type": "object",
   "additionalProperties": false,
-  "properties": {
-    "include_tags": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Keep items with at least one matching tag (untagged items always pass through)"
+  "definitions": {
+    "sectionNameEnum": {
+      "type": "string",
+      "enum": [
+        "summary",
+        "skills",
+        "experience",
+        "projects",
+        "education",
+        "certifications",
+        "languages",
+        "awards",
+        "publications",
+        "volunteer",
+        "references"
+      ]
     },
-    "exclude_tags": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Remove items with a matching tag (exclude takes precedence over include on conflicts)"
+    "tagExpr": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "OR — match if item has ANY of these tags"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "any": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "OR — match if item has ANY of these tags"
+            },
+            "all": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "AND — match only if item has ALL of these tags"
+            },
+            "not": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "NOT — exclude items with ANY of these tags"
+            }
+          }
+        }
+      ]
+    },
+    "highlightSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tags": { "$ref": "#/definitions/tagExpr" },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Max highlights per parent item"
+        }
+      }
+    },
+    "sectionSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pick": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Include items by name/id (explicit, ordered)"
+        },
+        "tags": { "$ref": "#/definitions/tagExpr" },
+        "omit": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Exclude items by name/id (applied after pick/tags)"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Max items to keep"
+        },
+        "highlights": { "$ref": "#/definitions/highlightSelector" }
+      }
+    },
+    "experienceRolesSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pick": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Include roles by title/id"
+        },
+        "tags": { "$ref": "#/definitions/tagExpr" },
+        "omit": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Exclude roles by title/id"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Max roles per company"
+        }
+      }
+    },
+    "experienceSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pick": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Include companies by name/id (explicit, ordered)"
+        },
+        "tags": { "$ref": "#/definitions/tagExpr" },
+        "omit": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Exclude companies by name/id"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Max companies to keep"
+        },
+        "roles": { "$ref": "#/definitions/experienceRolesSelector" },
+        "highlights": { "$ref": "#/definitions/highlightSelector" }
+      }
+    }
+  },
+  "properties": {
+    "extends": {
+      "type": "string",
+      "description": "Path to parent variant (relative to this file). Child fields override parent."
     },
     "meta": {
       "type": "object",
       "description": "Meta field overrides (deep-merged over base resume meta)",
+      "additionalProperties": false,
       "properties": {
         "title": {
           "type": "string",
@@ -37,53 +161,36 @@
           "type": "string",
           "description": "Override location"
         }
-      },
-      "additionalProperties": false
+      }
     },
     "summary": {
       "type": "string",
       "description": "Override the professional summary entirely"
     },
-    "section_order": {
+    "layout": {
       "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "summary",
-          "skills",
-          "experience",
-          "projects",
-          "education",
-          "certifications",
-          "languages",
-          "awards",
-          "publications",
-          "volunteer",
-          "references"
-        ]
-      },
+      "items": { "$ref": "#/definitions/sectionNameEnum" },
       "uniqueItems": true,
-      "description": "Order and inclusion of sections (meta is always rendered first). Sections not listed are omitted."
+      "description": "Which sections appear and in what order. Unlisted sections are omitted."
     },
-    "skills": {
+    "tags": {
+      "$ref": "#/definitions/tagExpr",
+      "description": "Global tag selector — applied to all sections lacking their own config"
+    },
+    "style": {
       "type": "object",
-      "description": "Skill category filtering by name (runs after tag filtering)",
-      "properties": {
-        "include": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Only keep skill categories with these names (in this order)"
-        },
-        "exclude": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Remove skill categories with these names"
-        }
-      },
-      "additionalProperties": false,
-      "not": {
-        "required": ["include", "exclude"]
-      }
-    }
+      "additionalProperties": { "type": "string" },
+      "description": "CSS custom property overrides (e.g., --line-height-normal: '1.2')"
+    },
+    "skills": { "$ref": "#/definitions/sectionSelector" },
+    "experience": { "$ref": "#/definitions/experienceSelector" },
+    "projects": { "$ref": "#/definitions/sectionSelector" },
+    "education": { "$ref": "#/definitions/sectionSelector" },
+    "certifications": { "$ref": "#/definitions/sectionSelector" },
+    "languages": { "$ref": "#/definitions/sectionSelector" },
+    "awards": { "$ref": "#/definitions/sectionSelector" },
+    "publications": { "$ref": "#/definitions/sectionSelector" },
+    "volunteer": { "$ref": "#/definitions/sectionSelector" },
+    "references": { "$ref": "#/definitions/sectionSelector" }
   }
 }

@@ -35,6 +35,7 @@ export type Highlight = string | TaggedHighlight;
  * Categorized skill group
  */
 export interface SkillCategory {
+  id?: string;
   category: string;
   items: string[];
   tags?: string[];
@@ -44,6 +45,7 @@ export interface SkillCategory {
  * A role held at a company
  */
 export interface Role {
+  id?: string;
   title: string;
   start: string;
   end?: string;
@@ -57,6 +59,7 @@ export interface Role {
  * Work experience at a company
  */
 export interface Experience {
+  id?: string;
   company: string;
   roles: Role[];
   tags?: string[];
@@ -66,6 +69,7 @@ export interface Experience {
  * Project or open source work
  */
 export interface Project {
+  id?: string;
   name: string;
   url?: string;
   description?: string;
@@ -77,6 +81,7 @@ export interface Project {
  * Educational background
  */
 export interface Education {
+  id?: string;
   institution: string;
   degree?: string;
   field?: string;
@@ -90,6 +95,7 @@ export interface Education {
  * Professional certification
  */
 export interface Certification {
+  id?: string;
   name: string;
   issuer?: string;
   date?: string;
@@ -130,6 +136,7 @@ export interface Publication {
  * Volunteer experience
  */
 export interface Volunteer {
+  id?: string;
   organization: string;
   position?: string;
   start?: string;
@@ -211,18 +218,68 @@ export type SectionName =
   | 'references';
 
 /**
- * Variant file — filters and overrides applied to a base resume
+ * Advanced tag matching with AND/NOT operators.
+ * Simple form (string[]) is OR: match if item has ANY of the listed tags.
+ */
+export interface TagExpr {
+  any?: string[];
+  all?: string[];
+  not?: string[];
+}
+
+/**
+ * Filters individual bullet points within an item.
+ */
+export interface HighlightSelector {
+  tags?: string[] | TagExpr;
+  limit?: number;
+}
+
+/**
+ * Base selector used by most sections.
+ */
+export interface SectionSelector {
+  pick?: string[];
+  tags?: string[] | TagExpr;
+  omit?: string[];
+  limit?: number;
+  highlights?: HighlightSelector;
+}
+
+/**
+ * Extended selector for the experience section's 3-level hierarchy.
+ * SectionSelector fields (pick, tags, omit, limit) apply to companies.
+ */
+export interface ExperienceSelector extends Omit<SectionSelector, 'highlights'> {
+  roles?: {
+    pick?: string[];
+    tags?: string[] | TagExpr;
+    omit?: string[];
+    limit?: number;
+  };
+  highlights?: HighlightSelector;
+}
+
+/**
+ * Variant file v2 — per-section selection with composition support
  */
 export interface Variant {
-  include_tags?: string[];
-  exclude_tags?: string[];
+  extends?: string;
   meta?: Partial<Meta>;
   summary?: string;
-  section_order?: SectionName[];
-  skills?: {
-    include?: string[];
-    exclude?: string[];
-  };
+  layout?: SectionName[];
+  tags?: string[] | TagExpr;
+  style?: Record<string, string>;
+  skills?: SectionSelector;
+  experience?: ExperienceSelector;
+  projects?: SectionSelector;
+  education?: SectionSelector;
+  certifications?: SectionSelector;
+  languages?: SectionSelector;
+  awards?: SectionSelector;
+  publications?: SectionSelector;
+  volunteer?: SectionSelector;
+  references?: SectionSelector;
 }
 
 // ---------------------------------------------------------------------------
