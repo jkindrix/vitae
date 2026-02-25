@@ -1,7 +1,25 @@
 # One-page backend variant (composition example)
-# Demonstrates: extends for variant composition.
-# Inherits: experience limits and style from base-1page.yaml.
-# Overrides: layout (adds projects), skills, and projects with backend config.
+#
+# Demonstrates:
+#   - extends for variant composition (inherits from base-1page.yaml)
+#   - Inherited: experience limits, skills limit, style overrides
+#   - Overridden: meta, summary, layout (adds projects + certifications),
+#     skills (backend picks), projects (backend picks)
+#   - Style merge: child --line-height-normal overrides parent value,
+#     parent --space-md and --font-size-sm are preserved
+#
+# The resulting merged variant is equivalent to:
+#   layout: [summary, skills, experience, projects, certifications, education]
+#   experience: { limit: 2, roles: { limit: 2 }, highlights: { limit: 3 } }
+#   skills: { pick: [backend, infra], limit: 3 }  # limit from parent
+#   projects: { pick: [fastcache] }
+#   certifications: { tags: [devops] }
+#   style:
+#     --line-height-normal: "1.2"   # overridden by child
+#     --line-height-relaxed: "1.25" # inherited from parent
+#     --space-md: "0.4rem"          # inherited from parent
+#     --space-lg: "0.6rem"          # inherited from parent
+#     --font-size-sm: "9pt"         # inherited from parent
 
 extends: ./base-1page.yaml
 
@@ -12,10 +30,19 @@ summary: >-
   Senior Backend Engineer with 8+ years building distributed systems and APIs
   at scale. Core stack: Python, Go, Node.js, PostgreSQL, AWS.
 
-layout: [summary, skills, experience, projects, education]
+# Override layout to add projects and certifications
+layout: [summary, skills, experience, projects, certifications, education]
 
 skills:
   pick: [backend, infra]
 
 projects:
   pick: [fastcache]
+
+certifications:
+  tags: [devops]
+
+style:
+  # Override parent's --line-height-normal (1.15 -> 1.2)
+  # Parent's other style properties are preserved via shallow merge
+  --line-height-normal: "1.2"

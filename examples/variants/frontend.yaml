@@ -1,6 +1,13 @@
 # Frontend-focused variant
-# Demonstrates: tag filtering with TagExpr (any/not), pick bypassing tags,
-# global tags fallback, and highlight-level filtering.
+#
+# Demonstrates:
+#   - TagExpr with any + not operators on experience
+#   - pick bypassing tag filtering (Languages has [backend, frontend] tags
+#     but is included because pick is explicit, not tag-dependent)
+#   - global tags fallback (certifications has no config, so global tags
+#     would apply — but certifications aren't in layout, so they're omitted)
+#   - highlight-level tag + limit filtering
+#   - projects: pick + tags combined (picked items first, then tag-matched)
 
 meta:
   title: "Senior Frontend Engineer | React & UI Architecture"
@@ -13,15 +20,19 @@ summary: >-
 
 layout: [summary, skills, experience, projects, education]
 
-# Global tags for sections without their own config
+# Global tags — applied to any section without its own config.
+# In this variant, every section has its own config, so this only serves
+# as documentation of intent. If certifications were in layout without
+# its own config block, it would inherit this filter.
 tags: [frontend]
 
 skills:
-  # pick bypasses tag filtering — Languages appears despite not being
-  # tagged [frontend]-only, because pick is explicit
+  # pick bypasses tag filtering entirely — Languages appears despite
+  # having [backend, frontend] tags, because pick is explicit inclusion
   pick: [frontend, languages]
 
 experience:
+  # TagExpr: include companies tagged frontend, exclude devops-only
   tags:
     any: [frontend]
     not: [devops]
@@ -30,5 +41,7 @@ experience:
     limit: 3
 
 projects:
+  # pick + tags combined: react-form-builder first (picked), then any
+  # remaining frontend-tagged projects in original order
   pick: [react-form-builder]
   tags: [frontend]

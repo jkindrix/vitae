@@ -1,9 +1,18 @@
 # Backend-focused variant
-# Demonstrates: per-section tag filtering, id-based pick, omit, limit,
-# nested role/highlight selectors, and style overrides.
+#
+# Demonstrates:
+#   - meta override (title, location)
+#   - custom summary replacement
+#   - id-based pick for skills and projects
+#   - 3-level experience selectors (company tags, role omit by id, highlight filtering)
+#   - omit by id on experience companies
+#   - limit on highlights and projects
+#   - certifications filtered by tag
+#   - style overrides (CSS custom properties)
 
 meta:
   title: "Senior Backend Engineer | Distributed Systems"
+  location: "San Francisco, CA (Remote)"
 
 summary: >-
   Senior Backend Engineer with 8+ years building scalable distributed systems
@@ -13,17 +22,21 @@ summary: >-
 layout: [summary, skills, experience, projects, certifications, education]
 
 skills:
-  pick: [backend, infra]
+  pick: [backend, infra, languages]
+  limit: 3
 
 experience:
   tags: [backend]
   omit: [digital-agency]
   roles:
-    tags: [backend]
-    limit: 3
+    tags:
+      any: [backend]
+      not: [frontend]
+    omit: [junior-dev]
+    limit: 2
   highlights:
     tags: [backend]
-    limit: 4
+    limit: 3
 
 projects:
   pick: [fastcache, cli-toolkit]
@@ -34,3 +47,4 @@ certifications:
 
 style:
   --line-height-normal: "1.2"
+  --space-md: "0.5rem"

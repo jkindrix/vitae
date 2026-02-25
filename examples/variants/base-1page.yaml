@@ -1,6 +1,13 @@
 # Base one-page variant
-# Demonstrates: density controls via limit and style overrides.
-# Designed to be extended by role-specific variants.
+#
+# Demonstrates:
+#   - Density controls via limit at every level
+#   - Style overrides for tighter spacing
+#   - Designed as a composition base — extend this with role-specific config
+#
+# Usage:
+#   vitae build resume.yaml --variant base-1page.yaml
+#   Or extend it: see 1page-backend.yaml for a composition example.
 
 layout: [summary, skills, experience, education]
 
@@ -11,7 +18,12 @@ experience:
   highlights:
     limit: 3
 
+skills:
+  limit: 3
+
 style:
-  --line-height-normal: "1.2"
-  --space-md: "0.5rem"
-  --space-lg: "0.75rem"
+  --line-height-normal: "1.15"
+  --line-height-relaxed: "1.25"
+  --space-md: "0.4rem"
+  --space-lg: "0.6rem"
+  --font-size-sm: "9pt"
