@@ -12,6 +12,8 @@ import type { NormalizedResume, ThemeOverrides, ThemeConfig } from '../types/ind
 export interface RenderOptions {
   /** Theme layout variant name */
   variant?: string;
+  /** CSS custom property overrides from variant style config */
+  styleOverrides?: Record<string, string>;
 }
 
 /**
@@ -186,6 +188,17 @@ export function generateThemeOverrideCss(theme: ThemeOverrides): string {
 }
 
 /**
+ * Generate CSS overrides from variant style config (arbitrary CSS custom properties).
+ */
+export function generateStyleOverrideCss(style: Record<string, string>): string {
+  const vars: string[] = [];
+  for (const [prop, value] of Object.entries(style)) {
+    vars.push(`${prop}: ${value}`);
+  }
+  return vars.length > 0 ? `:root { ${vars.join('; ')}; }` : '';
+}
+
+/**
  * Render a complete standalone HTML document
  */
 export async function renderStandaloneHtml(
@@ -195,6 +208,9 @@ export async function renderStandaloneHtml(
 ): Promise<string> {
   const { html, css } = await renderHtml(resume, themeName, options);
   const overrideCss = resume.theme ? generateThemeOverrideCss(resume.theme) : '';
+  const styleOverrideCss = options?.styleOverrides
+    ? generateStyleOverrideCss(options.styleOverrides)
+    : '';
   const lang = resume.language ?? 'en';
 
   return `<!DOCTYPE html>
@@ -205,6 +221,7 @@ export async function renderStandaloneHtml(
   <title>${resume.meta.name} - Resume</title>
   ${css ? `<style>\n${css}\n</style>` : ''}
   ${overrideCss ? `<style>\n${overrideCss}\n</style>` : ''}
+  ${styleOverrideCss ? `<style>\n${styleOverrideCss}\n</style>` : ''}
 </head>
 <body>
 ${html}

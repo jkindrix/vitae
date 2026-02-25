@@ -96,7 +96,7 @@ async function generateForTheme(
   formats: OutputFormat[],
   outputDir: string,
   outputBasename: string,
-  options: { debug?: boolean; includeThemeInName?: boolean; layout?: string; pages?: number; fit?: boolean; noPageWarn?: boolean }
+  options: { debug?: boolean; includeThemeInName?: boolean; layout?: string; pages?: number; fit?: boolean; noPageWarn?: boolean; styleOverrides?: Record<string, string> }
 ): Promise<{ format: string; path: string }[]> {
   const results: { format: string; path: string }[] = [];
   const namePrefix = options.includeThemeInName ? `${outputBasename}-${themeName}` : outputBasename;
@@ -110,8 +110,11 @@ async function generateForTheme(
           console.log(
             chalk.blue(`Generating HTML${options.includeThemeInName ? ` (${themeName})` : ''}...`)
           );
-          const renderOpts = options.layout ? { variant: options.layout } : undefined;
-          const html = await renderStandaloneHtml(resume, themeName, renderOpts);
+          const renderOpts: import('../lib/renderer.js').RenderOptions = {};
+          if (options.layout) renderOpts.variant = options.layout;
+          if (options.styleOverrides) renderOpts.styleOverrides = options.styleOverrides;
+          const hasRenderOpts = options.layout || options.styleOverrides;
+          const html = await renderStandaloneHtml(resume, themeName, hasRenderOpts ? renderOpts : undefined);
           await writeFile(outputPath, html, 'utf-8');
           results.push({ format: 'HTML', path: outputPath });
           console.log(chalk.green(`\u2713 HTML: ${outputPath}`));
@@ -132,6 +135,7 @@ async function generateForTheme(
                 }
               : {}),
             ...(options.layout ? { layout: options.layout } : {}),
+            ...(options.styleOverrides ? { styleOverrides: options.styleOverrides } : {}),
             ...(options.fit ? { fit: true, targetPages } : { targetPages }),
           };
           const pdfResult = await generatePdf(resume, themeName, outputPath, pdfOptions);
@@ -182,6 +186,7 @@ async function generateForTheme(
           const pngOptions = {
             ...(options.debug ? { debug: true } : {}),
             ...(options.layout ? { layout: options.layout } : {}),
+            ...(options.styleOverrides ? { styleOverrides: options.styleOverrides } : {}),
           };
           await generatePng(resume, themeName, outputPath, pngOptions);
           results.push({ format: 'PNG', path: outputPath });
@@ -418,12 +423,14 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
 
   // Load and apply variant if specified
   let sectionOrder = undefined;
+  let variantStyleOverrides: Record<string, string> | undefined;
   if (options.variant) {
     const resolvedVariant = resolve(options.variant);
     console.log(chalk.blue(`Loading variant: ${resolvedVariant}...`));
     const variant = await loadVariant(resolvedVariant);
     resume = applyVariant(resume, variant);
-    sectionOrder = variant.section_order;
+    sectionOrder = variant.layout;
+    variantStyleOverrides = variant.style;
     console.log(chalk.green('\u2713 Applied variant'));
   }
 
@@ -471,6 +478,7 @@ async function runBuild(inputPath: string, options: BuildCommandOptions): Promis
         ...(options.pages != null ? { pages: options.pages } : {}),
         ...(options.fit != null ? { fit: options.fit } : {}),
         ...(options.noPageWarn != null ? { noPageWarn: options.noPageWarn } : {}),
+        ...(variantStyleOverrides ? { styleOverrides: variantStyleOverrides } : {}),
       }
     );
     allResults.push(...results);

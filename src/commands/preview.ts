@@ -115,16 +115,21 @@ export async function previewCommand(
 
         // Apply variant if specified
         let sectionOrder = undefined;
+        let variantStyleOverrides: Record<string, string> | undefined;
         if (resolvedVariant) {
           const variant = await loadVariant(resolvedVariant);
           resume = applyVariant(resume, variant);
-          sectionOrder = variant.section_order;
+          sectionOrder = variant.layout;
+          variantStyleOverrides = variant.style;
         }
 
         // Normalize
         const normalized = normalizeResume(resume, sectionOrder);
-        const renderOpts = options.layout ? { variant: options.layout } : undefined;
-        html = await renderStandaloneHtml(normalized, options.theme, renderOpts);
+        const renderOpts: import('../lib/renderer.js').RenderOptions = {};
+        if (options.layout) renderOpts.variant = options.layout;
+        if (variantStyleOverrides) renderOpts.styleOverrides = variantStyleOverrides;
+        const hasRenderOpts = options.layout || variantStyleOverrides;
+        html = await renderStandaloneHtml(normalized, options.theme, hasRenderOpts ? renderOpts : undefined);
       }
 
       // Inject SSE-based hot reload script

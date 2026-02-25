@@ -124,6 +124,11 @@ export interface PdfOptions {
   layout?: string;
 
   /**
+   * CSS custom property overrides from variant style config
+   */
+  styleOverrides?: Record<string, string>;
+
+  /**
    * Target number of pages (default: 1). Used for warnings and fit scaling.
    */
   targetPages?: number;
@@ -351,7 +356,11 @@ async function preparePdfPage(
   let html: string;
   try {
     const renderStart = Date.now();
-    html = await renderStandaloneHtml(resume, themeName, options.layout ? { variant: options.layout } : undefined);
+    const renderOpts: import('./renderer.js').RenderOptions = {};
+    if (options.layout) renderOpts.variant = options.layout;
+    if (options.styleOverrides) renderOpts.styleOverrides = options.styleOverrides;
+    const hasRenderOpts = options.layout || options.styleOverrides;
+    html = await renderStandaloneHtml(resume, themeName, hasRenderOpts ? renderOpts : undefined);
     debug.timing('HTML rendering', renderStart);
   } catch (error) {
     throw new PdfError(

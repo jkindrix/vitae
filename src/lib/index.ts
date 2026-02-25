@@ -2,7 +2,7 @@ export { loadResume, parseResume, loadVariant, loadCoverLetter, loadDocument, is
 export type { DocumentResult } from './loader.js';
 export { validateResume, assertValidResume, validateVariant, assertValidVariant, validateCoverLetter, assertValidCoverLetter } from './schema.js';
 export { listThemes, loadTheme, getThemesDir, readCoverLetterTemplate, loadThemeConfig } from './themes.js';
-export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss } from './renderer.js';
+export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss, generateStyleOverrideCss } from './renderer.js';
 export type { RenderOptions } from './renderer.js';
 export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser, countPdfPages } from './pdf.js';
 export type { PdfOptions, PdfResult, PdfBufferResult } from './pdf.js';
