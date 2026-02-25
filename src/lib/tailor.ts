@@ -214,19 +214,19 @@ function buildRecommendedSectionOrder(
 // ---------------------------------------------------------------------------
 
 /**
- * Generate a variant YAML object from tailoring analysis.
+ * Generate a v2 variant YAML object from tailoring analysis.
  */
 export function generateVariant(analysis: TailorAnalysis): Variant {
   const variant: Variant = {};
 
-  // Section order based on relevance
+  // Section layout based on relevance
   if (analysis.recommendedSectionOrder.length > 0) {
-    variant.section_order = analysis.recommendedSectionOrder;
+    variant.layout = analysis.recommendedSectionOrder;
   }
 
   // Skill category ordering (only if there are skills)
   if (analysis.recommendedSkillOrder.length > 0) {
-    variant.skills = { include: analysis.recommendedSkillOrder };
+    variant.skills = { pick: analysis.recommendedSkillOrder };
   }
 
   return variant;
@@ -272,14 +272,14 @@ export function serializeVariantWithComments(
 
   doc.commentBefore = headerLines.join('\n');
 
-  // Add inline comments to section_order entries
+  // Add inline comments to layout entries
   if (doc.contents && yaml.isMap(doc.contents)) {
-    const sectionOrderNode = doc.contents.items.find(
-      (item) => yaml.isScalar(item.key) && item.key.value === 'section_order'
+    const layoutNode = doc.contents.items.find(
+      (item) => yaml.isScalar(item.key) && item.key.value === 'layout'
     );
 
-    if (sectionOrderNode && yaml.isSeq(sectionOrderNode.value)) {
-      for (const item of sectionOrderNode.value.items) {
+    if (layoutNode && yaml.isSeq(layoutNode.value)) {
+      for (const item of layoutNode.value.items) {
         if (yaml.isScalar(item)) {
           const sr = analysis.sectionRelevance.find((s) => s.section === item.value);
           if (sr && sr.matchCount > 0) {
@@ -289,18 +289,18 @@ export function serializeVariantWithComments(
       }
     }
 
-    // Add inline comments to skills.include entries
+    // Add inline comments to skills.pick entries
     const skillsNode = doc.contents.items.find(
       (item) => yaml.isScalar(item.key) && item.key.value === 'skills'
     );
 
     if (skillsNode && yaml.isMap(skillsNode.value)) {
-      const includeNode = skillsNode.value.items.find(
-        (item) => yaml.isScalar(item.key) && item.key.value === 'include'
+      const pickNode = skillsNode.value.items.find(
+        (item) => yaml.isScalar(item.key) && item.key.value === 'pick'
       );
 
-      if (includeNode && yaml.isSeq(includeNode.value)) {
-        for (const item of includeNode.value.items) {
+      if (pickNode && yaml.isSeq(pickNode.value)) {
+        for (const item of pickNode.value.items) {
           if (yaml.isScalar(item)) {
             const sr = analysis.skillRelevance.find((s) => s.category === item.value);
             if (sr && sr.matchCount > 0) {
