@@ -1,0 +1,31 @@
+# Mid-level cloud variant — middle link in a 3-level extends chain
+#
+# Exercises:
+#   - extends from base-compact (inherits limits, style)
+#   - Adds cloud-specific filtering (skills pick, experience tags)
+#   - Overrides layout to add certifications
+#   - Partially overrides style (child overrides parent values)
+#   - Designed to be extended by rich-compact-cloud-lead.yaml
+#
+# Inherited from rich-base-compact.yaml:
+#   experience.limit: 2, roles.limit: 2, highlights.limit: 2
+#   projects.limit: 2
+#   style: --line-height-relaxed, --space-md, --space-lg, --font-size-sm
+#
+# Overridden by this variant:
+#   layout: adds certifications
+#   skills: cloud + backend pick (replaces parent's limit-only)
+#   style: --line-height-normal overridden to 1.15
+
+extends: ./rich-base-compact.yaml
+
+layout: [summary, skills, experience, projects, certifications, education]
+
+skills:
+  pick: [cloud, backend, languages]
+
+certifications:
+  tags: [cloud]
+
+style:
+  --line-height-normal: "1.15"

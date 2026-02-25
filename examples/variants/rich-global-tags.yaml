@@ -1,0 +1,56 @@
+# Global tags variant — tests global tags applied at all levels, with partial override
+#
+# Exercises:
+#   - Global `tags: [frontend]` applied to sections WITHOUT their own config
+#   - Skills section HAS its own config → global tags IGNORED for skills
+#   - Experience section has NO config → global tags applied at ALL levels
+#     (company, role, highlight)
+#   - Projects section has NO config → global tags applied (item + highlights)
+#   - Certifications in layout with no config → global tags [frontend] applied
+#     (no certs have [frontend] tag, but untagged PMP passes → PMP survives)
+#   - Volunteer in layout with no config → global tags applied
+#   - Education in layout with no config → global tags applied
+#   - Meta overrides for every field
+#
+# Expected results against sample-rich.yaml:
+#   Skills (own config, ignores global): pick [frontend, languages, practices]
+#   Experience (global tags:[frontend] at all levels):
+#     Companies: WebFlow ([frontend]) survives, TechStart ([frontend,backend]) survives,
+#                DataPipe (untagged) survives, CloudScale ([cloud,backend]) EXCLUDED
+#     Roles (global tags:[frontend]):
+#       lead-fe ([frontend,leadership]) → survives
+#       fe-dev ([frontend]) → survives
+#       junior-dev (untagged) → survives
+#       intern ([data]) → EXCLUDED (tagged but no frontend)
+#       Note: CloudScale roles never reached (company excluded)
+#     Highlights (global tags:[frontend]):
+#       Only [frontend]-tagged + untagged highlights survive
+#     After pruning: TechStart loses intern (excluded), keeps junior-dev
+#   Projects (global tags:[frontend]):
+#     react-dashboard ([frontend]) → survives
+#     design-system ([frontend,leadership]) → survives
+#     dotfiles (untagged) → survives
+#     Others (cloud, backend, data tags without frontend) → EXCLUDED
+#   Certifications (global tags:[frontend]):
+#     None have [frontend] tag. PMP is untagged → survives. Others excluded.
+#   Volunteer (global tags:[frontend]):
+#     code-mentor ([leadership,frontend]) → survives
+#     oss-maintainer ([backend]) → EXCLUDED
+#   Education (global tags:[frontend]):
+#     ut-cs ([backend]) → EXCLUDED (tagged but no frontend)
+#     Wait — untagged items pass. ut-cs IS tagged [backend] → excluded.
+
+meta:
+  title: "Senior Frontend Engineer"
+  email: "alex@frontend-studio.dev"
+  phone: "(555) 000-1111"
+  location: "Remote"
+
+layout: [summary, skills, experience, projects, certifications, volunteer, education]
+
+# Global tags — applied to all sections without their own config
+tags: [frontend]
+
+# Skills has its own config → global tags ignored entirely
+skills:
+  pick: [frontend, languages, practices]

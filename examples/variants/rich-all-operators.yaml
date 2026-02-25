@@ -1,0 +1,59 @@
+# All operators variant — tests TagExpr `any` + `all` + `not` combined
+#
+# Exercises:
+#   - TagExpr with all three operators on experience: any:[backend,data], all:[backend], not:[frontend]
+#     Logic: must have at least one of [backend,data] AND must have [backend] AND must NOT have [frontend]
+#   - TagExpr with any+not on roles
+#   - Omit by name (not id) on skills
+#   - Highlight tags with `all` operator
+#   - Projects with all+not
+#
+# Expected results against sample-rich.yaml:
+#   Experience companies (any:[backend,data] + all:[backend] + not:[frontend]):
+#     - CloudScale (tags:[cloud,backend]) → has backend(any), has backend(all), no frontend(not) → SURVIVES
+#     - WebFlow (tags:[frontend]) → has frontend in not → EXCLUDED
+#     - DataPipe (untagged) → untagged passes all checks → SURVIVES
+#     - TechStart (tags:[frontend,backend]) → has frontend in not → EXCLUDED
+#   Roles (any:[backend,cloud] + not:[leadership]):
+#     Under CloudScale:
+#       - staff-eng (tags:[cloud,backend,leadership]) → has leadership in not → EXCLUDED
+#       - senior-eng-cs (tags:[cloud,backend]) → has backend(any), no leadership(not) → SURVIVES
+#     Under DataPipe:
+#       - data-eng (tags:[data,backend]) → has backend(any), no leadership(not) → SURVIVES
+#   Highlights (all:[backend]):
+#     Only highlights tagged with [backend] (must include backend) + untagged
+#   Skills omit by name: ["Practices & Methods"] (tests omit matching against category name)
+#   Projects (all:[backend] + not:[cloud]):
+#     - cloud-orchestrator ([cloud,backend]) → has cloud in not → EXCLUDED
+#     - data-pipeline ([data,backend]) → has backend(all), no cloud(not) → SURVIVES
+#     - cli-tools ([backend,devops]) → has backend(all), no cloud(not) → SURVIVES
+#     - dotfiles (untagged) → untagged passes → SURVIVES
+#     - Others missing backend → excluded
+
+meta:
+  title: "Backend Systems Engineer"
+
+layout: [summary, skills, experience, projects, education]
+
+skills:
+  tags: [backend]
+  omit: ["Practices & Methods"]
+
+experience:
+  tags:
+    any: [backend, data]
+    all: [backend]
+    not: [frontend]
+  roles:
+    tags:
+      any: [backend, cloud]
+      not: [leadership]
+  highlights:
+    tags:
+      all: [backend]
+    limit: 3
+
+projects:
+  tags:
+    all: [backend]
+    not: [cloud]

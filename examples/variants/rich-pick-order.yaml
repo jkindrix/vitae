@@ -1,0 +1,42 @@
+# Pick ordering variant — tests that pick order is preserved, plus pick+tags
+#
+# Exercises:
+#   - Skills pick in reverse order of source (verifies pick order, not source order)
+#   - Experience pick + tags combined: picked companies first in pick order,
+#     then tag-matched non-picked in source order, then untagged non-picked
+#   - Projects pick + tags: picked first, then tag-matched, then untagged
+#   - Limit interacting with pick+tags
+#
+# Expected results against sample-rich.yaml:
+#   Skills pick: [leadership, data, frontend] → appear in THIS order, not source order
+#   Experience pick:[datapipe, webflow] + tags:[backend]:
+#     Step 1 (picked): DataPipe (pick order 1), WebFlow (pick order 2)
+#     Step 2 (tag-matched non-picked): CloudScale (tags:[cloud,backend] matches backend)
+#                                       TechStart (tags:[frontend,backend] matches backend)
+#     Step 3 (untagged non-picked): none (all companies are either picked or tagged)
+#     Combined order: DataPipe, WebFlow, CloudScale, TechStart
+#     Limit 3 → DataPipe, WebFlow, CloudScale
+#   Projects pick:[design-system, dotfiles] + tags:[frontend]:
+#     Picked: design-system (1st), dotfiles (2nd)
+#     Tag-matched non-picked: react-dashboard (frontend)
+#     Untagged non-picked: none (dotfiles is picked, not tag-matched)
+#     Combined: design-system, dotfiles, react-dashboard
+
+meta:
+  title: "Engineering Leader | Frontend & Data"
+
+layout: [summary, skills, experience, projects, education]
+
+skills:
+  pick: [leadership, data, frontend]
+
+experience:
+  pick: [datapipe, webflow]
+  tags: [backend]
+  limit: 3
+  highlights:
+    limit: 3
+
+projects:
+  pick: [design-system, dotfiles]
+  tags: [frontend]

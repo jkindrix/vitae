@@ -1,0 +1,281 @@
+# Rich Sample Resume — Variant System Test Fixture
+#
+# This resume is designed to exercise every feature of the v2 variant system.
+# It contains a fictional engineer with varied experience across cloud, frontend,
+# backend, data, and leadership — with carefully placed tags, ids, and a mix of
+# tagged/untagged items at every level to validate filtering edge cases.
+#
+# Tag dimensions used:
+#   cloud, backend, frontend, data, devops, leadership
+#
+# Untagged items exist at every level (company, role, skill, project, highlight)
+# to validate untagged-item behavior.
+
+meta:
+  name: Alex Rivera
+  title: Staff Engineer | Cloud & Full-Stack Development
+  email: alex.rivera@example.com
+  phone: (555) 987-6543
+  location: Seattle, WA
+  links:
+    - label: LinkedIn
+      url: https://linkedin.com/in/alexrivera
+    - label: GitHub
+      url: https://github.com/alexrivera
+
+summary: >
+  Staff Engineer with 10+ years building distributed systems, cloud
+  infrastructure, and web applications. Led platform teams of 6–12 engineers.
+  Track record shipping high-scale services processing 50M+ requests/day.
+
+skills:
+  - id: languages
+    category: Languages
+    tags: [backend, frontend]
+    items: [TypeScript, Python, Go, Rust, SQL, Java]
+
+  - id: frontend
+    category: Frontend
+    tags: [frontend]
+    items: [React, Next.js, Vue.js, Tailwind CSS, Storybook]
+
+  - id: backend
+    category: Backend
+    tags: [backend]
+    items: [Node.js, FastAPI, gRPC, GraphQL, Kafka]
+
+  - id: cloud
+    category: Cloud & DevOps
+    tags: [cloud, devops]
+    items: [AWS, GCP, Terraform, Kubernetes, Docker, Datadog]
+
+  - id: data
+    category: Data Engineering
+    tags: [data, backend]
+    items: [PostgreSQL, Redis, Spark, Airflow, BigQuery]
+
+  - id: leadership
+    category: Engineering Leadership
+    tags: [leadership]
+    items: [Technical strategy, Team mentoring, Architecture review, Hiring]
+
+  # Untagged skill category — tests that untagged items pass tag filters
+  - id: practices
+    category: Practices & Methods
+    items: [Agile, CI/CD, TDD, Code review, Incident response]
+
+experience:
+  # Company WITH company-level tags
+  - id: cloudscale
+    company: CloudScale Inc.
+    tags: [cloud, backend]
+    roles:
+      - id: staff-eng
+        title: Staff Engineer
+        tags: [cloud, backend, leadership]
+        start: 2022-01
+        end: present
+        location: Seattle, WA
+        highlights:
+          - text: Architected multi-region failover system reducing downtime from 4h to <5min
+            tags: [cloud, backend]
+          - text: Led platform team of 8 engineers shipping Kubernetes-based deployment pipeline
+            tags: [cloud, devops, leadership]
+          - text: Reduced cloud spend by 35% through reserved instance optimization and autoscaling
+            tags: [cloud]
+          - Established engineering-wide RFC process adopted by 60+ engineers
+          - text: Mentored 3 senior engineers to staff-level promotion
+            tags: [leadership]
+
+      - id: senior-eng-cs
+        title: Senior Engineer
+        tags: [cloud, backend]
+        start: 2020-03
+        end: 2022-01
+        location: Seattle, WA
+        highlights:
+          - text: Built real-time event processing pipeline handling 50M events/day on Kafka
+            tags: [backend, data]
+          - text: Designed service mesh with Envoy reducing inter-service latency by 40%
+            tags: [cloud, backend]
+          - text: Implemented feature flag system used across 30+ microservices
+            tags: [backend]
+          - Created internal developer portal improving onboarding time by 50%
+
+  # Company WITH company-level tags (frontend-focused)
+  - id: webflow
+    company: WebFlow Studios
+    tags: [frontend]
+    roles:
+      - id: lead-fe
+        title: Lead Frontend Engineer
+        tags: [frontend, leadership]
+        start: 2018-06
+        end: 2020-02
+        location: San Francisco, CA
+        highlights:
+          - text: Led design system initiative unifying UI across 12 product teams
+            tags: [frontend, leadership]
+          - text: Built real-time collaborative editor with CRDTs and WebSocket sync
+            tags: [frontend, backend]
+          - text: Reduced bundle size by 60% through code splitting and tree shaking
+            tags: [frontend]
+          - Introduced automated visual regression testing reducing UI bugs by 45%
+
+      - id: fe-dev
+        title: Frontend Developer
+        tags: [frontend]
+        start: 2016-09
+        end: 2018-06
+        location: San Francisco, CA
+        highlights:
+          - text: Built customer-facing analytics dashboard with React and D3.js
+            tags: [frontend, data]
+          - text: Implemented responsive design system supporting 15 breakpoints
+            tags: [frontend]
+          - Improved Lighthouse performance score from 45 to 92 across all pages
+
+  # Company WITHOUT company-level tags (untagged company)
+  - id: datapipe
+    company: DataPipe Corp
+    roles:
+      - id: data-eng
+        title: Data Engineer
+        tags: [data, backend]
+        start: 2015-01
+        end: 2016-08
+        location: Austin, TX
+        highlights:
+          - text: Built ETL pipeline processing 2TB/day from 40+ data sources
+            tags: [data, backend]
+          - text: Designed data warehouse schema reducing query times by 80%
+            tags: [data]
+          - text: Implemented real-time anomaly detection on streaming data
+            tags: [data, backend]
+          - Documented data governance policies adopted company-wide
+
+  # Company WITH company-level tags but roles have DIFFERENT tags
+  - id: techstart
+    company: TechStart LLC
+    tags: [frontend, backend]
+    roles:
+      # Role with NO tags (untagged role)
+      - id: junior-dev
+        title: Junior Developer
+        start: 2013-06
+        end: 2014-12
+        location: Austin, TX
+        highlights:
+          - Built internal tools for project tracking and time management
+          - text: Migrated legacy jQuery codebase to React
+            tags: [frontend]
+          - Wrote comprehensive test suite achieving 90% code coverage
+
+      # Role with tags that DON'T overlap with company tags
+      - id: intern
+        title: Engineering Intern
+        tags: [data]
+        start: 2013-01
+        end: 2013-06
+        location: Austin, TX
+        highlights:
+          - text: Built data visualization prototype for sales analytics
+            tags: [data, frontend]
+          - Participated in code reviews and daily standups
+
+projects:
+  - id: cloud-orchestrator
+    name: cloud-orchestrator
+    tags: [cloud, backend]
+    url: https://github.com/alexrivera/cloud-orchestrator
+    description: Multi-cloud deployment orchestrator with Terraform and Pulumi backends
+
+  - id: react-dashboard
+    name: react-dashboard
+    tags: [frontend]
+    url: https://github.com/alexrivera/react-dashboard
+    description: Open-source analytics dashboard framework built on React and D3.js
+
+  - id: data-pipeline
+    name: data-pipeline
+    tags: [data, backend]
+    url: https://github.com/alexrivera/data-pipeline
+    description: Streaming ETL framework for real-time data processing with Kafka and Spark
+
+  - id: cli-tools
+    name: cli-tools
+    tags: [backend, devops]
+    url: https://github.com/alexrivera/cli-tools
+    description: Collection of developer CLI utilities for cloud infrastructure management
+
+  - id: design-system
+    name: design-system
+    tags: [frontend, leadership]
+    url: https://github.com/alexrivera/design-system
+    description: Enterprise component library with accessibility-first React components
+
+  # Untagged project — tests that untagged items pass tag filters
+  - id: dotfiles
+    name: dotfiles
+    url: https://github.com/alexrivera/dotfiles
+    description: Personal development environment configuration and setup scripts
+
+education:
+  - id: ut-cs
+    institution: University of Texas at Austin
+    degree: Bachelor of Science
+    field: Computer Science
+    tags: [backend]
+    start: "2009"
+    end: "2013"
+    highlights:
+      - "GPA: 3.7/4.0"
+      - text: Senior thesis on distributed consensus algorithms
+        tags: [backend, data]
+      - Dean's List — 6 semesters
+
+certifications:
+  - id: aws-sa
+    name: AWS Solutions Architect Professional
+    tags: [cloud, devops]
+    issuer: Amazon Web Services
+    date: "2023"
+
+  - id: cka
+    name: Certified Kubernetes Administrator
+    tags: [cloud, devops]
+    issuer: Cloud Native Computing Foundation
+    date: "2022"
+
+  - id: gcp-de
+    name: Google Cloud Professional Data Engineer
+    tags: [cloud, data]
+    issuer: Google Cloud
+    date: "2021"
+
+  # Untagged certification
+  - id: pmp
+    name: Project Management Professional
+    issuer: Project Management Institute
+    date: "2020"
+
+volunteer:
+  - id: code-mentor
+    organization: Code.org
+    tags: [leadership, frontend]
+    position: Volunteer Instructor
+    start: "2019"
+    highlights:
+      - text: Taught introductory web development to 200+ high school students
+        tags: [frontend]
+      - Developed curriculum materials for HTML/CSS/JavaScript basics
+
+  - id: oss-maintainer
+    organization: Open Source Collective
+    tags: [backend]
+    position: Core Maintainer
+    start: "2020"
+    highlights:
+      - text: Maintained 3 open-source libraries with 10K+ combined GitHub stars
+        tags: [backend]
+      - Reviewed and merged 500+ community pull requests

@@ -1,0 +1,53 @@
+# Data Engineer variant — tests TagExpr `any` + `not` combined
+#
+# Exercises:
+#   - TagExpr `any: [data, backend]` + `not: [frontend]` on experience
+#   - TagExpr `not` on roles (exclude leadership-tagged roles)
+#   - Omit by id on experience companies
+#   - Highlight limit without tag filter
+#   - Empty container pruning (WebFlow's roles are all frontend → pruned after not)
+#   - Untagged items: pass `any` check, unaffected by `not`
+#
+# Expected results against sample-rich.yaml:
+#   Experience companies (any:[data,backend], not:[frontend]):
+#     - CloudScale (tags: [cloud, backend]) → SURVIVES (has backend)
+#     - WebFlow (tags: [frontend]) → EXCLUDED (has frontend in not)
+#     - DataPipe (no tags) → SURVIVES (untagged passes)
+#     - TechStart (tags: [frontend, backend]) → EXCLUDED (has frontend in not)
+#   Then omit: [cloudscale] removes CloudScale
+#   Final companies: DataPipe only
+#   Roles (not:[leadership]):
+#     - data-eng (tags: [data, backend]) → SURVIVES (no leadership tag)
+#   Highlights: limit 3, no tag filter
+#   Skills: pick data, backend, languages
+#   Projects: tags any:[data, backend]
+
+meta:
+  title: "Data Engineer | Real-Time Processing"
+
+summary: >-
+  Data Engineer specializing in real-time ETL pipelines and data warehouse
+  design. Built systems processing 2TB/day from 40+ sources.
+
+layout: [summary, skills, experience, projects, certifications, education]
+
+skills:
+  pick: [data, backend, languages]
+
+experience:
+  tags:
+    any: [data, backend]
+    not: [frontend]
+  omit: [cloudscale]
+  roles:
+    tags:
+      not: [leadership]
+  highlights:
+    limit: 3
+
+projects:
+  tags:
+    any: [data, backend]
+
+certifications:
+  tags: [data]

@@ -1,0 +1,29 @@
+# Base compact variant — composition base for extends chains
+#
+# Exercises:
+#   - Density controls at every level (experience, roles, highlights, skills, projects)
+#   - Style overrides for tight spacing
+#   - No meta/summary/tags — designed purely as a density template
+#   - Intended to be extended by role-specific variants
+
+layout: [summary, skills, experience, projects, education]
+
+skills:
+  limit: 4
+
+experience:
+  limit: 2
+  roles:
+    limit: 2
+  highlights:
+    limit: 2
+
+projects:
+  limit: 2
+
+style:
+  --line-height-normal: "1.1"
+  --line-height-relaxed: "1.2"
+  --space-md: "0.3rem"
+  --space-lg: "0.5rem"
+  --font-size-sm: "8.5pt"

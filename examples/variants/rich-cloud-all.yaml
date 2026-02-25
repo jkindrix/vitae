@@ -1,0 +1,62 @@
+# Cloud Engineer variant — tests TagExpr `all` operator
+#
+# Exercises:
+#   - TagExpr `all: [cloud, backend]` on experience (must have BOTH tags)
+#   - TagExpr `all` on roles
+#   - Highlight tag filtering with `any`
+#   - Pick by id on skills
+#   - Certifications filtered by `all: [cloud, devops]`
+#   - Style overrides
+#
+# Expected results against sample-rich.yaml:
+#   Skills: cloud, backend, languages (picked by id)
+#   Experience companies (tags all:[cloud,backend]):
+#     - CloudScale (tags: [cloud, backend]) → SURVIVES (has both)
+#     - WebFlow (tags: [frontend]) → EXCLUDED (missing cloud and backend)
+#     - DataPipe (no tags) → SURVIVES (untagged passes all)
+#     - TechStart (tags: [frontend, backend]) → EXCLUDED (has backend but not cloud)
+#   Roles (tags all:[cloud,backend]):
+#     - staff-eng (tags: [cloud, backend, leadership]) → SURVIVES
+#     - senior-eng-cs (tags: [cloud, backend]) → SURVIVES
+#     - data-eng (tags: [data, backend]) → EXCLUDED (has backend but not cloud)
+#   After pruning: DataPipe has no surviving roles → PRUNED
+#   Final: only CloudScale with 2 roles
+#   Highlights: any:[cloud, backend] + limit 3
+#   Certifications (all:[cloud,devops]): AWS SA, CKA (both have cloud+devops). GCP DE has cloud but not devops → excluded. PMP untagged → survives.
+#   Projects: pick cloud-orchestrator, plus tags [cloud]
+
+meta:
+  title: "Cloud Infrastructure Engineer"
+  location: "Seattle, WA (Remote)"
+
+summary: >-
+  Cloud Infrastructure Engineer with 10+ years building distributed systems
+  on AWS and GCP. Led platform teams delivering Kubernetes-based deployment
+  pipelines processing 50M+ requests/day.
+
+layout: [summary, skills, experience, projects, certifications, education]
+
+skills:
+  pick: [cloud, backend, languages]
+
+experience:
+  tags:
+    all: [cloud, backend]
+  roles:
+    tags:
+      all: [cloud, backend]
+  highlights:
+    tags:
+      any: [cloud, backend]
+    limit: 3
+
+projects:
+  pick: [cloud-orchestrator]
+  tags: [cloud]
+
+certifications:
+  tags:
+    all: [cloud, devops]
+
+style:
+  --line-height-normal: "1.15"

@@ -1,0 +1,60 @@
+# Compact Cloud Lead variant — 3-level extends chain (base → mid → this)
+#
+# Exercises:
+#   - 3-level composition: base-compact → mid-cloud → this
+#   - Meta override at leaf level
+#   - Summary override at leaf level
+#   - Experience section override (replaces mid-cloud's inherited limits entirely)
+#   - Style shallow merge across 3 levels
+#
+# Inherited from rich-base-compact.yaml (grandparent):
+#   projects.limit: 2
+#   style: --line-height-relaxed: 1.2, --space-md: 0.3rem, --space-lg: 0.5rem, --font-size-sm: 8.5pt
+#
+# Inherited from rich-mid-cloud.yaml (parent):
+#   layout: [summary, skills, experience, projects, certifications, education]
+#   skills: pick [cloud, backend, languages]
+#   certifications: tags [cloud]
+#   style: --line-height-normal: 1.15 (overrode grandparent's 1.1)
+#
+# Overridden by this variant:
+#   meta: title
+#   summary: custom
+#   experience: own selector (replaces inherited limit-only from grandparent)
+#   style: --space-md overridden to 0.4rem (parent had 0.3rem from grandparent)
+#
+# Final merged result:
+#   meta.title: "Cloud Platform Lead"
+#   summary: custom
+#   layout: [summary, skills, experience, projects, certifications, education]
+#   skills: pick [cloud, backend, languages]
+#   experience: tags [cloud], roles.tags all:[cloud,backend], roles.omit [intern], highlights.limit 2
+#   projects.limit: 2
+#   certifications: tags [cloud]
+#   style:
+#     --line-height-normal: 1.15   (from mid-cloud, which overrode base's 1.1)
+#     --line-height-relaxed: 1.2   (from base-compact)
+#     --space-md: 0.4rem           (overridden here, was 0.3rem from base)
+#     --space-lg: 0.5rem           (from base-compact)
+#     --font-size-sm: 8.5pt        (from base-compact)
+
+extends: ./rich-mid-cloud.yaml
+
+meta:
+  title: "Cloud Platform Lead"
+
+summary: >-
+  Cloud Platform Lead with 10+ years building and scaling distributed systems.
+  Led teams of 8+ engineers shipping Kubernetes-based infrastructure.
+
+experience:
+  tags: [cloud]
+  roles:
+    tags:
+      all: [cloud, backend]
+    omit: [intern]
+  highlights:
+    limit: 2
+
+style:
+  --space-md: "0.4rem"
