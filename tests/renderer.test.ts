@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderHtml, renderStandaloneHtml } from '../src/lib/renderer.js';
+import { renderHtml, renderStandaloneHtml, generateStyleOverrideCss } from '../src/lib/renderer.js';
 import { normalizeResume } from '../src/lib/normalize.js';
 import type { Resume } from '../src/types/index.js';
 
@@ -313,6 +313,82 @@ describe('renderer', () => {
       expect(html).toMatch(/>\s*github\.com\s*</);
       // The href should still contain the full URL
       expect(html).toContain('href="https://www.github.com/user"');
+    });
+  });
+
+  describe('style overrides', () => {
+    describe('generateStyleOverrideCss', () => {
+      it('produces :root block with multiple CSS custom properties', () => {
+        const css = generateStyleOverrideCss({
+          '--color-accent': '#0066cc',
+          '--font-size': '14px',
+          '--spacing': '1rem',
+        });
+        expect(css).toContain(':root {');
+        expect(css).toContain('--color-accent: #0066cc');
+        expect(css).toContain('--font-size: 14px');
+        expect(css).toContain('--spacing: 1rem');
+      });
+
+      it('joins properties with semicolons', () => {
+        const css = generateStyleOverrideCss({
+          '--a': '1',
+          '--b': '2',
+        });
+        expect(css).toContain('--a: 1; --b: 2');
+      });
+
+      it('returns empty string for empty object', () => {
+        const css = generateStyleOverrideCss({});
+        expect(css).toBe('');
+      });
+
+      it('handles single property', () => {
+        const css = generateStyleOverrideCss({ '--only': 'value' });
+        expect(css).toBe(':root { --only: value; }');
+      });
+    });
+
+    describe('renderStandaloneHtml with styleOverrides', () => {
+      it('injects a <style> block containing CSS variables', async () => {
+        const overrides = { '--color-accent': '#ff0000', '--font-size': '16px' };
+        const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal', {
+          styleOverrides: overrides,
+        });
+
+        expect(html).toContain('<style>');
+        expect(html).toContain('--color-accent: #ff0000');
+        expect(html).toContain('--font-size: 16px');
+        expect(html).toContain(':root {');
+      });
+
+      it('style override block appears after theme CSS', async () => {
+        const overrides = { '--test-var': 'test-value' };
+        const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal', {
+          styleOverrides: overrides,
+        });
+
+        // The theme CSS contains .resume, the override contains --test-var
+        const themeCssPos = html.indexOf('.resume');
+        const overridePos = html.indexOf('--test-var');
+        expect(themeCssPos).toBeGreaterThan(-1);
+        expect(overridePos).toBeGreaterThan(-1);
+        expect(overridePos).toBeGreaterThan(themeCssPos);
+      });
+
+      it('without styleOverrides, no extra style block for overrides', async () => {
+        const html = await renderStandaloneHtml(normalizeResume(testResume), 'minimal');
+
+        // Count <style> blocks — should only have theme CSS (and possibly theme override)
+        const styleMatches = html.match(/<style>/g) ?? [];
+        const withOverrides = await renderStandaloneHtml(normalizeResume(testResume), 'minimal', {
+          styleOverrides: { '--x': 'y' },
+        });
+        const styleMatchesWithOverrides = withOverrides.match(/<style>/g) ?? [];
+
+        // With overrides should have one more <style> block
+        expect(styleMatchesWithOverrides.length).toBe(styleMatches.length + 1);
+      });
     });
   });
 });

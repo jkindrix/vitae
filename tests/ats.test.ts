@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeResume, extractKeywords } from '../src/lib/ats.js';
+import { analyzeResume, extractKeywords, buildResumeTextBlocks, textContainsKeyword } from '../src/lib/ats.js';
 import type { Resume } from '../src/types/index.js';
 
 // ---------------------------------------------------------------------------
@@ -782,5 +782,124 @@ describe('analyzeResume', () => {
         expect(gap.months).toBeGreaterThan(0);
       }
     });
+  });
+});
+
+describe('buildResumeTextBlocks', () => {
+  it('returns all section keys for a full resume', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(Object.keys(blocks)).toEqual(
+      expect.arrayContaining(['meta', 'summary', 'skills', 'experience', 'projects', 'education', 'certifications'])
+    );
+  });
+
+  it('meta block contains name and title', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(blocks['meta']).toContain('Jane Doe');
+    expect(blocks['meta']).toContain('Senior Software Engineer');
+  });
+
+  it('summary block contains the summary text', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(blocks['summary']).toContain('Experienced software engineer');
+  });
+
+  it('skills block contains category names and items', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(blocks['skills']).toContain('Languages');
+    expect(blocks['skills']).toContain('TypeScript');
+  });
+
+  it('experience block contains role titles and highlights', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(blocks['experience']).toContain('Senior Engineer');
+    expect(blocks['experience']).toContain('microservices');
+  });
+
+  it('projects block contains project names and descriptions', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(blocks['projects']).toContain('OSS Framework');
+    expect(blocks['projects']).toContain('lightweight web framework');
+  });
+
+  it('education block contains institution and degree', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(blocks['education']).toContain('MIT');
+    expect(blocks['education']).toContain('BS');
+  });
+
+  it('certifications block contains name and issuer', () => {
+    const blocks = buildResumeTextBlocks(comprehensive());
+    expect(blocks['certifications']).toContain('AWS Solutions Architect');
+    expect(blocks['certifications']).toContain('Amazon');
+  });
+
+  it('flattens tagged highlights to text', () => {
+    const resume: Resume = {
+      meta: { name: 'Test' },
+      experience: [{
+        company: 'Co',
+        roles: [{
+          title: 'Dev',
+          start: '2020',
+          highlights: [{ text: 'Built microservices', tags: ['backend'] }],
+        }],
+      }],
+    };
+    const blocks = buildResumeTextBlocks(resume);
+    expect(blocks['experience']).toContain('Built microservices');
+  });
+
+  it('minimal resume has only meta and experience keys', () => {
+    const blocks = buildResumeTextBlocks(minimal());
+    expect(blocks).toHaveProperty('meta');
+    expect(blocks).toHaveProperty('experience');
+    expect(blocks).not.toHaveProperty('summary');
+    expect(blocks).not.toHaveProperty('skills');
+    expect(blocks).not.toHaveProperty('projects');
+    expect(blocks).not.toHaveProperty('education');
+    expect(blocks).not.toHaveProperty('certifications');
+  });
+});
+
+describe('textContainsKeyword', () => {
+  it('matches exact word', () => {
+    expect(textContainsKeyword('TypeScript is great', 'TypeScript')).toBe(true);
+  });
+
+  it('matches case-insensitively', () => {
+    expect(textContainsKeyword('Built with typescript', 'TypeScript')).toBe(true);
+  });
+
+  it('respects word boundaries (no partial match)', () => {
+    expect(textContainsKeyword('JavaScript expert', 'script')).toBe(false);
+    expect(textContainsKeyword('React Native', 'Reac')).toBe(false);
+  });
+
+  it('matches multi-word keywords', () => {
+    expect(textContainsKeyword('Experience with machine learning', 'machine learning')).toBe(true);
+  });
+
+  it('does not crash on special regex characters', () => {
+    // C++ and .NET contain regex-special chars; escaping prevents RegExp errors
+    // but \b word boundaries don't match at non-word char edges
+    expect(() => textContainsKeyword('C++ programming', 'C++')).not.toThrow();
+    expect(() => textContainsKeyword('.NET framework', '.NET')).not.toThrow();
+  });
+
+  it('returns false for no match', () => {
+    expect(textContainsKeyword('Python developer', 'Java')).toBe(false);
+  });
+
+  it('returns false for empty text', () => {
+    expect(textContainsKeyword('', 'keyword')).toBe(false);
+  });
+
+  it('matches keyword at start of text', () => {
+    expect(textContainsKeyword('React is popular', 'React')).toBe(true);
+  });
+
+  it('matches keyword at end of text', () => {
+    expect(textContainsKeyword('I use React', 'React')).toBe(true);
   });
 });

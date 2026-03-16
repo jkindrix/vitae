@@ -32,6 +32,37 @@ describe('exportCommand format alias', () => {
   });
 });
 
+describe('exportCommand with variant', () => {
+  it('applies variant transformations before exporting', async () => {
+    const testDir = join(tmpdir(), `vitae-export-variant-${randomUUID()}`);
+    const inputPath = join(testDir, 'resume.yaml');
+    const variantPath = join(testDir, 'variant.yaml');
+    const outputPath = join(testDir, 'out.json');
+
+    const { mkdir } = await import('fs/promises');
+    await mkdir(testDir, { recursive: true });
+
+    await writeFile(
+      inputPath,
+      `meta:\n  name: Test User\n  title: Full Stack Developer\nexperience:\n  - company: Co\n    roles:\n      - title: Dev\n        start: "2020"\n`,
+      'utf-8'
+    );
+    await writeFile(
+      variantPath,
+      `meta:\n  title: Backend Engineer\n`,
+      'utf-8'
+    );
+
+    await exportCommand(inputPath, { variant: variantPath, format: 'json', output: outputPath });
+
+    const content = await readFile(outputPath, 'utf-8');
+    const parsed = JSON.parse(content);
+    expect(parsed.basics?.label).toBe('Backend Engineer');
+
+    await rm(testDir, { recursive: true, force: true });
+  });
+});
+
 describe('export to JSON Resume', () => {
   const fullResume: Resume = {
     meta: {

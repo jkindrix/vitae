@@ -6,6 +6,7 @@ import {
   readStyles,
   getDocxReferencePath,
   getThemesDir,
+  readCoverLetterTemplate,
 } from '../src/lib/themes.js';
 
 describe('themes', () => {
@@ -210,6 +211,38 @@ describe('themes', () => {
 
       const path = getDocxReferencePath(mockTheme);
       expect(path).toBeNull();
+    });
+  });
+
+  describe('readCoverLetterTemplate', () => {
+    it('throws ThemeError for theme without cover letter template', async () => {
+      const mockTheme = {
+        name: 'mock-no-cl',
+        path: '/mock',
+        hasTemplate: true,
+        hasStyles: false,
+        hasDocxReference: false,
+        hasCoverLetterTemplate: false,
+        hasConfig: false,
+      };
+
+      await expect(readCoverLetterTemplate(mockTheme)).rejects.toThrow(
+        'does not have a cover letter template'
+      );
+    });
+
+    it('reads template successfully for theme with cover letter', async () => {
+      const theme = await loadTheme('minimal');
+
+      if (theme.hasCoverLetterTemplate) {
+        const template = await readCoverLetterTemplate(theme);
+        expect(template).toBeDefined();
+        expect(template.length).toBeGreaterThan(0);
+        expect(template).toContain('cover-letter');
+      } else {
+        // Theme doesn't have a cover letter template — verify it throws
+        await expect(readCoverLetterTemplate(theme)).rejects.toThrow();
+      }
     });
   });
 });

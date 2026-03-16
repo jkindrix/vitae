@@ -2,7 +2,8 @@ import { describe, it, expect, afterAll } from 'vitest';
 import { existsSync, unlinkSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { generatePng, closeBrowser } from '../src/lib/pdf.js';
+import { generatePng, generatePngFromHtml, closeBrowser } from '../src/lib/pdf.js';
+import { renderStandaloneHtml } from '../src/lib/renderer.js';
 import { normalizeResume } from '../src/lib/normalize.js';
 import type { Resume } from '../src/types/index.js';
 
@@ -30,6 +31,34 @@ describe('generatePng', () => {
       expect(existsSync(outPath)).toBe(true);
 
       // Verify it's actually a PNG (starts with PNG magic bytes)
+      const buffer = readFileSync(outPath);
+      expect(buffer[0]).toBe(0x89);
+      expect(buffer[1]).toBe(0x50); // P
+      expect(buffer[2]).toBe(0x4e); // N
+      expect(buffer[3]).toBe(0x47); // G
+    } finally {
+      if (existsSync(outPath)) unlinkSync(outPath);
+    }
+  }, 30000);
+
+  it('generates PNG from standalone HTML via generatePngFromHtml', async () => {
+    const resume: Resume = {
+      meta: { name: 'PNG HTML Test', title: 'Engineer' },
+      experience: [
+        {
+          company: 'Test Corp',
+          roles: [{ title: 'Dev', start: '2020', highlights: ['Built things'] }],
+        },
+      ],
+    };
+    const normalized = normalizeResume(resume);
+    const html = await renderStandaloneHtml(normalized, 'minimal');
+    const outPath = join(tmpdir(), `vitae-png-from-html-${Date.now()}.png`);
+
+    try {
+      await generatePngFromHtml(html, outPath);
+
+      expect(existsSync(outPath)).toBe(true);
       const buffer = readFileSync(outPath);
       expect(buffer[0]).toBe(0x89);
       expect(buffer[1]).toBe(0x50); // P

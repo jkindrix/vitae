@@ -1,6 +1,38 @@
 import { describe, it, expect } from 'vitest';
-import { formatDate, formatDateShort, formatDateRange } from '../src/lib/dates.js';
+import { parseDate, formatDate, formatDateShort, formatDateRange } from '../src/lib/dates.js';
 import { getLocale } from '../src/lib/i18n.js';
+
+describe('parseDate', () => {
+  it('returns null for undefined', () => {
+    expect(parseDate(undefined)).toBeNull();
+  });
+
+  it('returns null for empty string', () => {
+    expect(parseDate('')).toBeNull();
+  });
+
+  it('parses "present" as isPresent', () => {
+    expect(parseDate('present')).toEqual({ year: '', month: null, isPresent: true });
+  });
+
+  it('parses "Present" case-insensitively', () => {
+    expect(parseDate('Present')).toEqual({ year: '', month: null, isPresent: true });
+    expect(parseDate('PRESENT')).toEqual({ year: '', month: null, isPresent: true });
+  });
+
+  it('parses YYYY-MM to 0-indexed month', () => {
+    expect(parseDate('2024-01')).toEqual({ year: '2024', month: 0, isPresent: false });
+    expect(parseDate('2024-12')).toEqual({ year: '2024', month: 11, isPresent: false });
+  });
+
+  it('parses year-only as null month', () => {
+    expect(parseDate('2024')).toEqual({ year: '2024', month: null, isPresent: false });
+  });
+
+  it('does not crash on non-date strings', () => {
+    expect(parseDate('abc')).toEqual({ year: 'abc', month: null, isPresent: false });
+  });
+});
 
 describe('date utilities', () => {
   describe('formatDate', () => {

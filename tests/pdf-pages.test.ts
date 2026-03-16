@@ -1,8 +1,9 @@
 import { describe, it, expect, afterAll } from 'vitest';
-import { existsSync, unlinkSync } from 'fs';
+import { existsSync, unlinkSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { countPdfPages, generatePdf, generatePdfBuffer, closeBrowser } from '../src/lib/pdf.js';
+import { countPdfPages, generatePdf, generatePdfBuffer, generatePdfFromHtml, closeBrowser } from '../src/lib/pdf.js';
+import { renderStandaloneHtml } from '../src/lib/renderer.js';
 import { normalizeResume } from '../src/lib/normalize.js';
 import type { Resume } from '../src/types/index.js';
 
@@ -132,6 +133,23 @@ describe('PDF generation with PdfResult', () => {
 
       expect(result.scale).toBeLessThan(1.0);
       expect(result.scale).toBeGreaterThanOrEqual(0.80);
+    } finally {
+      if (existsSync(outPath)) unlinkSync(outPath);
+    }
+  }, 30000);
+
+  it('generatePdfFromHtml produces a valid PDF from standalone HTML', async () => {
+    const normalized = normalizeResume(minimalResume);
+    const html = await renderStandaloneHtml(normalized, 'minimal');
+    const outPath = join(tmpdir(), `vitae-pdf-from-html-${Date.now()}.pdf`);
+
+    try {
+      const result = await generatePdfFromHtml(html, outPath);
+
+      expect(existsSync(outPath)).toBe(true);
+      const buffer = readFileSync(outPath);
+      expect(buffer.toString('ascii', 0, 4)).toBe('%PDF');
+      expect(result.pageCount).toBeGreaterThanOrEqual(1);
     } finally {
       if (existsSync(outPath)) unlinkSync(outPath);
     }
