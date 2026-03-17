@@ -55,7 +55,21 @@ function loadLocaleFromDisk(code: string): Locale | undefined {
   try {
     const filePath = join(localesDir(), `${code}.json`);
     const raw = readFileSync(filePath, 'utf-8');
-    return JSON.parse(raw) as Locale;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+
+    // Validate required locale structure
+    if (
+      !parsed['labels'] ||
+      typeof parsed['labels'] !== 'object' ||
+      !parsed['months'] ||
+      typeof parsed['months'] !== 'object' ||
+      !parsed['keywords'] ||
+      typeof parsed['keywords'] !== 'object'
+    ) {
+      return undefined;
+    }
+
+    return parsed as unknown as Locale;
   } catch {
     return undefined;
   }

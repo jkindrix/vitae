@@ -1,6 +1,8 @@
 import nunjucks from 'nunjucks';
 import { loadTheme, readCoverLetterTemplate, readStyles, loadThemeConfig } from './themes.js';
 import { generateThemeOverrideCss } from './renderer.js';
+import { formatDate, formatDateShort, formatDateRange } from './dates.js';
+import { getLocale } from './i18n.js';
 import type { CoverLetter, ThemeConfig } from '../types/index.js';
 
 /**
@@ -12,6 +14,25 @@ function createCoverLetterEnvironment(config?: ThemeConfig | null): nunjucks.Env
     autoescape: true,
     trimBlocks: true,
     lstripBlocks: true,
+  });
+
+  // Date formatting filters (same as resume renderer)
+  env.addFilter('formatDate', (dateStr: string | undefined) => {
+    if (!dateStr) return '';
+    return formatDate(dateStr);
+  });
+  env.addFilter('formatDateShort', (dateStr: string | undefined) => {
+    if (!dateStr) return '';
+    return formatDateShort(dateStr);
+  });
+  env.addFilter('formatDateRange', (start: string | undefined, end?: string | undefined) => {
+    if (!start) return '';
+    return formatDateRange(start, end, { locale: getLocale() });
+  });
+
+  env.addFilter('joinItems', (items: string[] | undefined, separator?: string) => {
+    if (!items) return '';
+    return items.join(separator ?? ', ');
   });
 
   env.addFilter('domain', (url: string | undefined): string => {

@@ -3,6 +3,7 @@ import { extname, dirname, resolve } from 'path';
 import { parse as parseYaml } from 'yaml';
 import { assertValidResume, assertValidVariant, assertValidCoverLetter } from './schema.js';
 import { isJsonResumeFormat, fromJsonResume } from './json-resume.js';
+import { FileError } from './errors.js';
 import type { Resume, Variant, CoverLetter, SectionName } from '../types/index.js';
 
 export interface LoadOptions {
@@ -32,7 +33,12 @@ function parseContent(content: string, filePath: string): unknown {
  * Automatically detects and converts JSON Resume format
  */
 export async function loadResume(filePath: string, options: LoadOptions = {}): Promise<Resume> {
-  const content = await readFile(filePath, 'utf-8');
+  let content: string;
+  try {
+    content = await readFile(filePath, 'utf-8');
+  } catch (err) {
+    throw FileError.readError(filePath, err instanceof Error ? err : new Error(String(err)));
+  }
   const data = parseContent(content, filePath);
 
   // Check if this is JSON Resume format
@@ -204,7 +210,12 @@ export function isCoverLetterFormat(data: unknown): boolean {
  * Load and validate a cover letter from a YAML or JSON file
  */
 export async function loadCoverLetter(filePath: string): Promise<CoverLetter> {
-  const content = await readFile(filePath, 'utf-8');
+  let content: string;
+  try {
+    content = await readFile(filePath, 'utf-8');
+  } catch (err) {
+    throw FileError.readError(filePath, err instanceof Error ? err : new Error(String(err)));
+  }
   const data = parseContent(content, filePath);
   return assertValidCoverLetter(data);
 }
@@ -223,7 +234,12 @@ export async function loadDocument(
   filePath: string,
   options: LoadOptions = {}
 ): Promise<DocumentResult> {
-  const content = await readFile(filePath, 'utf-8');
+  let content: string;
+  try {
+    content = await readFile(filePath, 'utf-8');
+  } catch (err) {
+    throw FileError.readError(filePath, err instanceof Error ? err : new Error(String(err)));
+  }
   const data = parseContent(content, filePath);
 
   if (isCoverLetterFormat(data)) {

@@ -79,7 +79,14 @@ async function getBrowser(): Promise<Browser> {
 }
 
 /**
- * Close the browser instance
+ * Close the shared browser singleton used by PDF/PNG generation.
+ *
+ * Vitae uses a single Chromium instance for all PDF/PNG operations in a
+ * process. Call this when you're done generating to release the browser.
+ * Safe to call multiple times — no-ops if already closed.
+ *
+ * Note: This is process-global. In concurrent usage, closing the browser
+ * affects all callers. CLI usage (sequential) is the primary use case.
  */
 export async function closeBrowser(): Promise<void> {
   if (browser) {

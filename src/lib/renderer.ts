@@ -152,6 +152,12 @@ export async function renderHtml(
   // Merge helper-computed context from theme config
   if (config?.helpers) {
     const helperContext = config.helpers(resume);
+    const reserved = new Set(Object.keys(context));
+    for (const key of Object.keys(helperContext)) {
+      if (reserved.has(key)) {
+        throw new ThemeError(`Theme helper key "${key}" collides with a reserved context variable`, themeName);
+      }
+    }
     Object.assign(context, helperContext);
   }
 

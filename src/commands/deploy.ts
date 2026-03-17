@@ -31,6 +31,8 @@ export interface DeployCommandOptions {
   remote: string;
   message: string;
   cname?: string;
+  dryRun?: boolean;
+  force?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -120,6 +122,14 @@ export async function deployCommand(
     );
   }
 
+  // Guard against force-pushing to main/master
+  const protectedBranches = ['main', 'master'];
+  if (protectedBranches.includes(options.branch) && !options.force) {
+    throw new Error(
+      `Refusing to force-push to "${options.branch}". Use a different branch (e.g., --branch gh-pages) or pass --force to override.`
+    );
+  }
+
   console.log(chalk.blue('Preparing deploy...'));
 
   // 2. Load and render HTML
@@ -171,6 +181,14 @@ export async function deployCommand(
     await writeFile(join(tempDir, '.nojekyll'), '', 'utf-8');
 
     // 4. Initialize git repo in temp dir, commit, and push
+    if (options.dryRun) {
+      console.log(chalk.cyan(`[dry-run] Would push to ${options.remote}/${options.branch}`));
+      console.log(chalk.cyan(`[dry-run] Files: index.html${options.cname ? ', CNAME' : ''}, .nojekyll`));
+      console.log(chalk.cyan(`[dry-run] Remote: ${remoteUrl}`));
+      console.log(chalk.cyan(`[dry-run] Message: ${options.message}`));
+      return;
+    }
+
     console.log(chalk.blue(`Deploying to ${options.remote}/${options.branch}...`));
 
     await git(['init'], tempDir);

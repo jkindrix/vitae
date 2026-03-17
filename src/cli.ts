@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 
+import { createRequire } from 'module';
 import { Command } from 'commander';
 import chalk from 'chalk';
+
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json') as { version: string };
 import {
   buildCommand,
   importCommand,
@@ -19,7 +23,7 @@ import {
 
 const program = new Command();
 
-program.name('vitae').description('Beautiful resume generator from YAML').version('0.1.0');
+program.name('vitae').description('Beautiful resume generator from YAML').version(pkg.version);
 
 // Build command
 program
@@ -39,7 +43,7 @@ program
   .option('-d, --debug', 'Enable debug mode with verbose logging and intermediate files')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .option('-w, --watch', 'Watch for changes and rebuild automatically')
-  .option('-l, --layout <name>', 'Theme layout variant to use')
+  .option('-l, --layout <name>', 'Theme layout preset name')
   .option('--fit', 'Auto-scale PDF to fit target page count')
   .option('--pages <count>', 'Target page count for PDF (default: 1)', parseInt)
   .option('--no-page-warn', 'Suppress page count warnings')
@@ -103,7 +107,7 @@ program
     '-o, --output <path>',
     'Output file path (defaults to resume.yaml or cover-letter.yaml in current directory)'
   )
-  .option('-f, --force', 'Overwrite existing file')
+  .option('--force', 'Overwrite existing file')
   .option('-i, --interactive', 'Build resume interactively with prompts')
   .option('-c, --cover-letter', 'Create a cover letter template instead of a resume')
   .action(async (options) => {
@@ -120,9 +124,10 @@ program
 program
   .command('themes')
   .description('List available themes')
-  .action(async () => {
+  .option('--json', 'Output results as JSON')
+  .action(async (options) => {
     try {
-      await themesCommand();
+      await themesCommand({ json: options.json });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(chalk.red(`Error: ${message}`));
@@ -135,9 +140,10 @@ program
   .command('validate')
   .description('Validate a resume.yaml file')
   .argument('<input>', 'Path to resume.yaml file')
-  .action(async (input: string) => {
+  .option('--json', 'Output results as JSON')
+  .action(async (input: string, options) => {
     try {
-      await validateCommand(input);
+      await validateCommand(input, { json: options.json });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(chalk.red(`Error: ${message}`));
@@ -148,6 +154,7 @@ program
 // Check command (ATS compatibility)
 program
   .command('check')
+  .alias('ats')
   .description('Analyze resume for ATS (Applicant Tracking System) compatibility')
   .argument('<input>', 'Path to resume.yaml file')
   .option('-j, --job <file>', 'Path to job description text file for keyword matching')
@@ -191,7 +198,7 @@ program
   .option('-t, --theme <name>', 'Theme to audit against', 'minimal')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .option('--level <level>', 'WCAG conformance level: AA or AAA', 'AA')
-  .option('-l, --layout <name>', 'Theme layout variant to use')
+  .option('-l, --layout <name>', 'Theme layout preset name')
   .option('--json', 'Output results as JSON')
   .action(async (input: string, options) => {
     try {
@@ -218,7 +225,6 @@ program
     '--model <name>',
     'LLM model to use (defaults: gpt-4o-mini, claude-sonnet-4-5, llama3.2)'
   )
-  .option('--api-key <key>', 'API key (prefer ANTHROPIC_API_KEY or OPENAI_API_KEY env vars)')
   .option('--base-url <url>', 'Custom API base URL (for Ollama or proxies)')
   .option('--json', 'Output results as JSON')
   .action(async (input: string, options) => {
@@ -239,7 +245,7 @@ program
   .option('-t, --theme <name>', 'Theme to use', 'minimal')
   .option('-p, --port <number>', 'Port to run on', '3000')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
-  .option('-l, --layout <name>', 'Theme layout variant to use')
+  .option('-l, --layout <name>', 'Theme layout preset name')
   .action(async (input: string, options) => {
     try {
       await previewCommand(input, {
@@ -262,11 +268,13 @@ program
   .argument('<input>', 'Path to resume.yaml or cover-letter.yaml file')
   .option('-t, --theme <name>', 'Theme to use', 'minimal')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
-  .option('-l, --layout <name>', 'Theme layout variant to use')
+  .option('-l, --layout <name>', 'Theme layout preset name')
   .option('-b, --branch <name>', 'Deploy branch name', 'gh-pages')
   .option('-r, --remote <name>', 'Git remote name', 'origin')
   .option('-m, --message <msg>', 'Commit message', 'Deploy resume via Vitae')
   .option('--cname <domain>', 'Custom domain (creates CNAME file)')
+  .option('--dry-run', 'Show what would be deployed without pushing')
+  .option('--force', 'Allow force-push to protected branches (main/master)')
   .action(async (input: string, options) => {
     try {
       await deployCommand(input, {
@@ -277,6 +285,8 @@ program
         remote: options.remote,
         message: options.message,
         cname: options.cname,
+        dryRun: options.dryRun,
+        force: options.force,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

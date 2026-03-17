@@ -7,11 +7,20 @@ import { validateResume, validateCoverLetter, isCoverLetterFormat } from '../lib
 /**
  * Validate command - check a resume or cover letter YAML for errors
  */
-export async function validateCommand(inputPath: string): Promise<void> {
+export interface ValidateCommandOptions {
+  json?: boolean;
+}
+
+export async function validateCommand(
+  inputPath: string,
+  options: ValidateCommandOptions = {}
+): Promise<void> {
   const resolvedPath = resolve(inputPath);
 
-  console.log(chalk.blue(`Validating ${resolvedPath}...`));
-  console.log('');
+  if (!options.json) {
+    console.log(chalk.blue(`Validating ${resolvedPath}...`));
+    console.log('');
+  }
 
   try {
     const content = await readFile(resolvedPath, 'utf-8');
@@ -20,6 +29,12 @@ export async function validateCommand(inputPath: string): Promise<void> {
     if (isCoverLetterFormat(data)) {
       // Cover letter validation path
       const result = await validateCoverLetter(data);
+
+      if (options.json) {
+        console.log(JSON.stringify({ valid: result.valid, errors: result.errors, type: 'cover-letter' }, null, 2));
+        if (!result.valid) process.exitCode = 1;
+        return;
+      }
 
       if (result.valid) {
         console.log(chalk.green('✓ Cover letter is valid'));
@@ -60,6 +75,12 @@ export async function validateCommand(inputPath: string): Promise<void> {
     } else {
       // Resume validation path
       const result = await validateResume(data);
+
+      if (options.json) {
+        console.log(JSON.stringify({ valid: result.valid, errors: result.errors, type: 'resume' }, null, 2));
+        if (!result.valid) process.exitCode = 1;
+        return;
+      }
 
       if (result.valid) {
         console.log(chalk.green('✓ Resume is valid'));
