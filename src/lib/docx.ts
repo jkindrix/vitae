@@ -1,114 +1,20 @@
 import { writeFile } from 'fs/promises';
-import {
-  Document,
-  Paragraph,
-  TextRun,
-  ExternalHyperlink,
-  Packer,
-  BorderStyle,
-  AlignmentType,
-} from 'docx';
+import { Document, Paragraph, TextRun, ExternalHyperlink, Packer, AlignmentType } from 'docx';
 import { formatDateShort } from './dates.js';
-import { getLocale, getSectionLabel } from './i18n.js';
+import { getLocale } from './i18n.js';
 import { DocxError } from './errors.js';
+import {
+  resolveStyles,
+  docxSectionHeading,
+  textRun,
+  emptyParagraph,
+  localeHeading,
+  localePresentKeyword,
+} from './docx-styles.js';
+import type { DocxStyles } from './docx-styles.js';
 import type { Locale } from './i18n.js';
-import type { NormalizedResume, SectionName, ThemeOverrides } from '../types/index.js';
+import type { NormalizedResume, SectionName } from '../types/index.js';
 import type { CoverLetter } from '../types/cover-letter.js';
-
-// ---------------------------------------------------------------------------
-// Styling infrastructure
-// ---------------------------------------------------------------------------
-
-interface DocxStyles {
-  accentColor: string; // hex without #, e.g. "1B4F72"
-  textColor: string;
-  fontFamily: string;
-  fontSize: number; // half-points (22 = 11pt)
-  headingSize: number; // half-points (28 = 14pt)
-  nameSize: number; // half-points (44 = 22pt)
-}
-
-const DEFAULT_STYLES: DocxStyles = {
-  accentColor: '1B4F72',
-  textColor: '333333',
-  fontFamily: 'Calibri',
-  fontSize: 22,
-  headingSize: 28,
-  nameSize: 44,
-};
-
-function stripHash(color: string): string {
-  return color.startsWith('#') ? color.slice(1) : color;
-}
-
-function resolveStyles(theme?: ThemeOverrides): DocxStyles {
-  if (!theme) return { ...DEFAULT_STYLES };
-  return {
-    accentColor: theme.colors?.accent ? stripHash(theme.colors.accent) : DEFAULT_STYLES.accentColor,
-    textColor: theme.colors?.text ? stripHash(theme.colors.text) : DEFAULT_STYLES.textColor,
-    fontFamily: theme.fonts?.sans ?? DEFAULT_STYLES.fontFamily,
-    fontSize: DEFAULT_STYLES.fontSize,
-    headingSize: DEFAULT_STYLES.headingSize,
-    nameSize: DEFAULT_STYLES.nameSize,
-  };
-}
-
-// ---------------------------------------------------------------------------
-// DOCX helpers
-// ---------------------------------------------------------------------------
-
-function docxSectionHeading(text: string, styles: DocxStyles): Paragraph {
-  return new Paragraph({
-    children: [
-      new TextRun({
-        text,
-        bold: true,
-        size: styles.headingSize,
-        color: styles.accentColor,
-        font: styles.fontFamily,
-      }),
-    ],
-    spacing: { before: 240, after: 120 },
-    border: {
-      bottom: {
-        style: BorderStyle.SINGLE,
-        size: 1,
-        color: styles.accentColor,
-      },
-    },
-  });
-}
-
-function textRun(text: string, styles: DocxStyles, overrides?: { bold?: boolean; italics?: boolean; color?: string; size?: number }): TextRun {
-  const opts: {
-    text: string;
-    font: string;
-    size: number;
-    color: string;
-    bold?: boolean;
-    italics?: boolean;
-  } = {
-    text,
-    font: styles.fontFamily,
-    size: overrides?.size ?? styles.fontSize,
-    color: overrides?.color ?? styles.textColor,
-  };
-  if (overrides?.bold !== undefined) opts.bold = overrides.bold;
-  if (overrides?.italics !== undefined) opts.italics = overrides.italics;
-  return new TextRun(opts);
-}
-
-function emptyParagraph(): Paragraph {
-  return new Paragraph({ text: '' });
-}
-
-function localeHeading(locale: Locale, section: SectionName, fallback: string): string {
-  return getSectionLabel(locale, section) ?? fallback;
-}
-
-function localePresentKeyword(locale: Locale): string {
-  return locale.keywords.present || 'Present';
-}
 
 // ---------------------------------------------------------------------------
 // DOCX section renderers
@@ -196,7 +102,11 @@ function renderMetaDocx(resume: NormalizedResume, styles: DocxStyles): Paragraph
   return paragraphs;
 }
 
-function renderSummaryDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderSummaryDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.summary) return [];
   return [
     docxSectionHeading(localeHeading(locale, 'summary', 'Summary'), styles),
@@ -207,7 +117,11 @@ function renderSummaryDocx(resume: NormalizedResume, styles: DocxStyles, locale:
   ];
 }
 
-function renderSkillsDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderSkillsDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.skills || resume.skills.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'skills', 'Skills'), styles),
@@ -226,7 +140,11 @@ function renderSkillsDocx(resume: NormalizedResume, styles: DocxStyles, locale: 
   return paragraphs;
 }
 
-function renderExperienceDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderExperienceDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.experience || resume.experience.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'experience', 'Experience'), styles),
@@ -243,14 +161,14 @@ function renderExperienceDocx(resume: NormalizedResume, styles: DocxStyles, loca
       );
 
       // Role title + date range
-      const dateChildren: TextRun[] = [
-        textRun(role.title, styles, { italics: true }),
-      ];
+      const dateChildren: TextRun[] = [textRun(role.title, styles, { italics: true })];
 
       const dateParts: string[] = [];
       if (role.start) {
         const endDate = role.end ?? localePresentKeyword(locale);
-        dateParts.push(`${formatDateShort(role.start, locale)} - ${formatDateShort(endDate, locale)}`);
+        dateParts.push(
+          `${formatDateShort(role.start, locale)} - ${formatDateShort(endDate, locale)}`
+        );
       }
       if (role.location) dateParts.push(role.location);
 
@@ -283,7 +201,11 @@ function renderExperienceDocx(resume: NormalizedResume, styles: DocxStyles, loca
   return paragraphs;
 }
 
-function renderProjectsDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderProjectsDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.projects || resume.projects.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'projects', 'Projects'), styles),
@@ -346,7 +268,11 @@ function renderProjectsDocx(resume: NormalizedResume, styles: DocxStyles, locale
   return paragraphs;
 }
 
-function renderEducationDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderEducationDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.education || resume.education.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'education', 'Education'), styles),
@@ -403,7 +329,11 @@ function renderEducationDocx(resume: NormalizedResume, styles: DocxStyles, local
   return paragraphs;
 }
 
-function renderCertificationsDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderCertificationsDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.certifications || resume.certifications.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'certifications', 'Certifications'), styles),
@@ -425,7 +355,11 @@ function renderCertificationsDocx(resume: NormalizedResume, styles: DocxStyles, 
   return paragraphs;
 }
 
-function renderLanguagesDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderLanguagesDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.languages || resume.languages.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'languages', 'Languages'), styles),
@@ -446,7 +380,11 @@ function renderLanguagesDocx(resume: NormalizedResume, styles: DocxStyles, local
   return paragraphs;
 }
 
-function renderAwardsDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderAwardsDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.awards || resume.awards.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'awards', 'Awards'), styles),
@@ -477,7 +415,11 @@ function renderAwardsDocx(resume: NormalizedResume, styles: DocxStyles, locale: 
   return paragraphs;
 }
 
-function renderPublicationsDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderPublicationsDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.publications || resume.publications.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'publications', 'Publications'), styles),
@@ -534,7 +476,11 @@ function renderPublicationsDocx(resume: NormalizedResume, styles: DocxStyles, lo
   return paragraphs;
 }
 
-function renderVolunteerDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderVolunteerDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.volunteer || resume.volunteer.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'volunteer', 'Volunteer'), styles),
@@ -597,7 +543,11 @@ function renderVolunteerDocx(resume: NormalizedResume, styles: DocxStyles, local
   return paragraphs;
 }
 
-function renderReferencesDocx(resume: NormalizedResume, styles: DocxStyles, locale: Locale): Paragraph[] {
+function renderReferencesDocx(
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+): Paragraph[] {
   if (!resume.references || resume.references.length === 0) return [];
   const paragraphs: Paragraph[] = [
     docxSectionHeading(localeHeading(locale, 'references', 'References'), styles),
@@ -628,7 +578,11 @@ function renderReferencesDocx(resume: NormalizedResume, styles: DocxStyles, loca
 // DOCX section renderer map
 // ---------------------------------------------------------------------------
 
-type DocxSectionRenderer = (resume: NormalizedResume, styles: DocxStyles, locale: Locale) => Paragraph[];
+type DocxSectionRenderer = (
+  resume: NormalizedResume,
+  styles: DocxStyles,
+  locale: Locale
+) => Paragraph[];
 
 const docxSectionRenderers: Record<SectionName, DocxSectionRenderer> = {
   summary: renderSummaryDocx,
