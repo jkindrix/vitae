@@ -108,11 +108,13 @@ These are larger investments that would significantly shift Vitae's competitive 
 
 **Why:** No tool in any tier offers resume analytics for self-reflection. This is a novel feature that leverages the structured data format.
 
-### 19. Hosted Resume Pages
+### 19. Hosted Resume Pages — PARTIALLY IMPLEMENTED
 
-**What:** `vitae deploy` that publishes the HTML output to GitHub Pages, Netlify, or Cloudflare Pages as a living resume URL.
+**Status:** GitHub Pages support shipped. `vitae deploy <input>` renders a standalone HTML resume and publishes it to a `gh-pages` branch via git. Supports `--branch`, `--theme`, `--variant`, and `--message` options. Works with plain git — no `gh` CLI required. Multi-platform deployment (Netlify, Cloudflare Pages) remains unimplemented.
 
-**Why:** Reactive Resume offers shareable links. A deploy command would give CLI users the same capability without a hosted service.
+**What (remaining):** Extend `vitae deploy` to support Netlify and Cloudflare Pages as deployment targets.
+
+**Why:** Reactive Resume offers shareable links. The deploy command gives CLI users the same capability without a hosted service.
 
 ### 20. Accessibility Auditing — IMPLEMENTED
 
@@ -142,9 +144,11 @@ These are larger investments that would significantly shift Vitae's competitive 
 | 16 | ~~Native DOCX (drop Pandoc)~~ | ~~High~~ | ~~High~~ | ~~Zero-install goal~~ | **DONE** |
 | 17 | ~~Cover letter support~~ | ~~High~~ | ~~Low~~ | ~~Matches commercial tier~~ | **DONE** |
 | 18 | Resume analytics | Medium | Low | Novel | High |
-| 19 | Hosted deploy | Medium | Low | Matches Reactive Resume | Medium |
+| 19 | ~~Hosted deploy~~ | ~~Medium~~ | ~~Low~~ | ~~Matches Reactive Resume~~ | **PARTIAL** |
 | 20 | ~~Accessibility auditing~~ | ~~Medium~~ | ~~Low~~ | ~~Novel~~ | **DONE** |
 
 **Completed (16 of 20):** #1 (schema autocompletion), #2 (theme color/font overrides), #3 (PNG output), #4 (watch mode for build), #5 (Markdown output), #6 (GitHub Actions template), #7 (ATS analyzer), #8 (job description tailoring), #9 (resume variants), #10 (plugin system for themes), #11 (multi-language / i18n), #12 (JSON Resume export), #14 (AI content assistant), #16 (native DOCX generation), #17 (cover letter support), #20 (accessibility auditing).
 
-**Next highest-ROI items:** #19 (hosted deploy), #15 (community theme registry), #18 (resume analytics).
+**Partially completed (1 of 20):** #19 (hosted deploy — GitHub Pages shipped, Netlify/Cloudflare not yet).
+
+**Remaining (3 of 20):** #13 (web theme configurator), #15 (community theme registry), #18 (resume analytics).
