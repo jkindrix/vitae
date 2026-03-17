@@ -9,3 +9,4 @@ export { checkCommand } from './check.js';
 export { tailorCommand } from './tailor.js';
 export { auditCommand } from './audit.js';
 export { suggestCommand } from './suggest.js';
+export { deployCommand } from './deploy.js';

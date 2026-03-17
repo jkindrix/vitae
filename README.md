@@ -20,6 +20,7 @@ A resume generator that converts YAML to PDF, DOCX, HTML, JSON, Markdown, and PN
 - **Schema validation** — Catch errors before generating; provides editor autocompletion via JSON Schema
 - **CLI & library** — Use from the command line or as a Node.js module
 - **Zero system deps** — Only requires Node.js 20+ (Chromium auto-installed for PDF/PNG via Playwright)
+- **GitHub Pages deploy** — Publish your resume as a shareable website with `vitae deploy`
 - **CI/CD ready** — Includes a GitHub Actions workflow template
 
 ## Installation
@@ -292,6 +293,34 @@ List available themes and their features.
 ```bash
 vitae themes
 ```
+
+### `vitae deploy <input>`
+
+Deploy resume or cover letter as a GitHub Pages site. Renders standalone HTML and pushes to a deploy branch.
+
+```bash
+vitae deploy resume.yaml                           # Deploy with minimal theme
+vitae deploy resume.yaml -t modern                 # Use specific theme
+vitae deploy resume.yaml -v backend.variant.yaml   # Deploy a variant
+vitae deploy resume.yaml --cname resume.example.com # Custom domain
+vitae deploy resume.yaml -b docs                   # Custom branch
+```
+
+**Options:**
+| Option | Description | Default |
+|--------|-------------|---------|
+| `-t, --theme <name>` | Theme to use | `minimal` |
+| `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
+| `-l, --layout <name>` | Theme layout variant to use | — |
+| `-b, --branch <name>` | Deploy branch name | `gh-pages` |
+| `-r, --remote <name>` | Git remote name | `origin` |
+| `-m, --message <msg>` | Commit message | `Deploy resume via Vitae` |
+| `--cname <domain>` | Custom domain (creates CNAME file) | — |
+
+**Requirements:**
+- Must be run from within a git repository with a remote
+- The remote must be a GitHub repository for the Pages URL to be displayed
+- GitHub Pages must be enabled in your repo settings with the deploy branch as the source
 
 ## Resume Schema
 
