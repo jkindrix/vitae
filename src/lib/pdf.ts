@@ -1,4 +1,4 @@
-import { chromium, type Browser, type Page } from 'playwright';
+import { chromium, type Browser, type Page } from 'playwright-core';
 import { writeFile } from 'fs/promises';
 import { renderStandaloneHtml } from './renderer.js';
 import { PdfError } from './errors.js';
@@ -58,9 +58,21 @@ function createDebugLogger(enabled: boolean): DebugLogger {
  */
 async function getBrowser(): Promise<Browser> {
   if (!browser) {
-    browser = await chromium.launch({
-      headless: true,
-    });
+    try {
+      browser = await chromium.launch({
+        headless: true,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message.includes('Executable') || message.includes('browserType.launch')) {
+        throw new PdfError(
+          'Chromium browser not found. PDF and PNG generation requires Playwright browsers.\n' +
+            'Install with: npx playwright install chromium',
+          error instanceof Error ? error : undefined
+        );
+      }
+      throw error;
+    }
   }
   return browser;
 }

@@ -19,7 +19,7 @@ A resume generator that converts YAML to PDF, DOCX, HTML, JSON, Markdown, and PN
 - **Live preview** — Hot-reload preview server for rapid iteration
 - **Schema validation** — Catch errors before generating; provides editor autocompletion via JSON Schema
 - **CLI & library** — Use from the command line or as a Node.js module
-- **Zero system deps** — Only requires Node.js 20+
+- **Zero system deps** — Only requires Node.js 20+ (Chromium auto-installed for PDF/PNG via Playwright)
 - **CI/CD ready** — Includes a GitHub Actions workflow template
 
 ## Installation
@@ -43,6 +43,16 @@ npm install
 npm run build
 npm link
 ```
+
+### PDF & PNG Setup
+
+PDF and PNG generation uses Playwright with headless Chromium. After installing Vitae, install the browser:
+
+```bash
+npx playwright install chromium
+```
+
+This step is only required for `pdf` and `png` output formats. All other formats (HTML, DOCX, JSON, Markdown) work without it.
 
 ## Quick Start
 

@@ -152,7 +152,7 @@ TypeScript is configured with maximum strictness: `strict: true`, `noUncheckedIn
 
 | Package | Purpose | Note |
 |---------|---------|------|
-| `playwright` | PDF and PNG generation | Requires browser install (`npx playwright install chromium`) |
+| `playwright-core` | PDF and PNG generation | Requires browser install (`npx playwright install chromium`) |
 | `docx` | DOCX file generation | Pure Node.js, no system deps |
 | `nunjucks` | HTML template rendering | Configured with `autoescape: true` |
 | `ajv` + `ajv-formats` | JSON Schema validation | Lazy-compiled, cached |
