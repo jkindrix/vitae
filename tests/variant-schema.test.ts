@@ -90,11 +90,11 @@ describe('variant schema validation', () => {
       expect(result.valid).toBe(false);
     });
 
-    it('rejects additional properties in meta', async () => {
+    it('accepts name field in variant meta', async () => {
       const result = await validateVariant({
         meta: { name: 'Jane' },
       });
-      expect(result.valid).toBe(false);
+      expect(result.valid).toBe(true);
     });
 
     it('rejects invalid email format in meta', async () => {

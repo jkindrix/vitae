@@ -118,7 +118,7 @@ describe('JSON Resume round-trip fidelity', () => {
       {
         name: 'Distributed Consensus at Scale',
         publisher: 'ACM',
-        releaseDate: '2022-06',
+        date: '2022-06',
         url: 'https://acm.org/paper/123',
         summary: 'Novel consensus protocol.',
       },
@@ -297,7 +297,7 @@ describe('JSON Resume round-trip fidelity', () => {
       expect(roundTripped.publications).toHaveLength(1);
       expect(roundTripped.publications![0]!.name).toBe('Distributed Consensus at Scale');
       expect(roundTripped.publications![0]!.publisher).toBe('ACM');
-      expect(roundTripped.publications![0]!.releaseDate).toBe('2022-06');
+      expect(roundTripped.publications![0]!.date).toBe('2022-06');
       expect(roundTripped.publications![0]!.url).toBe('https://acm.org/paper/123');
       expect(roundTripped.publications![0]!.summary).toBe('Novel consensus protocol.');
     });

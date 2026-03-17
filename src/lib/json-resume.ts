@@ -417,8 +417,8 @@ function convertPublications(
     .map((pub) => {
       const p: Publication = { name: pub.name };
       if (pub.publisher) p.publisher = pub.publisher;
-      const releaseDate = convertDate(pub.releaseDate);
-      if (releaseDate) p.releaseDate = releaseDate;
+      const pubDate = convertDate(pub.releaseDate);
+      if (pubDate) p.date = pubDate;
       if (pub.url) p.url = pub.url;
       if (pub.summary) p.summary = pub.summary;
       return p;
@@ -682,7 +682,7 @@ export function toJsonResume(resume: Resume): JsonResumeFormat {
     result.publications = resume.publications.map((pub) => {
       const p: JsonResumePublication = { name: pub.name };
       if (pub.publisher) p.publisher = pub.publisher;
-      if (pub.releaseDate) p.releaseDate = pub.releaseDate;
+      if (pub.date) p.releaseDate = pub.date;
       if (pub.url) p.url = pub.url;
       if (pub.summary) p.summary = pub.summary;
       return p;

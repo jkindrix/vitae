@@ -122,10 +122,10 @@ describe('cover letter schema validation', () => {
     expect(result.valid).toBe(false);
   });
 
-  it('rejects additional properties', async () => {
-    const cl = { ...makeMinimalCoverLetter(), unknownField: 'bad' };
+  it('allows additional properties on root (extensible)', async () => {
+    const cl = { ...makeMinimalCoverLetter(), customField: 'allowed' };
     const result = await validateCoverLetter(cl);
-    expect(result.valid).toBe(false);
+    expect(result.valid).toBe(true);
   });
 
   it('validates theme overrides', async () => {

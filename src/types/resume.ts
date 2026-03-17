@@ -107,29 +107,35 @@ export interface Certification {
  * Language proficiency
  */
 export interface Language {
+  id?: string;
   language: string;
   fluency?: string;
+  tags?: string[];
 }
 
 /**
  * Award or honor
  */
 export interface Award {
+  id?: string;
   title: string;
   awarder?: string;
   date?: string;
   summary?: string;
+  tags?: string[];
 }
 
 /**
  * Academic or professional publication
  */
 export interface Publication {
+  id?: string;
   name: string;
   publisher?: string;
-  releaseDate?: string;
+  date?: string;
   url?: string;
   summary?: string;
+  tags?: string[];
 }
 
 /**
@@ -150,8 +156,10 @@ export interface Volunteer {
  * Professional reference
  */
 export interface Reference {
+  id?: string;
   name: string;
   reference?: string;
+  tags?: string[];
 }
 
 // ---------------------------------------------------------------------------

@@ -1,11 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/jkindrix/vitae/schemas/resume.schema.json",
+  "$id": "https://raw.githubusercontent.com/jkindrix/vitae/main/schemas/resume.schema.json",
   "title": "Vitae Resume Schema",
   "description": "Schema for vitae resume YAML files",
   "type": "object",
   "required": ["meta", "experience"],
-  "additionalProperties": false,
   "definitions": {
     "highlight": {
       "oneOf": [
@@ -41,7 +40,6 @@
       "type": "object",
       "description": "Personal and contact information",
       "required": ["name"],
-      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string",
@@ -248,11 +246,13 @@
           },
           "start": {
             "type": "string",
-            "description": "Start year"
+            "description": "Start date (YYYY-MM or YYYY)",
+            "pattern": "^\\d{4}(-\\d{2})?$"
           },
           "end": {
             "type": "string",
-            "description": "End year or 'present'"
+            "description": "End date (YYYY-MM, YYYY, or 'present')",
+            "pattern": "^(\\d{4}(-\\d{2})?|present|Present)$"
           },
           "highlights": {
             "type": "array",
@@ -311,7 +311,9 @@
           "fluency": {
             "type": "string",
             "description": "Fluency level (e.g., Native, Fluent, Professional, Conversational)"
-          }
+          },
+          "id": { "type": "string", "description": "Unique identifier for variant picking" },
+          "tags": { "type": "array", "items": { "type": "string" }, "description": "Tags for variant filtering" }
         }
       }
     },
@@ -338,7 +340,9 @@
           "summary": {
             "type": "string",
             "description": "Brief description of the award"
-          }
+          },
+          "id": { "type": "string", "description": "Unique identifier for variant picking" },
+          "tags": { "type": "array", "items": { "type": "string" }, "description": "Tags for variant filtering" }
         }
       }
     },
@@ -358,7 +362,7 @@
             "type": "string",
             "description": "Publisher or journal name"
           },
-          "releaseDate": {
+          "date": {
             "type": "string",
             "description": "Publication date"
           },
@@ -370,7 +374,9 @@
           "summary": {
             "type": "string",
             "description": "Brief description or abstract"
-          }
+          },
+          "id": { "type": "string", "description": "Unique identifier for variant picking" },
+          "tags": { "type": "array", "items": { "type": "string" }, "description": "Tags for variant filtering" }
         }
       }
     },
@@ -396,11 +402,13 @@
           },
           "start": {
             "type": "string",
-            "description": "Start date"
+            "description": "Start date (YYYY-MM or YYYY)",
+            "pattern": "^\\d{4}(-\\d{2})?$"
           },
           "end": {
             "type": "string",
-            "description": "End date"
+            "description": "End date (YYYY-MM, YYYY, or 'present')",
+            "pattern": "^(\\d{4}(-\\d{2})?|present|Present)$"
           },
           "summary": {
             "type": "string",
@@ -430,7 +438,9 @@
           "reference": {
             "type": "string",
             "description": "Reference quote or testimonial"
-          }
+          },
+          "id": { "type": "string", "description": "Unique identifier for variant picking" },
+          "tags": { "type": "array", "items": { "type": "string" }, "description": "Tags for variant filtering" }
         }
       }
     },

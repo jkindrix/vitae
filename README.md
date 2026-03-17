@@ -428,7 +428,7 @@ awards:
 publications:
   - name: "Scaling Real-Time Systems"           # Required
     publisher: IEEE Software                    # Optional
-    releaseDate: "2022"                         # Optional
+    date: "2022"                                # Optional
     url: https://doi.org/...                    # Optional
     summary: Survey of real-time architectures  # Optional
 

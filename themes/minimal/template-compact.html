@@ -333,10 +333,10 @@
         {% else %}
         <span class="resume__publication-name">{{ pub.name }}</span>
         {% endif %}
-        {% if pub.publisher or pub.releaseDate %}
+        {% if pub.publisher or pub.date %}
         <span class="resume__publication-meta">
           {% if pub.publisher %}{{ pub.publisher }}{% endif %}
-          {% if pub.releaseDate %} ({{ pub.releaseDate }}){% endif %}
+          {% if pub.date %} ({{ pub.date }}){% endif %}
         </span>
         {% endif %}
       </div>

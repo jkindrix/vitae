@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/jkindrix/vitae/schemas/variant.schema.json",
+  "$id": "https://raw.githubusercontent.com/jkindrix/vitae/main/schemas/variant.schema.json",
   "title": "Vitae Variant Schema v2",
   "description": "Schema for vitae variant YAML files — per-section selection with composition support",
   "type": "object",
@@ -160,6 +160,23 @@
         "location": {
           "type": "string",
           "description": "Override location"
+        },
+        "name": {
+          "type": "string",
+          "description": "Override display name"
+        },
+        "links": {
+          "type": "array",
+          "description": "Override profile links",
+          "items": {
+            "type": "object",
+            "required": ["url"],
+            "additionalProperties": false,
+            "properties": {
+              "label": { "type": "string" },
+              "url": { "type": "string", "format": "uri" }
+            }
+          }
         }
       }
     },

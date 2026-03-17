@@ -134,8 +134,8 @@ describe('schema validation', () => {
       expect(result.errors.some((e) => e.path.includes('experience'))).toBe(true);
     });
 
-    it('rejects resume with unknown top-level properties', async () => {
-      const invalid = {
+    it('allows unknown top-level properties (extensible root)', async () => {
+      const extended = {
         meta: { name: 'John Doe' },
         experience: [
           {
@@ -143,16 +143,15 @@ describe('schema validation', () => {
             roles: [{ title: 'Dev', start: '2020' }],
           },
         ],
-        unknownField: 'should fail',
+        customField: 'allowed',
       };
-      const result = await validateResume(invalid);
-      expect(result.valid).toBe(false);
-      expect(result.errors.some((e) => e.keyword === 'additionalProperties')).toBe(true);
+      const result = await validateResume(extended);
+      expect(result.valid).toBe(true);
     });
 
-    it('rejects resume with unknown meta properties', async () => {
-      const invalid = {
-        meta: { name: 'John Doe', unknownField: 'oops' },
+    it('allows unknown meta properties (extensible meta)', async () => {
+      const extended = {
+        meta: { name: 'John Doe', photo: 'https://example.com/photo.jpg' },
         experience: [
           {
             company: 'Company',
@@ -160,10 +159,8 @@ describe('schema validation', () => {
           },
         ],
       };
-      const result = await validateResume(invalid);
-      expect(result.valid).toBe(false);
-      expect(
-        result.errors.some((e) => e.path.includes('meta') && e.keyword === 'additionalProperties')
+      const result = await validateResume(extended);
+      expect(result.valid).toBe(true
       ).toBe(true);
     });
 
