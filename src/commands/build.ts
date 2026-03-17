@@ -1,6 +1,6 @@
 import { writeFile, mkdir } from 'fs/promises';
 import { dirname, resolve, basename, extname } from 'path';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { platform } from 'os';
 import { watch, type FSWatcher } from 'fs';
 import chalk from 'chalk';
@@ -46,20 +46,23 @@ export interface BuildCommandOptions {
 function openFile(filePath: string): void {
   const plat = platform();
   let cmd: string;
+  let args: string[];
 
   switch (plat) {
     case 'darwin':
-      cmd = `open "${filePath}"`;
+      cmd = 'open';
+      args = [filePath];
       break;
     case 'win32':
-      cmd = `start "" "${filePath}"`;
+      cmd = 'cmd';
+      args = ['/c', 'start', '', filePath];
       break;
     default:
-      // Linux and others
-      cmd = `xdg-open "${filePath}"`;
+      cmd = 'xdg-open';
+      args = [filePath];
   }
 
-  exec(cmd, (error) => {
+  execFile(cmd, args, (error) => {
     if (error) {
       console.log(chalk.yellow(`\u26A0 Could not open file: ${error.message}`));
     }

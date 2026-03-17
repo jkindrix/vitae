@@ -40,6 +40,9 @@ export async function previewCommand(
   const resolvedInput = resolve(inputPath);
   const resolvedVariant = options.variant ? resolve(options.variant) : undefined;
   const port = options.port ?? 3000;
+  if (!Number.isInteger(port) || port < 1 || port > 65535) {
+    throw new Error(`Invalid port number: ${options.port}. Must be an integer between 1 and 65535.`);
+  }
 
   console.log(chalk.blue('Starting preview server...'));
 
