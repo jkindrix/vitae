@@ -12,10 +12,7 @@ import type {
   Meta,
   Experience,
   SkillCategory,
-  Project,
-  Education,
   Certification,
-  Volunteer,
   TagExpr,
   SectionSelector,
   ExperienceSelector,
@@ -303,65 +300,34 @@ function filterExperience(
   return companies.filter((exp) => exp.roles.length > 0);
 }
 
-function filterProjects(
-  projects: Project[] | undefined,
+/**
+ * Generic filter for sections that have highlights (projects, education, volunteer).
+ * Combines selectItems + highlight filtering + empty pruning in one place so the
+ * highlight filtering logic is not duplicated across section-specific functions.
+ */
+function filterSectionWithHighlights<T extends { highlights?: Highlight[] }>(
+  items: T[] | undefined,
   selector: SectionSelector | undefined,
-): Project[] | undefined {
-  if (!projects || projects.length === 0) return undefined;
+  getId: (item: T) => string | undefined,
+  getName: (item: T) => string,
+  getTags: (item: T) => string[] | undefined,
+): T[] | undefined {
+  if (!items || items.length === 0) return undefined;
 
-  let result = selectItems(
-    projects,
-    selector,
-    (p) => p.id,
-    (p) => p.name,
-    (p) => p.tags,
-  );
-
-  // Apply highlight selector
-  if (selector?.highlights) {
-    const hlSelector = selector.highlights;
-    result = result.map((p) => {
-      const filtered = applyHighlightSelector(p.highlights, hlSelector);
-      if (filtered === p.highlights) return p;
-      const newP = { ...p };
-      if (filtered) {
-        newP.highlights = filtered;
-      } else {
-        delete newP.highlights;
-      }
-      return newP;
-    });
-  }
-
-  return result.length > 0 ? result : undefined;
-}
-
-function filterEducation(
-  education: Education[] | undefined,
-  selector: SectionSelector | undefined,
-): Education[] | undefined {
-  if (!education || education.length === 0) return undefined;
-
-  let result = selectItems(
-    education,
-    selector,
-    (e) => e.id,
-    (e) => e.institution,
-    (e) => e.tags,
-  );
+  let result = selectItems(items, selector, getId, getName, getTags);
 
   if (selector?.highlights) {
     const hlSelector = selector.highlights;
-    result = result.map((e) => {
-      const filtered = applyHighlightSelector(e.highlights, hlSelector);
-      if (filtered === e.highlights) return e;
-      const newE = { ...e };
+    result = result.map((item) => {
+      const filtered = applyHighlightSelector(item.highlights, hlSelector);
+      if (filtered === item.highlights) return item;
+      const newItem = { ...item };
       if (filtered) {
-        newE.highlights = filtered;
+        newItem.highlights = filtered;
       } else {
-        delete newE.highlights;
+        delete newItem.highlights;
       }
-      return newE;
+      return newItem;
     });
   }
 
@@ -381,38 +347,6 @@ function filterCertifications(
     (c) => c.name,
     (c) => c.tags,
   );
-
-  return result.length > 0 ? result : undefined;
-}
-
-function filterVolunteer(
-  volunteer: Volunteer[] | undefined,
-  selector: SectionSelector | undefined,
-): Volunteer[] | undefined {
-  if (!volunteer || volunteer.length === 0) return undefined;
-
-  let result = selectItems(
-    volunteer,
-    selector,
-    (v) => v.id,
-    (v) => v.organization,
-    (v) => v.tags,
-  );
-
-  if (selector?.highlights) {
-    const hlSelector = selector.highlights;
-    result = result.map((v) => {
-      const filtered = applyHighlightSelector(v.highlights, hlSelector);
-      if (filtered === v.highlights) return v;
-      const newV = { ...v };
-      if (filtered) {
-        newV.highlights = filtered;
-      } else {
-        delete newV.highlights;
-      }
-      return newV;
-    });
-  }
 
   return result.length > 0 ? result : undefined;
 }
@@ -536,14 +470,18 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
 
   const projSelector = resolveSelector('projects', variant) as SectionSelector | undefined;
   if (projSelector) {
-    const filtered = filterProjects(result.projects, projSelector);
+    const filtered = filterSectionWithHighlights(
+      result.projects, projSelector, (p) => p.id, (p) => p.name, (p) => p.tags,
+    );
     if (filtered) result.projects = filtered;
     else delete result.projects;
   }
 
   const eduSelector = resolveSelector('education', variant) as SectionSelector | undefined;
   if (eduSelector) {
-    const filtered = filterEducation(result.education, eduSelector);
+    const filtered = filterSectionWithHighlights(
+      result.education, eduSelector, (e) => e.id, (e) => e.institution, (e) => e.tags,
+    );
     if (filtered) result.education = filtered;
     else delete result.education;
   }
@@ -605,7 +543,9 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
 
   const volSelector = resolveSelector('volunteer', variant) as SectionSelector | undefined;
   if (volSelector) {
-    const filtered = filterVolunteer(result.volunteer, volSelector);
+    const filtered = filterSectionWithHighlights(
+      result.volunteer, volSelector, (v) => v.id, (v) => v.organization, (v) => v.tags,
+    );
     if (filtered) result.volunteer = filtered;
     else delete result.volunteer;
   }
