@@ -102,10 +102,7 @@ export function getLocale(code?: string): Locale {
  * or `undefined` if the locale has no label for that section (callers
  * should fall back to the theme's hardcoded heading).
  */
-export function getSectionLabel(
-  locale: Locale,
-  section: string,
-): string | undefined {
+export function getSectionLabel(locale: Locale, section: string): string | undefined {
   return (locale.labels as unknown as Record<string, string>)[section];
 }
 
@@ -142,13 +139,20 @@ function getHardcodedEnglish(): Locale {
     },
     months: {
       full: [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December',
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
       ],
-      short: [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-      ],
+      short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     },
     keywords: { present: 'Present' },
   };

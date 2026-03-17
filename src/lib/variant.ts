@@ -71,11 +71,7 @@ function passesTagExpr(itemTags: string[] | undefined, expr: TagExpr): boolean {
 /**
  * Match an item against a pick name. Checks id first, then the name field.
  */
-function matchesName(
-  pickValue: string,
-  id: string | undefined,
-  name: string
-): boolean {
+function matchesName(pickValue: string, id: string | undefined, name: string): boolean {
   if (id !== undefined && id === pickValue) return true;
   return name === pickValue;
 }
@@ -83,11 +79,7 @@ function matchesName(
 /**
  * Check if an item should be omitted. Checks id first, then name.
  */
-function isOmitted(
-  omitList: string[],
-  id: string | undefined,
-  name: string
-): boolean {
+function isOmitted(omitList: string[], id: string | undefined, name: string): boolean {
   return omitList.some((o) => matchesName(o, id, name));
 }
 
@@ -121,7 +113,7 @@ function selectItems<T>(
   selector: SectionSelector | undefined,
   getId: (item: T) => string | undefined,
   getName: (item: T) => string,
-  getTags: (item: T) => string[] | undefined,
+  getTags: (item: T) => string[] | undefined
 ): T[] {
   if (!selector) return items;
 
@@ -189,10 +181,7 @@ function selectItems<T>(
 /**
  * Filter highlights by tag expression. Plain string highlights always pass.
  */
-function filterHighlightsByTags(
-  highlights: Highlight[],
-  expr: TagExpr,
-): Highlight[] {
+function filterHighlightsByTags(highlights: Highlight[], expr: TagExpr): Highlight[] {
   return highlights.filter((h) => {
     if (typeof h === 'string') return true;
     return passesTagExpr(h.tags, expr);
@@ -206,7 +195,7 @@ function filterHighlightsByTags(
  */
 function applyHighlightSelector(
   highlights: Highlight[] | undefined,
-  selector: HighlightSelector | undefined,
+  selector: HighlightSelector | undefined
 ): Highlight[] | undefined {
   if (!highlights || highlights.length === 0) return highlights;
   if (!selector) return highlights;
@@ -231,7 +220,7 @@ function applyHighlightSelector(
 
 function filterSkills(
   skills: SkillCategory[] | undefined,
-  selector: SectionSelector | undefined,
+  selector: SectionSelector | undefined
 ): SkillCategory[] | undefined {
   if (!skills || skills.length === 0) return undefined;
 
@@ -240,7 +229,7 @@ function filterSkills(
     selector,
     (s) => s.id,
     (s) => s.category,
-    (s) => s.tags,
+    (s) => s.tags
   );
 
   return result.length > 0 ? result : undefined;
@@ -248,7 +237,7 @@ function filterSkills(
 
 function filterExperience(
   experience: Experience[],
-  selector: ExperienceSelector | undefined,
+  selector: ExperienceSelector | undefined
 ): Experience[] {
   if (experience.length === 0) return [];
 
@@ -258,7 +247,7 @@ function filterExperience(
     selector ? buildSelector(selector) : undefined,
     (e) => e.id,
     (e) => e.company,
-    (e) => e.tags,
+    (e) => e.tags
   );
 
   // Step 2: Filter roles within surviving companies
@@ -270,7 +259,7 @@ function filterExperience(
         rolesSelector,
         (r) => r.id,
         (r) => r.title,
-        (r) => r.tags,
+        (r) => r.tags
       );
       return { ...exp, roles: filteredRoles };
     });
@@ -310,7 +299,7 @@ function filterSectionWithHighlights<T extends { highlights?: Highlight[] }>(
   selector: SectionSelector | undefined,
   getId: (item: T) => string | undefined,
   getName: (item: T) => string,
-  getTags: (item: T) => string[] | undefined,
+  getTags: (item: T) => string[] | undefined
 ): T[] | undefined {
   if (!items || items.length === 0) return undefined;
 
@@ -336,7 +325,7 @@ function filterSectionWithHighlights<T extends { highlights?: Highlight[] }>(
 
 function filterCertifications(
   certifications: Certification[] | undefined,
-  selector: SectionSelector | undefined,
+  selector: SectionSelector | undefined
 ): Certification[] | undefined {
   if (!certifications || certifications.length === 0) return undefined;
 
@@ -345,7 +334,7 @@ function filterCertifications(
     selector,
     (c) => c.id,
     (c) => c.name,
-    (c) => c.tags,
+    (c) => c.tags
   );
 
   return result.length > 0 ? result : undefined;
@@ -386,7 +375,7 @@ function globalTagsToSelectorWithHighlights(globalTags: string[] | TagExpr): Sec
  */
 function resolveSelector(
   section: SectionName,
-  variant: Variant,
+  variant: Variant
 ): SectionSelector | ExperienceSelector | undefined {
   // Check for section-specific config
   if (section !== 'summary' && variant[section] !== undefined) {
@@ -471,7 +460,11 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
   const projSelector = resolveSelector('projects', variant) as SectionSelector | undefined;
   if (projSelector) {
     const filtered = filterSectionWithHighlights(
-      result.projects, projSelector, (p) => p.id, (p) => p.name, (p) => p.tags,
+      result.projects,
+      projSelector,
+      (p) => p.id,
+      (p) => p.name,
+      (p) => p.tags
     );
     if (filtered) result.projects = filtered;
     else delete result.projects;
@@ -480,7 +473,11 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
   const eduSelector = resolveSelector('education', variant) as SectionSelector | undefined;
   if (eduSelector) {
     const filtered = filterSectionWithHighlights(
-      result.education, eduSelector, (e) => e.id, (e) => e.institution, (e) => e.tags,
+      result.education,
+      eduSelector,
+      (e) => e.id,
+      (e) => e.institution,
+      (e) => e.tags
     );
     if (filtered) result.education = filtered;
     else delete result.education;
@@ -502,7 +499,7 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
         langSelector,
         () => undefined,
         (l) => l.language,
-        () => undefined,
+        () => undefined
       );
       if (filtered.length > 0) result.languages = filtered;
       else delete result.languages;
@@ -518,7 +515,7 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
         awardSelector,
         () => undefined,
         (a) => a.title,
-        () => undefined,
+        () => undefined
       );
       if (filtered.length > 0) result.awards = filtered;
       else delete result.awards;
@@ -534,7 +531,7 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
         pubSelector,
         () => undefined,
         (p) => p.name,
-        () => undefined,
+        () => undefined
       );
       if (filtered.length > 0) result.publications = filtered;
       else delete result.publications;
@@ -544,7 +541,11 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
   const volSelector = resolveSelector('volunteer', variant) as SectionSelector | undefined;
   if (volSelector) {
     const filtered = filterSectionWithHighlights(
-      result.volunteer, volSelector, (v) => v.id, (v) => v.organization, (v) => v.tags,
+      result.volunteer,
+      volSelector,
+      (v) => v.id,
+      (v) => v.organization,
+      (v) => v.tags
     );
     if (filtered) result.volunteer = filtered;
     else delete result.volunteer;
@@ -559,7 +560,7 @@ export function applyVariant(resume: Resume, variant: Variant): Resume {
         refSelector,
         () => undefined,
         (r) => r.name,
-        () => undefined,
+        () => undefined
       );
       if (filtered.length > 0) result.references = filtered;
       else delete result.references;

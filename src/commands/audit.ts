@@ -23,10 +23,7 @@ export interface AuditCommandOptions {
   json?: boolean;
 }
 
-export async function auditCommand(
-  inputPath: string,
-  options: AuditCommandOptions
-): Promise<void> {
+export async function auditCommand(inputPath: string, options: AuditCommandOptions): Promise<void> {
   const resolvedInput = resolve(inputPath);
   const themeName = options.theme ?? 'minimal';
   const level = (options.level === 'AAA' ? 'AAA' : 'AA') as 'AA' | 'AAA';
@@ -168,7 +165,9 @@ function renderContrastPairs(pairs: A11yContrastPair[]): void {
     for (const p of failing) {
       console.log(
         chalk.red(`    \u2717 ${p.element}`) +
-          chalk.dim(`: ${p.ratio}:1 (requires ${p.required}:1) — ${p.foreground} on ${p.background}`)
+          chalk.dim(
+            `: ${p.ratio}:1 (requires ${p.required}:1) — ${p.foreground} on ${p.background}`
+          )
       );
     }
   }

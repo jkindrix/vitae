@@ -158,34 +158,49 @@ describe('cover letter schema validation', () => {
 
 describe('isCoverLetterFormat', () => {
   it('detects cover letter by explicit type', () => {
-    expect(isCoverLetterFormat({ type: 'cover-letter', meta: {}, recipient: {}, greeting: 'Hi', body: [], closing: 'Bye' })).toBe(true);
+    expect(
+      isCoverLetterFormat({
+        type: 'cover-letter',
+        meta: {},
+        recipient: {},
+        greeting: 'Hi',
+        body: [],
+        closing: 'Bye',
+      })
+    ).toBe(true);
   });
 
   it('detects cover letter by heuristic', () => {
-    expect(isCoverLetterFormat({
-      meta: { name: 'Test' },
-      recipient: { company: 'Acme' },
-      greeting: 'Dear Sir,',
-      body: ['Paragraph'],
-      closing: 'Sincerely,',
-    })).toBe(true);
+    expect(
+      isCoverLetterFormat({
+        meta: { name: 'Test' },
+        recipient: { company: 'Acme' },
+        greeting: 'Dear Sir,',
+        body: ['Paragraph'],
+        closing: 'Sincerely,',
+      })
+    ).toBe(true);
   });
 
   it('rejects resume data', () => {
-    expect(isCoverLetterFormat({
-      meta: { name: 'Test' },
-      experience: [{ company: 'Acme', roles: [] }],
-    })).toBe(false);
+    expect(
+      isCoverLetterFormat({
+        meta: { name: 'Test' },
+        experience: [{ company: 'Acme', roles: [] }],
+      })
+    ).toBe(false);
   });
 
   it('rejects data with experience even if it has recipient', () => {
-    expect(isCoverLetterFormat({
-      meta: { name: 'Test' },
-      recipient: { company: 'Acme' },
-      body: ['Paragraph'],
-      greeting: 'Hi',
-      experience: [],
-    })).toBe(false);
+    expect(
+      isCoverLetterFormat({
+        meta: { name: 'Test' },
+        recipient: { company: 'Acme' },
+        body: ['Paragraph'],
+        greeting: 'Hi',
+        experience: [],
+      })
+    ).toBe(false);
   });
 
   it('rejects null and non-objects', () => {
@@ -195,11 +210,13 @@ describe('isCoverLetterFormat', () => {
   });
 
   it('rejects objects missing body array', () => {
-    expect(isCoverLetterFormat({
-      recipient: {},
-      greeting: 'Hi',
-      body: 'not an array',
-    })).toBe(false);
+    expect(
+      isCoverLetterFormat({
+        recipient: {},
+        greeting: 'Hi',
+        body: 'not an array',
+      })
+    ).toBe(false);
   });
 });
 
@@ -243,10 +260,12 @@ describe('loadDocument auto-detection', () => {
   it('detects a resume', async () => {
     const resume = {
       meta: { name: 'Test Person' },
-      experience: [{
-        company: 'Acme',
-        roles: [{ title: 'Engineer', start: '2020-01' }],
-      }],
+      experience: [
+        {
+          company: 'Acme',
+          roles: [{ title: 'Engineer', start: '2020-01' }],
+        },
+      ],
     };
     const filePath = createTempFile('doc-resume.yaml', stringifyYaml(resume));
     const doc = await loadDocument(filePath);

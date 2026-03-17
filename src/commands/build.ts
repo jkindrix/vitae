@@ -22,6 +22,7 @@ import {
   listThemes,
   resumeToMarkdown,
 } from '../lib/index.js';
+import type { RenderOptions } from '../lib/index.js';
 import type { OutputFormat, NormalizedResume, CoverLetter } from '../types/index.js';
 
 export interface BuildCommandOptions {
@@ -79,11 +80,17 @@ function logPdfPageInfo(
   options: { fit?: boolean; noPageWarn?: boolean }
 ): void {
   if (options.fit && scale < 1.0) {
-    console.log(chalk.cyan(`  Scaled to ${Math.round(scale * 100)}% to fit ${targetPages} page${targetPages > 1 ? 's' : ''}`));
+    console.log(
+      chalk.cyan(
+        `  Scaled to ${Math.round(scale * 100)}% to fit ${targetPages} page${targetPages > 1 ? 's' : ''}`
+      )
+    );
   }
   if (pageCount > targetPages && !options.noPageWarn) {
     console.log(
-      chalk.yellow(`  \u26A0 Output is ${pageCount} page${pageCount > 1 ? 's' : ''} (target: ${targetPages})`)
+      chalk.yellow(
+        `  \u26A0 Output is ${pageCount} page${pageCount > 1 ? 's' : ''} (target: ${targetPages})`
+      )
     );
     console.log(chalk.dim('    Tips: use --fit to auto-scale, --pages <n> to change target,'));
     console.log(chalk.dim('    trim content, or --no-page-warn to suppress this warning'));
@@ -99,7 +106,15 @@ export async function generateForTheme(
   formats: OutputFormat[],
   outputDir: string,
   outputBasename: string,
-  options: { debug?: boolean; includeThemeInName?: boolean; layout?: string; pages?: number; fit?: boolean; noPageWarn?: boolean; styleOverrides?: Record<string, string> }
+  options: {
+    debug?: boolean;
+    includeThemeInName?: boolean;
+    layout?: string;
+    pages?: number;
+    fit?: boolean;
+    noPageWarn?: boolean;
+    styleOverrides?: Record<string, string>;
+  }
 ): Promise<{ format: string; path: string }[]> {
   const results: { format: string; path: string }[] = [];
   const namePrefix = options.includeThemeInName ? `${outputBasename}-${themeName}` : outputBasename;
@@ -113,11 +128,15 @@ export async function generateForTheme(
           console.log(
             chalk.blue(`Generating HTML${options.includeThemeInName ? ` (${themeName})` : ''}...`)
           );
-          const renderOpts: import('../lib/renderer.js').RenderOptions = {};
+          const renderOpts: RenderOptions = {};
           if (options.layout) renderOpts.variant = options.layout;
           if (options.styleOverrides) renderOpts.styleOverrides = options.styleOverrides;
           const hasRenderOpts = options.layout || options.styleOverrides;
-          const html = await renderStandaloneHtml(resume, themeName, hasRenderOpts ? renderOpts : undefined);
+          const html = await renderStandaloneHtml(
+            resume,
+            themeName,
+            hasRenderOpts ? renderOpts : undefined
+          );
           await writeFile(outputPath, html, 'utf-8');
           results.push({ format: 'HTML', path: outputPath });
           console.log(chalk.green(`\u2713 HTML: ${outputPath}`));
@@ -218,7 +237,13 @@ export async function generateCoverLetterForTheme(
   formats: OutputFormat[],
   outputDir: string,
   outputBasename: string,
-  options: { debug?: boolean; includeThemeInName?: boolean; pages?: number; fit?: boolean; noPageWarn?: boolean }
+  options: {
+    debug?: boolean;
+    includeThemeInName?: boolean;
+    pages?: number;
+    fit?: boolean;
+    noPageWarn?: boolean;
+  }
 ): Promise<{ format: string; path: string }[]> {
   const results: { format: string; path: string }[] = [];
   const namePrefix = options.includeThemeInName ? `${outputBasename}-${themeName}` : outputBasename;
@@ -253,7 +278,9 @@ export async function generateCoverLetterForTheme(
                   screenshot: outputPath.replace('.pdf', '-debug.png'),
                 }
               : {}),
-            ...(options.fit ? { fit: true, targetPages: clTargetPages } : { targetPages: clTargetPages }),
+            ...(options.fit
+              ? { fit: true, targetPages: clTargetPages }
+              : { targetPages: clTargetPages }),
           };
           const pdfResult = await generatePdfFromHtml(html, outputPath, pdfOptions);
           results.push({ format: 'PDF', path: outputPath });
@@ -555,9 +582,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
     debounceTimer = setTimeout(async () => {
       if (building) return;
       building = true;
-      console.log(
-        chalk.dim(`[${new Date().toLocaleTimeString()}] File changed, rebuilding...`)
-      );
+      console.log(chalk.dim(`[${new Date().toLocaleTimeString()}] File changed, rebuilding...`));
       console.log('');
       try {
         await runBuild(inputPath, options);
@@ -603,6 +628,7 @@ export async function buildCommand(inputPath: string, options: BuildCommandOptio
     process.exit(0);
   });
 
-  // Keep process alive
+  // Keep process alive — the empty executor is intentional (resolved by SIGINT handler)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   await new Promise<never>(() => {});
 }

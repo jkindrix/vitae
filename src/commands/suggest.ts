@@ -6,7 +6,12 @@ import { resolve } from 'path';
 import chalk from 'chalk';
 import { loadResume, loadVariant, applyVariant } from '../lib/index.js';
 import { generateSuggestions } from '../lib/suggest.js';
-import type { LlmProvider, SuggestResult, SectionSuggestions, SuggestionCategory } from '../types/suggest.js';
+import type {
+  LlmProvider,
+  SuggestResult,
+  SectionSuggestions,
+  SuggestionCategory,
+} from '../types/suggest.js';
 
 export interface SuggestCommandOptions {
   section?: string;
@@ -20,7 +25,7 @@ export interface SuggestCommandOptions {
 
 export async function suggestCommand(
   inputPath: string,
-  options: SuggestCommandOptions,
+  options: SuggestCommandOptions
 ): Promise<void> {
   const resolvedInput = resolve(inputPath);
 
@@ -85,7 +90,7 @@ function renderResult(result: SuggestResult): void {
   const via = `${result.provider}/${result.model}`;
   console.log(
     chalk.bold(`  AI Content Suggestions`) +
-      chalk.dim(` (${count} suggestion${count !== 1 ? 's' : ''} via ${via})`),
+      chalk.dim(` (${count} suggestion${count !== 1 ? 's' : ''} via ${via})`)
   );
   console.log('');
 
@@ -100,7 +105,7 @@ function renderSection(section: SectionSuggestions): void {
   for (const sug of section.suggestions) {
     const label = categoryLabel(sug.category);
     console.log(
-      `    ${chalk.yellow('~')} ${chalk.yellow(label)}: ${chalk.dim('"')}${sug.current}${chalk.dim('"')} ${chalk.dim('\u2192')} ${chalk.dim('"')}${chalk.green(sug.suggested)}${chalk.dim('"')}`,
+      `    ${chalk.yellow('~')} ${chalk.yellow(label)}: ${chalk.dim('"')}${sug.current}${chalk.dim('"')} ${chalk.dim('\u2192')} ${chalk.dim('"')}${chalk.green(sug.suggested)}${chalk.dim('"')}`
     );
     if (sug.reasoning) {
       console.log(chalk.dim(`      ${sug.reasoning}`));

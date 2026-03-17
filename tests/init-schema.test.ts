@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync } from 'fs';
 import { readFile, rm } from 'fs/promises';
 import { join, dirname } from 'path';
 import { tmpdir } from 'os';
@@ -13,10 +13,7 @@ const __dirname = dirname(__filename);
 
 describe('init command schema directive', () => {
   // Read the init.ts source to verify the schema directive is embedded
-  const initSource = readFileSync(
-    join(__dirname, '../src/commands/init.ts'),
-    'utf-8'
-  );
+  const initSource = readFileSync(join(__dirname, '../src/commands/init.ts'), 'utf-8');
 
   it('defines schema URL constants pointing to raw GitHub schemas', () => {
     expect(initSource).toContain('RESUME_SCHEMA_URL');

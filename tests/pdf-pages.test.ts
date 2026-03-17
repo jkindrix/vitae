@@ -2,7 +2,13 @@ import { describe, it, expect, afterAll } from 'vitest';
 import { existsSync, unlinkSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
-import { countPdfPages, generatePdf, generatePdfBuffer, generatePdfFromHtml, closeBrowser } from '../src/lib/pdf.js';
+import {
+  countPdfPages,
+  generatePdf,
+  generatePdfBuffer,
+  generatePdfFromHtml,
+  closeBrowser,
+} from '../src/lib/pdf.js';
 import { renderStandaloneHtml } from '../src/lib/renderer.js';
 import { normalizeResume } from '../src/lib/normalize.js';
 import { renderCoverLetterStandaloneHtml } from '../src/lib/cover-letter.js';
@@ -13,8 +19,8 @@ describe('countPdfPages', () => {
   it('counts 1 page in a synthetic PDF', () => {
     const fakePdf = Buffer.from(
       '%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\n' +
-      '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n' +
-      '3 0 obj\n<< /Type /Page /Parent 2 0 R >>\nendobj\n'
+        '2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n' +
+        '3 0 obj\n<< /Type /Page /Parent 2 0 R >>\nendobj\n'
     );
     expect(countPdfPages(fakePdf)).toBe(1);
   });
@@ -22,9 +28,9 @@ describe('countPdfPages', () => {
   it('counts 2 pages in a synthetic PDF', () => {
     const fakePdf = Buffer.from(
       '%PDF-1.4\n' +
-      '1 0 obj\n<< /Type /Pages /Kids [2 0 R 3 0 R] /Count 2 >>\nendobj\n' +
-      '2 0 obj\n<< /Type /Page /Parent 1 0 R >>\nendobj\n' +
-      '3 0 obj\n<< /Type /Page /Parent 1 0 R >>\nendobj\n'
+        '1 0 obj\n<< /Type /Pages /Kids [2 0 R 3 0 R] /Count 2 >>\nendobj\n' +
+        '2 0 obj\n<< /Type /Page /Parent 1 0 R >>\nendobj\n' +
+        '3 0 obj\n<< /Type /Page /Parent 1 0 R >>\nendobj\n'
     );
     expect(countPdfPages(fakePdf)).toBe(2);
   });
@@ -32,8 +38,8 @@ describe('countPdfPages', () => {
   it('excludes /Type /Pages from count', () => {
     const fakePdf = Buffer.from(
       '%PDF-1.4\n' +
-      '1 0 obj\n<< /Type /Pages /Count 1 >>\nendobj\n' +
-      '2 0 obj\n<< /Type /Page >>\nendobj\n'
+        '1 0 obj\n<< /Type /Pages /Count 1 >>\nendobj\n' +
+        '2 0 obj\n<< /Type /Page >>\nendobj\n'
     );
     // Should count only /Type /Page, not /Type /Pages
     expect(countPdfPages(fakePdf)).toBe(1);
@@ -114,7 +120,10 @@ describe('PDF generation with PdfResult', () => {
             title: `Role ${i + 1}`,
             start: `${2015 + i}-01`,
             end: i < 5 ? `${2016 + i}-12` : 'present',
-            highlights: Array.from({ length: 5 }, (_, j) => `Achievement ${j + 1} at Company ${i + 1} involving significant work`),
+            highlights: Array.from(
+              { length: 5 },
+              (_, j) => `Achievement ${j + 1} at Company ${i + 1} involving significant work`
+            ),
           },
         ],
       })),
@@ -134,7 +143,7 @@ describe('PDF generation with PdfResult', () => {
       });
 
       expect(result.scale).toBeLessThan(1.0);
-      expect(result.scale).toBeGreaterThanOrEqual(0.80);
+      expect(result.scale).toBeGreaterThanOrEqual(0.8);
     } finally {
       if (existsSync(outPath)) unlinkSync(outPath);
     }
@@ -166,7 +175,10 @@ describe('PDF generation with PdfResult', () => {
           {
             title: `Role ${i + 1}`,
             start: `${2015 + i}-01`,
-            highlights: Array.from({ length: 5 }, (_, j) => `Achievement ${j + 1} at Company ${i + 1}`),
+            highlights: Array.from(
+              { length: 5 },
+              (_, j) => `Achievement ${j + 1} at Company ${i + 1}`
+            ),
           },
         ],
       })),
@@ -178,10 +190,10 @@ describe('PDF generation with PdfResult', () => {
       const result = await generatePdf(normalized, 'minimal', outPath, {
         fit: true,
         targetPages: 1,
-        scaleFloor: 0.90,
+        scaleFloor: 0.9,
       });
 
-      expect(result.scale).toBeGreaterThanOrEqual(0.90);
+      expect(result.scale).toBeGreaterThanOrEqual(0.9);
     } finally {
       if (existsSync(outPath)) unlinkSync(outPath);
     }

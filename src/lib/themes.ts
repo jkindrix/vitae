@@ -116,7 +116,7 @@ export async function readCoverLetterTemplate(theme: Theme): Promise<string> {
   if (!theme.hasCoverLetterTemplate) {
     throw new ThemeError(
       `Theme '${theme.name}' does not have a cover letter template (cover-letter.html)`,
-      theme.name,
+      theme.name
     );
   }
   const templatePath = join(theme.path, 'cover-letter.html');
@@ -147,14 +147,14 @@ export async function readVariantTemplate(theme: Theme, filename: string): Promi
   if (rel.startsWith('..') || resolve(theme.path, rel) !== resolved) {
     throw new ThemeError(
       `Variant template '${filename}' resolves outside theme directory`,
-      theme.name,
+      theme.name
     );
   }
   const exists = await fileExists(resolved);
   if (!exists) {
     throw new ThemeError(
       `Variant template '${filename}' not found in theme '${theme.name}'`,
-      theme.name,
+      theme.name
     );
   }
   return readFile(resolved, 'utf-8');

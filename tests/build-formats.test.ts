@@ -119,8 +119,12 @@ describe('generateForTheme — resume format dispatch', () => {
   it('skips JSON and MD when includeThemeInName is set (theme-independent formats)', async () => {
     const dir = outDir('theme-indep');
     const results = await generateForTheme(
-      normalized, 'minimal', ['json', 'md', 'html'], dir, 'test',
-      { includeThemeInName: true },
+      normalized,
+      'minimal',
+      ['json', 'md', 'html'],
+      dir,
+      'test',
+      { includeThemeInName: true }
     );
     // JSON and MD are skipped when includeThemeInName is true; only HTML is generated
     expect(results).toHaveLength(1);
@@ -132,9 +136,7 @@ describe('generateForTheme — resume format dispatch', () => {
 
   it('handles unknown format gracefully', async () => {
     const dir = outDir('unknown');
-    const results = await generateForTheme(
-      normalized, 'minimal', ['xml' as any], dir, 'test', {},
-    );
+    const results = await generateForTheme(normalized, 'minimal', ['xml' as any], dir, 'test', {});
     expect(results).toHaveLength(0);
   });
 
@@ -142,10 +144,9 @@ describe('generateForTheme — resume format dispatch', () => {
     // This verifies the option plumbing — layout is passed to renderStandaloneHtml
     // With a non-existent layout, it should throw and be caught as a format error
     const dir = outDir('layout');
-    const results = await generateForTheme(
-      normalized, 'minimal', ['html'], dir, 'test',
-      { layout: 'nonexistent-layout' },
-    );
+    const results = await generateForTheme(normalized, 'minimal', ['html'], dir, 'test', {
+      layout: 'nonexistent-layout',
+    });
     // generateForTheme catches errors per format and returns empty results
     expect(results).toHaveLength(0);
   });
@@ -153,7 +154,12 @@ describe('generateForTheme — resume format dispatch', () => {
   it('generates multiple formats in a single call', async () => {
     const dir = outDir('multi');
     const results = await generateForTheme(
-      normalized, 'minimal', ['html', 'json', 'md'], dir, 'test', {},
+      normalized,
+      'minimal',
+      ['html', 'json', 'md'],
+      dir,
+      'test',
+      {}
     );
     expect(results).toHaveLength(3);
     expect(results.map((r) => r.format).sort()).toEqual(['HTML', 'JSON', 'Markdown']);
@@ -164,7 +170,12 @@ describe('generateCoverLetterForTheme — cover letter format dispatch', () => {
   it('generates HTML cover letter', async () => {
     const dir = outDir('cl-html');
     const results = await generateCoverLetterForTheme(
-      sampleCoverLetter, 'minimal', ['html'], dir, 'cover', {},
+      sampleCoverLetter,
+      'minimal',
+      ['html'],
+      dir,
+      'cover',
+      {}
     );
     expect(results).toHaveLength(1);
     const content = readFileSync(join(dir, 'cover.html'), 'utf-8');
@@ -174,7 +185,12 @@ describe('generateCoverLetterForTheme — cover letter format dispatch', () => {
   it('generates DOCX cover letter', async () => {
     const dir = outDir('cl-docx');
     const results = await generateCoverLetterForTheme(
-      sampleCoverLetter, 'minimal', ['docx'], dir, 'cover', {},
+      sampleCoverLetter,
+      'minimal',
+      ['docx'],
+      dir,
+      'cover',
+      {}
     );
     expect(results).toHaveLength(1);
     const buffer = readFileSync(join(dir, 'cover.docx'));
@@ -184,7 +200,12 @@ describe('generateCoverLetterForTheme — cover letter format dispatch', () => {
   it('generates JSON cover letter', async () => {
     const dir = outDir('cl-json');
     const results = await generateCoverLetterForTheme(
-      sampleCoverLetter, 'minimal', ['json'], dir, 'cover', {},
+      sampleCoverLetter,
+      'minimal',
+      ['json'],
+      dir,
+      'cover',
+      {}
     );
     expect(results).toHaveLength(1);
     const parsed = JSON.parse(readFileSync(join(dir, 'cover.json'), 'utf-8'));
@@ -194,7 +215,12 @@ describe('generateCoverLetterForTheme — cover letter format dispatch', () => {
   it('generates Markdown cover letter', async () => {
     const dir = outDir('cl-md');
     const results = await generateCoverLetterForTheme(
-      sampleCoverLetter, 'minimal', ['md'], dir, 'cover', {},
+      sampleCoverLetter,
+      'minimal',
+      ['md'],
+      dir,
+      'cover',
+      {}
     );
     expect(results).toHaveLength(1);
     const content = readFileSync(join(dir, 'cover.md'), 'utf-8');
@@ -204,7 +230,12 @@ describe('generateCoverLetterForTheme — cover letter format dispatch', () => {
   it('generates PDF cover letter', async () => {
     const dir = outDir('cl-pdf');
     const results = await generateCoverLetterForTheme(
-      sampleCoverLetter, 'minimal', ['pdf'], dir, 'cover', {},
+      sampleCoverLetter,
+      'minimal',
+      ['pdf'],
+      dir,
+      'cover',
+      {}
     );
     expect(results).toHaveLength(1);
     const buffer = readFileSync(join(dir, 'cover.pdf'));
@@ -214,7 +245,12 @@ describe('generateCoverLetterForTheme — cover letter format dispatch', () => {
   it('generates PNG cover letter', async () => {
     const dir = outDir('cl-png');
     const results = await generateCoverLetterForTheme(
-      sampleCoverLetter, 'minimal', ['png'], dir, 'cover', {},
+      sampleCoverLetter,
+      'minimal',
+      ['png'],
+      dir,
+      'cover',
+      {}
     );
     expect(results).toHaveLength(1);
     const buffer = readFileSync(join(dir, 'cover.png'));
@@ -224,8 +260,12 @@ describe('generateCoverLetterForTheme — cover letter format dispatch', () => {
   it('skips theme-independent formats when includeThemeInName is set', async () => {
     const dir = outDir('cl-theme-indep');
     const results = await generateCoverLetterForTheme(
-      sampleCoverLetter, 'minimal', ['json', 'md', 'html'], dir, 'cover',
-      { includeThemeInName: true },
+      sampleCoverLetter,
+      'minimal',
+      ['json', 'md', 'html'],
+      dir,
+      'cover',
+      { includeThemeInName: true }
     );
     expect(results).toHaveLength(1);
     expect(results[0]!.format).toBe('HTML');

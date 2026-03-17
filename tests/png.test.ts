@@ -74,9 +74,7 @@ describe('generatePng', () => {
   it('works with all themes', async () => {
     const resume: Resume = {
       meta: { name: 'Theme Test' },
-      experience: [
-        { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-      ],
+      experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
     };
     const normalized = normalizeResume(resume);
 

@@ -46,7 +46,7 @@ export class ThemeError extends VitaeError {
   static variantNotFound(themeName: string, variantName: string): ThemeError {
     return new ThemeError(
       `Layout variant '${variantName}' not found in theme '${themeName}'`,
-      themeName,
+      themeName
     );
   }
 }
@@ -147,45 +147,31 @@ export class LlmError extends VitaeError {
   static noCredentials(): LlmError {
     return new LlmError(
       'No LLM credentials found. Set ANTHROPIC_API_KEY, OPENAI_API_KEY, or OLLAMA_URL environment variable, or use --provider and --api-key flags.',
-      'none',
+      'none'
     );
   }
 
   static authFailed(provider: string): LlmError {
-    return new LlmError(
-      `Authentication failed for ${provider}. Check your API key.`,
-      provider,
-    );
+    return new LlmError(`Authentication failed for ${provider}. Check your API key.`, provider);
   }
 
   static rateLimited(provider: string): LlmError {
-    return new LlmError(
-      `Rate limited by ${provider}. Please wait and try again.`,
-      provider,
-    );
+    return new LlmError(`Rate limited by ${provider}. Please wait and try again.`, provider);
   }
 
   static connectionFailed(provider: string, cause: Error): LlmError {
-    return new LlmError(
-      `Failed to connect to ${provider}: ${cause.message}`,
-      provider,
-      cause,
-    );
+    return new LlmError(`Failed to connect to ${provider}: ${cause.message}`, provider, cause);
   }
 
   static requestFailed(provider: string, status: number, body: string): LlmError {
     return new LlmError(
       `${provider} request failed (HTTP ${status}): ${body.slice(0, 200)}`,
-      provider,
+      provider
     );
   }
 
   static invalidResponse(provider: string, cause: Error): LlmError {
-    return new LlmError(
-      `Invalid response from ${provider}: ${cause.message}`,
-      provider,
-      cause,
-    );
+    return new LlmError(`Invalid response from ${provider}: ${cause.message}`, provider, cause);
   }
 }
 

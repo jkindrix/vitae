@@ -61,8 +61,6 @@ export async function exportCommand(
     }
 
     default:
-      throw new Error(
-        `Unknown export format: ${format}. Supported formats: json-resume`
-      );
+      throw new Error(`Unknown export format: ${format}. Supported formats: json-resume`);
   }
 }

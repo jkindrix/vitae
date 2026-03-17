@@ -139,10 +139,7 @@ function buildSectionRelevance(
 // Skill category relevance
 // ---------------------------------------------------------------------------
 
-function buildSkillRelevance(
-  resume: Resume,
-  keywords: string[]
-): SkillCategoryRelevance[] {
+function buildSkillRelevance(resume: Resume, keywords: string[]): SkillCategoryRelevance[] {
   if (!resume.skills || resume.skills.length === 0) return [];
 
   const relevance: SkillCategoryRelevance[] = resume.skills.map((category) => {
@@ -188,9 +185,7 @@ function buildSummaryRecommendation(
 // Recommended section order
 // ---------------------------------------------------------------------------
 
-function buildRecommendedSectionOrder(
-  sectionRelevance: SectionRelevance[]
-): SectionName[] {
+function buildRecommendedSectionOrder(sectionRelevance: SectionRelevance[]): SectionName[] {
   // Summary always first (it's the introduction and where missing keywords go)
   const order: SectionName[] = [];
   const hasSummary = sectionRelevance.some((s) => s.section === 'summary');

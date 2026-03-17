@@ -28,7 +28,10 @@ async function extractDocxText(filePath: string): Promise<string> {
   if (!docXml) throw new Error('No document.xml in DOCX');
   const xml = await docXml.async('text');
   // Strip XML tags, collapse whitespace
-  return xml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  return xml
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 afterEach(async () => {
@@ -96,18 +99,25 @@ const fullResume: Resume = {
       end: '2018',
     },
   ],
-  certifications: [
-    { name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' },
-  ],
+  certifications: [{ name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' }],
   languages: [
     { language: 'English', fluency: 'Native' },
     { language: 'Spanish', fluency: 'Conversational' },
   ],
   awards: [
-    { title: 'Employee of the Year', awarder: 'Tech Corp', date: '2022', summary: 'Outstanding contributions' },
+    {
+      title: 'Employee of the Year',
+      awarder: 'Tech Corp',
+      date: '2022',
+      summary: 'Outstanding contributions',
+    },
   ],
   publications: [
-    { name: 'Building Scalable Systems', publisher: 'Tech Blog', url: 'https://example.com/article' },
+    {
+      name: 'Building Scalable Systems',
+      publisher: 'Tech Blog',
+      url: 'https://example.com/article',
+    },
   ],
   volunteer: [
     {
@@ -118,9 +128,7 @@ const fullResume: Resume = {
       highlights: ['Mentored 20 students'],
     },
   ],
-  references: [
-    { name: 'John Doe', reference: 'Jane is an excellent engineer.' },
-  ],
+  references: [{ name: 'John Doe', reference: 'Jane is an excellent engineer.' }],
 };
 
 describe('generateDocx', () => {
@@ -239,9 +247,7 @@ describe('generateDocx', () => {
   it('handles minimal resume with no optional sections', async () => {
     const minimal: Resume = {
       meta: { name: 'Minimal User' },
-      experience: [
-        { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-      ],
+      experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
     };
     const out = tempPath('docx');
     await generateDocx(normalizeResume(minimal), 'minimal', out);

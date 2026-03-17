@@ -379,10 +379,7 @@ describe('auditAccessibility', () => {
     });
 
     it('penalizes sections without headings', () => {
-      const html = compliantHtml().replace(
-        '<section>\n      <h2>Skills</h2>',
-        '<section>'
-      );
+      const html = compliantHtml().replace('<section>\n      <h2>Skills</h2>', '<section>');
       const result = auditAccessibility(html);
       const cat = result.categories.find((c) => c.category === 'semantic-html')!;
       expect(cat.findings.some((f) => f.message.includes('without a heading'))).toBe(true);

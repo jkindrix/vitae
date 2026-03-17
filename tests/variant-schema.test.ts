@@ -120,9 +120,17 @@ describe('variant schema validation', () => {
 
     it('validates all valid section names', async () => {
       const allSections = [
-        'summary', 'skills', 'experience', 'projects', 'education',
-        'certifications', 'languages', 'awards', 'publications',
-        'volunteer', 'references',
+        'summary',
+        'skills',
+        'experience',
+        'projects',
+        'education',
+        'certifications',
+        'languages',
+        'awards',
+        'publications',
+        'volunteer',
+        'references',
       ];
       const result = await validateVariant({
         layout: allSections,
@@ -191,14 +199,18 @@ describe('variant schema validation', () => {
     it('accepts plain string highlights', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{
-            title: 'Dev',
-            start: '2020',
-            highlights: ['Plain string'],
-          }],
-        }],
+        experience: [
+          {
+            company: 'Co',
+            roles: [
+              {
+                title: 'Dev',
+                start: '2020',
+                highlights: ['Plain string'],
+              },
+            ],
+          },
+        ],
       });
       expect(result.valid).toBe(true);
     });
@@ -206,16 +218,18 @@ describe('variant schema validation', () => {
     it('accepts tagged highlight objects', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{
-            title: 'Dev',
-            start: '2020',
-            highlights: [
-              { text: 'Tagged item', tags: ['backend'] },
+        experience: [
+          {
+            company: 'Co',
+            roles: [
+              {
+                title: 'Dev',
+                start: '2020',
+                highlights: [{ text: 'Tagged item', tags: ['backend'] }],
+              },
             ],
-          }],
-        }],
+          },
+        ],
       });
       expect(result.valid).toBe(true);
     });
@@ -223,18 +237,18 @@ describe('variant schema validation', () => {
     it('accepts mixed plain and tagged highlights', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{
-            title: 'Dev',
-            start: '2020',
-            highlights: [
-              'Plain string',
-              { text: 'Tagged', tags: ['tag1'] },
-              'Another plain',
+        experience: [
+          {
+            company: 'Co',
+            roles: [
+              {
+                title: 'Dev',
+                start: '2020',
+                highlights: ['Plain string', { text: 'Tagged', tags: ['tag1'] }, 'Another plain'],
+              },
             ],
-          }],
-        }],
+          },
+        ],
       });
       expect(result.valid).toBe(true);
     });
@@ -242,16 +256,18 @@ describe('variant schema validation', () => {
     it('accepts tagged highlight without tags array', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{
-            title: 'Dev',
-            start: '2020',
-            highlights: [
-              { text: 'No tags' },
+        experience: [
+          {
+            company: 'Co',
+            roles: [
+              {
+                title: 'Dev',
+                start: '2020',
+                highlights: [{ text: 'No tags' }],
+              },
             ],
-          }],
-        }],
+          },
+        ],
       });
       expect(result.valid).toBe(true);
     });
@@ -259,15 +275,19 @@ describe('variant schema validation', () => {
     it('accepts tags on experience items', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          tags: ['backend'],
-          roles: [{
-            title: 'Dev',
-            start: '2020',
+        experience: [
+          {
+            company: 'Co',
             tags: ['backend'],
-          }],
-        }],
+            roles: [
+              {
+                title: 'Dev',
+                start: '2020',
+                tags: ['backend'],
+              },
+            ],
+          },
+        ],
       });
       expect(result.valid).toBe(true);
     });
@@ -275,13 +295,13 @@ describe('variant schema validation', () => {
     it('accepts tags on skill categories', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{ title: 'Dev', start: '2020' }],
-        }],
-        skills: [
-          { category: 'Languages', items: ['TS'], tags: ['backend'] },
+        experience: [
+          {
+            company: 'Co',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
         ],
+        skills: [{ category: 'Languages', items: ['TS'], tags: ['backend'] }],
       });
       expect(result.valid).toBe(true);
     });
@@ -289,13 +309,13 @@ describe('variant schema validation', () => {
     it('accepts tags on projects', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{ title: 'Dev', start: '2020' }],
-        }],
-        projects: [
-          { name: 'Tool', tags: ['oss'] },
+        experience: [
+          {
+            company: 'Co',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
         ],
+        projects: [{ name: 'Tool', tags: ['oss'] }],
       });
       expect(result.valid).toBe(true);
     });
@@ -303,13 +323,13 @@ describe('variant schema validation', () => {
     it('accepts tags on education', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{ title: 'Dev', start: '2020' }],
-        }],
-        education: [
-          { institution: 'Uni', tags: ['academic'] },
+        experience: [
+          {
+            company: 'Co',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
         ],
+        education: [{ institution: 'Uni', tags: ['academic'] }],
       });
       expect(result.valid).toBe(true);
     });
@@ -317,13 +337,13 @@ describe('variant schema validation', () => {
     it('accepts tags on certifications', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{ title: 'Dev', start: '2020' }],
-        }],
-        certifications: [
-          { name: 'Cert', tags: ['cloud'] },
+        experience: [
+          {
+            company: 'Co',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
         ],
+        certifications: [{ name: 'Cert', tags: ['cloud'] }],
       });
       expect(result.valid).toBe(true);
     });
@@ -331,13 +351,13 @@ describe('variant schema validation', () => {
     it('accepts tags on volunteer entries', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{ title: 'Dev', start: '2020' }],
-        }],
-        volunteer: [
-          { organization: 'Org', tags: ['community'] },
+        experience: [
+          {
+            company: 'Co',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
         ],
+        volunteer: [{ organization: 'Org', tags: ['community'] }],
       });
       expect(result.valid).toBe(true);
     });
@@ -345,14 +365,18 @@ describe('variant schema validation', () => {
     it('rejects invalid highlight type (number)', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{
-            title: 'Dev',
-            start: '2020',
-            highlights: [42 as unknown as string],
-          }],
-        }],
+        experience: [
+          {
+            company: 'Co',
+            roles: [
+              {
+                title: 'Dev',
+                start: '2020',
+                highlights: [42 as unknown as string],
+              },
+            ],
+          },
+        ],
       });
       expect(result.valid).toBe(false);
     });
@@ -360,15 +384,19 @@ describe('variant schema validation', () => {
     it('accepts id field on experience', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          id: 'company-1',
-          company: 'Co',
-          roles: [{
-            id: 'role-1',
-            title: 'Dev',
-            start: '2020',
-          }],
-        }],
+        experience: [
+          {
+            id: 'company-1',
+            company: 'Co',
+            roles: [
+              {
+                id: 'role-1',
+                title: 'Dev',
+                start: '2020',
+              },
+            ],
+          },
+        ],
       });
       expect(result.valid).toBe(true);
     });
@@ -376,13 +404,13 @@ describe('variant schema validation', () => {
     it('accepts id field on skills', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{ title: 'Dev', start: '2020' }],
-        }],
-        skills: [
-          { id: 'langs', category: 'Languages', items: ['TS'] },
+        experience: [
+          {
+            company: 'Co',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
         ],
+        skills: [{ id: 'langs', category: 'Languages', items: ['TS'] }],
       });
       expect(result.valid).toBe(true);
     });
@@ -390,13 +418,13 @@ describe('variant schema validation', () => {
     it('accepts id field on projects', async () => {
       const result = await validateResume({
         meta: { name: 'Test' },
-        experience: [{
-          company: 'Co',
-          roles: [{ title: 'Dev', start: '2020' }],
-        }],
-        projects: [
-          { id: 'proj-1', name: 'Tool' },
+        experience: [
+          {
+            company: 'Co',
+            roles: [{ title: 'Dev', start: '2020' }],
+          },
         ],
+        projects: [{ id: 'proj-1', name: 'Tool' }],
       });
       expect(result.valid).toBe(true);
     });

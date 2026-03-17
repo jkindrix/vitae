@@ -107,7 +107,12 @@ describe('JSON Resume round-trip fidelity', () => {
       { language: 'Spanish', fluency: 'Conversational' },
     ],
     awards: [
-      { title: 'Engineer of the Year', awarder: 'CloudScale Inc.', date: '2023', summary: 'Annual award' },
+      {
+        title: 'Engineer of the Year',
+        awarder: 'CloudScale Inc.',
+        date: '2023',
+        summary: 'Annual award',
+      },
     ],
     publications: [
       {
@@ -129,9 +134,7 @@ describe('JSON Resume round-trip fidelity', () => {
         highlights: ['Taught 200+ students', { text: 'Developed curriculum', tags: ['frontend'] }],
       },
     ],
-    references: [
-      { name: 'Jane Smith', reference: 'Alex is an exceptional engineer.' },
-    ],
+    references: [{ name: 'Jane Smith', reference: 'Alex is an exceptional engineer.' }],
   };
 
   const roundTripped = fromJsonResume(toJsonResume(original));

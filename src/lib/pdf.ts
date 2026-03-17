@@ -1,6 +1,7 @@
 import { chromium, type Browser, type Page } from 'playwright-core';
 import { writeFile } from 'fs/promises';
 import { renderStandaloneHtml } from './renderer.js';
+import type { RenderOptions } from './renderer.js';
 import { PdfError } from './errors.js';
 import type { NormalizedResume } from '../types/index.js';
 
@@ -212,10 +213,7 @@ export function countPdfPages(buffer: Buffer): number {
  * Measure the content height of a page in pixels.
  * Sets viewport width to match the paper's usable width for accurate reflow.
  */
-async function measureContentHeight(
-  page: Page,
-  mergedOptions: DefaultPdfOptions
-): Promise<number> {
+async function measureContentHeight(page: Page, mergedOptions: DefaultPdfOptions): Promise<number> {
   const dims = PAGE_DIMENSIONS[mergedOptions.format] ?? PAGE_DIMENSIONS['Letter']!;
   const marginLeft = parseInches(mergedOptions.margin.left);
   const marginRight = parseInches(mergedOptions.margin.right);
@@ -263,10 +261,7 @@ interface PreparedPage {
  * Prepare a browser page from raw HTML string
  * This is the low-level setup shared by all PDF/PNG generation functions
  */
-async function prepareHtmlPage(
-  html: string,
-  options: PdfOptions
-): Promise<PreparedPage> {
+async function prepareHtmlPage(html: string, options: PdfOptions): Promise<PreparedPage> {
   const mergedOptions: DefaultPdfOptions = {
     format: options.format ?? defaultOptions.format,
     margin: {
@@ -368,7 +363,7 @@ async function preparePdfPage(
   let html: string;
   try {
     const renderStart = Date.now();
-    const renderOpts: import('./renderer.js').RenderOptions = {};
+    const renderOpts: RenderOptions = {};
     if (options.layout) renderOpts.variant = options.layout;
     if (options.styleOverrides) renderOpts.styleOverrides = options.styleOverrides;
     const hasRenderOpts = options.layout || options.styleOverrides;
@@ -399,7 +394,7 @@ export async function generatePdf(
   debug.log(`Output: ${outputPath}`);
 
   const targetPages = options.targetPages ?? 1;
-  const scaleFloor = options.scaleFloor ?? 0.80;
+  const scaleFloor = options.scaleFloor ?? 0.8;
   let finalScale = mergedOptions.scale;
 
   try {
@@ -453,7 +448,7 @@ export async function generatePdfBuffer(
   const { page, mergedOptions, debug } = await preparePdfPage(resume, themeName, options);
 
   const targetPages = options.targetPages ?? 1;
-  const scaleFloor = options.scaleFloor ?? 0.80;
+  const scaleFloor = options.scaleFloor ?? 0.8;
   let finalScale = mergedOptions.scale;
 
   try {
@@ -540,7 +535,7 @@ export async function generatePdfFromHtml(
   debug.log(`Output: ${outputPath}`);
 
   const targetPages = options.targetPages ?? 1;
-  const scaleFloor = options.scaleFloor ?? 0.80;
+  const scaleFloor = options.scaleFloor ?? 0.8;
   let finalScale = mergedOptions.scale;
 
   try {

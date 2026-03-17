@@ -139,10 +139,7 @@ function normalizeCertifications(certs: Resume['certifications']): Resume['certi
 /**
  * Determine which sections have content and produce the ordered list
  */
-function buildSectionOrder(
-  resume: Resume,
-  requestedOrder?: SectionName[]
-): SectionName[] {
+function buildSectionOrder(resume: Resume, requestedOrder?: SectionName[]): SectionName[] {
   const order = requestedOrder ?? DEFAULT_SECTION_ORDER;
 
   // Only include sections that have content
@@ -184,10 +181,7 @@ function buildSectionOrder(
  *
  * Always runs before rendering, regardless of whether a variant was applied.
  */
-export function normalizeResume(
-  resume: Resume,
-  sectionOrder?: SectionName[]
-): NormalizedResume {
+export function normalizeResume(resume: Resume, sectionOrder?: SectionName[]): NormalizedResume {
   const result: NormalizedResume = {
     meta: resume.meta,
     experience: normalizeExperience(resume.experience),
@@ -210,7 +204,8 @@ export function normalizeResume(
 
   if (resume.languages && resume.languages.length > 0) result.languages = resume.languages;
   if (resume.awards && resume.awards.length > 0) result.awards = resume.awards;
-  if (resume.publications && resume.publications.length > 0) result.publications = resume.publications;
+  if (resume.publications && resume.publications.length > 0)
+    result.publications = resume.publications;
 
   const volunteer = normalizeVolunteer(resume.volunteer);
   if (volunteer) result.volunteer = volunteer;

@@ -15,7 +15,12 @@ function makeBaseResume(): Resume {
     },
     summary: 'Experienced full-stack developer.',
     skills: [
-      { id: 'langs', category: 'Languages', items: ['TypeScript', 'Go'], tags: ['backend', 'frontend'] },
+      {
+        id: 'langs',
+        category: 'Languages',
+        items: ['TypeScript', 'Go'],
+        tags: ['backend', 'frontend'],
+      },
       { id: 'frameworks', category: 'Frameworks', items: ['React', 'Vue'], tags: ['frontend'] },
       { id: 'devops', category: 'DevOps', items: ['Docker', 'K8s'], tags: ['backend'] },
       { category: 'Soft Skills', items: ['Leadership'] }, // untagged, no id
@@ -78,7 +83,13 @@ function makeBaseResume(): Resume {
       },
     ],
     projects: [
-      { id: 'oss-cli', name: 'OSS CLI', description: 'A CLI tool', tags: ['backend'], highlights: ['Stars'] },
+      {
+        id: 'oss-cli',
+        name: 'OSS CLI',
+        description: 'A CLI tool',
+        tags: ['backend'],
+        highlights: ['Stars'],
+      },
       { id: 'portfolio', name: 'Portfolio', description: 'Personal site', tags: ['frontend'] },
       { name: 'Side Project', description: 'Fun stuff' }, // untagged
     ],
@@ -90,10 +101,7 @@ function makeBaseResume(): Resume {
         field: 'CS',
         end: '2016',
         tags: ['backend', 'frontend'],
-        highlights: [
-          { text: 'Dean\'s list', tags: ['academic'] },
-          'Graduated magna cum laude',
-        ],
+        highlights: [{ text: "Dean's list", tags: ['academic'] }, 'Graduated magna cum laude'],
       },
     ],
     certifications: [
@@ -242,7 +250,10 @@ describe('applyVariant v2', () => {
       // then Languages (frontend tag match), Frameworks (frontend match),
       // Soft Skills (untagged passes tag filter)
       expect(result.skills?.map((s) => s.category)).toEqual([
-        'DevOps', 'Languages', 'Frameworks', 'Soft Skills',
+        'DevOps',
+        'Languages',
+        'Frameworks',
+        'Soft Skills',
       ]);
     });
   });
@@ -261,7 +272,9 @@ describe('applyVariant v2', () => {
       // Languages (backend+frontend), Frameworks (frontend), Soft Skills (untagged) pass
       // DevOps (backend only) excluded
       expect(result.skills?.map((s) => s.category)).toEqual([
-        'Languages', 'Frameworks', 'Soft Skills',
+        'Languages',
+        'Frameworks',
+        'Soft Skills',
       ]);
     });
 
@@ -309,7 +322,9 @@ describe('applyVariant v2', () => {
       const result = applyVariant(resume, variant);
 
       expect(result.skills?.map((s) => s.category)).toEqual([
-        'Languages', 'Frameworks', 'Soft Skills',
+        'Languages',
+        'Frameworks',
+        'Soft Skills',
       ]);
     });
 
@@ -575,7 +590,9 @@ describe('applyVariant v2', () => {
 
       // Skills: Languages (both), Frameworks (frontend), Soft Skills (untagged) pass
       expect(result.skills?.map((s) => s.category)).toEqual([
-        'Languages', 'Frameworks', 'Soft Skills',
+        'Languages',
+        'Frameworks',
+        'Soft Skills',
       ]);
 
       // Experience: Alpha (frontend) + Gamma (untagged) pass
@@ -676,9 +693,7 @@ describe('applyVariant v2', () => {
         experience: [
           {
             company: 'OnlyBackend',
-            roles: [
-              { title: 'Backend Dev', start: '2020', tags: ['backend'] },
-            ],
+            roles: [{ title: 'Backend Dev', start: '2020', tags: ['backend'] }],
           },
         ],
       };
@@ -694,9 +709,7 @@ describe('applyVariant v2', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
         experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
-        projects: [
-          { name: 'Backend Tool', tags: ['backend'] },
-        ],
+        projects: [{ name: 'Backend Tool', tags: ['backend'] }],
       };
       const variant: Variant = {
         projects: { tags: ['frontend'] },

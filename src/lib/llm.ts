@@ -50,7 +50,7 @@ export function resolveLlmConfig(options?: ResolveLlmConfigOptions): LlmConfig {
     if (!['openai', 'anthropic', 'ollama'].includes(provider)) {
       throw new LlmError(
         `Unknown provider '${provider}'. Supported: openai, anthropic, ollama`,
-        provider,
+        provider
       );
     }
     const apiKey = opts.apiKey ?? getEnvKey(provider);
@@ -79,7 +79,7 @@ export function resolveLlmConfig(options?: ResolveLlmConfigOptions): LlmConfig {
       provider: 'openai',
       apiKey: openaiKey,
       model: opts.model ?? DEFAULT_MODELS.openai,
-      baseUrl: opts.baseUrl ?? (process.env['OPENAI_BASE_URL'] ?? DEFAULT_BASE_URLS.openai),
+      baseUrl: opts.baseUrl ?? process.env['OPENAI_BASE_URL'] ?? DEFAULT_BASE_URLS.openai,
     };
   }
 
@@ -159,15 +159,12 @@ async function callOpenAi(config: LlmConfig, messages: LlmMessage[]): Promise<Ll
   });
 
   const data = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
+    choices?: { message?: { content?: string } }[];
   };
 
   const content = data.choices?.[0]?.message?.content;
   if (!content) {
-    throw LlmError.invalidResponse(
-      config.provider,
-      new Error('No content in response'),
-    );
+    throw LlmError.invalidResponse(config.provider, new Error('No content in response'));
   }
 
   return { content };
@@ -203,15 +200,12 @@ async function callAnthropic(config: LlmConfig, messages: LlmMessage[]): Promise
   });
 
   const data = (await res.json()) as {
-    content?: Array<{ type?: string; text?: string }>;
+    content?: { type?: string; text?: string }[];
   };
 
   const textBlock = data.content?.find((b) => b.type === 'text');
   if (!textBlock?.text) {
-    throw LlmError.invalidResponse(
-      config.provider,
-      new Error('No text content in response'),
-    );
+    throw LlmError.invalidResponse(config.provider, new Error('No text content in response'));
   }
 
   return { content: textBlock.text };
@@ -239,10 +233,7 @@ async function callOllama(config: LlmConfig, messages: LlmMessage[]): Promise<Ll
 
   const content = data.message?.content;
   if (!content) {
-    throw LlmError.invalidResponse(
-      config.provider,
-      new Error('No content in response'),
-    );
+    throw LlmError.invalidResponse(config.provider, new Error('No content in response'));
   }
 
   return { content };

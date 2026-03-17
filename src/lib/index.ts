@@ -1,10 +1,43 @@
-export { loadResume, parseResume, loadVariant, loadCoverLetter, loadDocument, isCoverLetterFormat } from './loader.js';
+export {
+  loadResume,
+  parseResume,
+  loadVariant,
+  loadCoverLetter,
+  loadDocument,
+  isCoverLetterFormat,
+} from './loader.js';
 export type { DocumentResult } from './loader.js';
-export { validateResume, assertValidResume, validateVariant, assertValidVariant, validateCoverLetter, assertValidCoverLetter } from './schema.js';
-export { listThemes, loadTheme, getThemesDir, readCoverLetterTemplate, loadThemeConfig } from './themes.js';
-export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss, generateStyleOverrideCss } from './renderer.js';
+export {
+  validateResume,
+  assertValidResume,
+  validateVariant,
+  assertValidVariant,
+  validateCoverLetter,
+  assertValidCoverLetter,
+} from './schema.js';
+export {
+  listThemes,
+  loadTheme,
+  getThemesDir,
+  readCoverLetterTemplate,
+  loadThemeConfig,
+} from './themes.js';
+export {
+  renderHtml,
+  renderStandaloneHtml,
+  generateThemeOverrideCss,
+  generateStyleOverrideCss,
+} from './renderer.js';
 export type { RenderOptions } from './renderer.js';
-export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser, countPdfPages } from './pdf.js';
+export {
+  generatePdf,
+  generatePdfBuffer,
+  generatePng,
+  generatePdfFromHtml,
+  generatePngFromHtml,
+  closeBrowser,
+  countPdfPages,
+} from './pdf.js';
 export type { PdfOptions, PdfResult, PdfBufferResult } from './pdf.js';
 export { generateDocx, generateCoverLetterDocx } from './docx.js';
 export { resumeToMarkdown } from './markdown.js';
@@ -26,11 +59,26 @@ export type { ValidationErrorDetail } from './errors.js';
 export { fromJsonResume, toJsonResume, isJsonResumeFormat } from './json-resume.js';
 export { applyVariant } from './variant.js';
 export { normalizeResume, DEFAULT_SECTION_ORDER } from './normalize.js';
-export { analyzeResume, extractKeywords, buildResumeTextBlocks, textContainsKeyword } from './ats.js';
+export {
+  analyzeResume,
+  extractKeywords,
+  buildResumeTextBlocks,
+  textContainsKeyword,
+} from './ats.js';
 export { analyzeTailoring, generateVariant, serializeVariantWithComments } from './tailor.js';
-export { renderCoverLetterHtml, renderCoverLetterStandaloneHtml, coverLetterToMarkdown } from './cover-letter.js';
+export {
+  renderCoverLetterHtml,
+  renderCoverLetterStandaloneHtml,
+  coverLetterToMarkdown,
+} from './cover-letter.js';
 export { getLocale, getSectionLabel } from './i18n.js';
 export type { Locale, LocaleLabels, LocaleMonths, LocaleKeywords } from './i18n.js';
-export { auditAccessibility, parseColor, relativeLuminance, contrastRatio, extractCssCustomProperties } from './a11y.js';
+export {
+  auditAccessibility,
+  parseColor,
+  relativeLuminance,
+  contrastRatio,
+  extractCssCustomProperties,
+} from './a11y.js';
 export { resolveLlmConfig, callLlm } from './llm.js';
 export { generateSuggestions } from './suggest.js';

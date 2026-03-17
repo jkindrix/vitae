@@ -246,9 +246,7 @@ describe('renderer', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
         language: 'fr',
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
       };
       const html = await renderStandaloneHtml(normalizeResume(resume), 'minimal');
       expect(html).toContain('<html lang="fr">');

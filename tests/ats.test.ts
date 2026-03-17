@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { analyzeResume, extractKeywords, buildResumeTextBlocks, textContainsKeyword } from '../src/lib/ats.js';
+import {
+  analyzeResume,
+  extractKeywords,
+  buildResumeTextBlocks,
+  textContainsKeyword,
+} from '../src/lib/ats.js';
 import type { Resume } from '../src/types/index.js';
 
 // ---------------------------------------------------------------------------
@@ -88,18 +93,14 @@ function comprehensive(): Resume {
         highlights: ['2000+ GitHub stars', 'Used by 50+ companies in production'],
       },
     ],
-    certifications: [
-      { name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' },
-    ],
+    certifications: [{ name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' }],
   };
 }
 
 function minimal(): Resume {
   return {
     meta: { name: 'Test User' },
-    experience: [
-      { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-    ],
+    experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
   };
 }
 
@@ -142,9 +143,7 @@ function withGaps(): Resume {
         ],
       },
     ],
-    education: [
-      { institution: 'State U', degree: 'BS', field: 'CS', end: '2018' },
-    ],
+    education: [{ institution: 'State U', degree: 'BS', field: 'CS', end: '2018' }],
   };
 }
 
@@ -178,14 +177,7 @@ describe('analyzeResume', () => {
       const result = analyzeResume(comprehensive());
       expect(result.categories).toHaveLength(6);
       const names = result.categories.map((c) => c.category);
-      expect(names).toEqual([
-        'contact',
-        'sections',
-        'experience',
-        'content',
-        'dates',
-        'structure',
-      ]);
+      expect(names).toEqual(['contact', 'sections', 'experience', 'content', 'dates', 'structure']);
     });
 
     it('category weights sum to 100', () => {
@@ -351,7 +343,10 @@ describe('analyzeResume', () => {
                 title: 'Dev',
                 start: '2020',
                 location: 'Remote',
-                highlights: Array.from({ length: 10 }, (_, i) => `Achievement number ${i + 1} that demonstrates value`),
+                highlights: Array.from(
+                  { length: 10 },
+                  (_, i) => `Achievement number ${i + 1} that demonstrates value`
+                ),
               },
             ],
           },
@@ -397,7 +392,11 @@ describe('analyzeResume', () => {
               {
                 title: 'Dev',
                 start: '2020',
-                highlights: ['OK', 'Tiny', 'Built a comprehensive distributed system for processing data'],
+                highlights: [
+                  'OK',
+                  'Tiny',
+                  'Built a comprehensive distributed system for processing data',
+                ],
               },
             ],
           },
@@ -430,9 +429,7 @@ describe('analyzeResume', () => {
     it('reports no highlights as error when experience exists', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
       };
       const result = analyzeResume(resume);
       const content = result.categories.find((c) => c.category === 'content')!;
@@ -564,9 +561,7 @@ describe('analyzeResume', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
         skills: [{ category: 'Empty', items: [] }],
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
       };
       const result = analyzeResume(resume);
       const structure = result.categories.find((c) => c.category === 'structure')!;
@@ -576,9 +571,7 @@ describe('analyzeResume', () => {
     it('penalizes education without degree and field', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
         education: [{ institution: 'Some University' }],
       };
       const result = analyzeResume(resume);
@@ -610,18 +603,14 @@ describe('analyzeResume', () => {
 
     it('matches keywords found in skills', () => {
       const result = analyzeResume(comprehensive(), { jobDescription });
-      const ts = result.keywords!.keywords.find(
-        (k) => k.keyword === 'typescript'
-      );
+      const ts = result.keywords!.keywords.find((k) => k.keyword === 'typescript');
       expect(ts?.found).toBe(true);
       expect(ts?.foundIn).toContain('skills');
     });
 
     it('matches keywords found in experience', () => {
       const result = analyzeResume(comprehensive(), { jobDescription });
-      const micro = result.keywords!.keywords.find(
-        (k) => k.keyword === 'microservices'
-      );
+      const micro = result.keywords!.keywords.find((k) => k.keyword === 'microservices');
       expect(micro?.found).toBe(true);
       expect(micro?.foundIn).toContain('experience');
     });
@@ -636,9 +625,7 @@ describe('analyzeResume', () => {
       const result = analyzeResume(comprehensive(), {
         jobDescription: 'TYPESCRIPT REACT NODE.JS',
       });
-      const ts = result.keywords!.keywords.find(
-        (k) => k.keyword === 'typescript'
-      );
+      const ts = result.keywords!.keywords.find((k) => k.keyword === 'typescript');
       expect(ts?.found).toBe(true);
     });
 
@@ -702,7 +689,10 @@ describe('analyzeResume', () => {
                 start: '2020',
                 highlights: [
                   'Plain highlight that is long enough for content check',
-                  { text: 'Tagged highlight that is also long enough for check', tags: ['backend'] },
+                  {
+                    text: 'Tagged highlight that is also long enough for check',
+                    tags: ['backend'],
+                  },
                 ],
               },
             ],
@@ -736,9 +726,7 @@ describe('analyzeResume', () => {
       const result = analyzeResume(resume, {
         jobDescription: 'microservices kubernetes',
       });
-      const micro = result.keywords!.keywords.find(
-        (k) => k.keyword === 'microservices'
-      );
+      const micro = result.keywords!.keywords.find((k) => k.keyword === 'microservices');
       expect(micro?.found).toBe(true);
     });
   });
@@ -756,7 +744,9 @@ describe('analyzeResume', () => {
       const result = analyzeResume(minimal());
       for (const f of result.findings) {
         expect(['error', 'warning', 'suggestion']).toContain(f.severity);
-        expect(['contact', 'sections', 'experience', 'content', 'dates', 'structure']).toContain(f.category);
+        expect(['contact', 'sections', 'experience', 'content', 'dates', 'structure']).toContain(
+          f.category
+        );
         expect(typeof f.message).toBe('string');
       }
     });
@@ -789,7 +779,15 @@ describe('buildResumeTextBlocks', () => {
   it('returns all section keys for a full resume', () => {
     const blocks = buildResumeTextBlocks(comprehensive());
     expect(Object.keys(blocks)).toEqual(
-      expect.arrayContaining(['meta', 'summary', 'skills', 'experience', 'projects', 'education', 'certifications'])
+      expect.arrayContaining([
+        'meta',
+        'summary',
+        'skills',
+        'experience',
+        'projects',
+        'education',
+        'certifications',
+      ])
     );
   });
 
@@ -837,14 +835,18 @@ describe('buildResumeTextBlocks', () => {
   it('flattens tagged highlights to text', () => {
     const resume: Resume = {
       meta: { name: 'Test' },
-      experience: [{
-        company: 'Co',
-        roles: [{
-          title: 'Dev',
-          start: '2020',
-          highlights: [{ text: 'Built microservices', tags: ['backend'] }],
-        }],
-      }],
+      experience: [
+        {
+          company: 'Co',
+          roles: [
+            {
+              title: 'Dev',
+              start: '2020',
+              highlights: [{ text: 'Built microservices', tags: ['backend'] }],
+            },
+          ],
+        },
+      ],
     };
     const blocks = buildResumeTextBlocks(resume);
     expect(blocks['experience']).toContain('Built microservices');

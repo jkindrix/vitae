@@ -76,7 +76,12 @@ const baseResume: Resume = {
   ],
   projects: [
     { name: 'OpenLib', description: 'OSS library', tags: ['backend'], highlights: ['500 stars'] },
-    { name: 'Portfolio', description: 'Personal site', tags: ['frontend'], highlights: ['Responsive design'] },
+    {
+      name: 'Portfolio',
+      description: 'Personal site',
+      tags: ['frontend'],
+      highlights: ['Responsive design'],
+    },
   ],
   education: [
     { institution: 'State University', degree: 'BS', field: 'Computer Science', end: '2017' },
@@ -240,7 +245,7 @@ describe('integration: pipeline end-to-end', () => {
       },
     };
 
-    const filtered = applyVariant(baseResume, variant);
+    applyVariant(baseResume, variant);
 
     // Certifications have devops tags, none match nonexistent-tag → but untagged items pass
     // Actually, all certs have tags so they won't be "untagged". Let's use omit instead.

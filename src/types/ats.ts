@@ -6,13 +6,7 @@
 export type AtsSeverity = 'error' | 'warning' | 'suggestion';
 
 /** Scoring category identifiers */
-export type AtsCategory =
-  | 'contact'
-  | 'sections'
-  | 'experience'
-  | 'content'
-  | 'dates'
-  | 'structure';
+export type AtsCategory = 'contact' | 'sections' | 'experience' | 'content' | 'dates' | 'structure';
 
 /** A single finding from ATS analysis */
 export interface AtsFinding {

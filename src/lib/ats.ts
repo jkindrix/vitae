@@ -27,10 +27,7 @@ import type {
 // ---------------------------------------------------------------------------
 
 /** Analyze a resume for ATS compatibility. */
-export function analyzeResume(
-  resume: Resume,
-  options?: AtsAnalyzeOptions
-): AtsResult {
+export function analyzeResume(resume: Resume, options?: AtsAnalyzeOptions): AtsResult {
   const contactScore = analyzeContact(resume);
   const sectionsScore = analyzeSections(resume);
   const experienceScore = analyzeExperience(resume);
@@ -68,11 +65,7 @@ export function analyzeResume(
 // Helpers
 // ---------------------------------------------------------------------------
 
-function finding(
-  category: AtsCategory,
-  severity: AtsSeverity,
-  message: string
-): AtsFinding {
+function finding(category: AtsCategory, severity: AtsSeverity, message: string): AtsFinding {
   return { category, severity, message };
 }
 
@@ -110,9 +103,7 @@ function analyzeContact(resume: Resume): AtsCategoryScore {
 
   if (!meta.location) {
     score -= 10;
-    findings.push(
-      finding('contact', 'warning', 'Location helps with geographic filtering')
-    );
+    findings.push(finding('contact', 'warning', 'Location helps with geographic filtering'));
   }
 
   if (!meta.title) {
@@ -175,9 +166,7 @@ function analyzeSections(resume: Resume): AtsCategoryScore {
 
   if (resume.experience.length === 0) {
     score -= 35;
-    findings.push(
-      finding('sections', 'error', 'Experience section is essential')
-    );
+    findings.push(finding('sections', 'error', 'Experience section is essential'));
   }
 
   if (!resume.education || resume.education.length === 0) {
@@ -318,9 +307,7 @@ function analyzeContent(resume: Resume): AtsCategoryScore {
     if (text.length < 20 && shortHighlightDeduction < 25) {
       shortHighlightDeduction += 5;
       const preview = text.length > 30 ? text.slice(0, 30) + '...' : text;
-      findings.push(
-        finding('content', 'warning', `Short highlight: '${preview}'`)
-      );
+      findings.push(finding('content', 'warning', `Short highlight: '${preview}'`));
     }
   }
   score -= shortHighlightDeduction;
@@ -437,9 +424,7 @@ function parseDateToMonths(
   return year * 12 + month;
 }
 
-function analyzeDates(
-  resume: Resume
-): { categoryScore: AtsCategoryScore; gaps: AtsDateGap[] } {
+function analyzeDates(resume: Resume): { categoryScore: AtsCategoryScore; gaps: AtsDateGap[] } {
   const findings: AtsFinding[] = [];
   const gaps: AtsDateGap[] = [];
 
@@ -464,9 +449,7 @@ function analyzeDates(
   }
 
   // Sort by start ascending, then by end descending (longest roles first)
-  points.sort(
-    (a, b) => a.startMonths - b.startMonths || b.endMonths - a.endMonths
-  );
+  points.sort((a, b) => a.startMonths - b.startMonths || b.endMonths - a.endMonths);
 
   // Walk and detect gaps
   let latestEnd = -Infinity;
@@ -558,17 +541,11 @@ function analyzeStructure(resume: Resume): AtsCategoryScore {
     );
   } else if (sectionCount === 2) {
     score -= 15;
-    findings.push(
-      finding('structure', 'warning', 'Resume has only 2 sections with content')
-    );
+    findings.push(finding('structure', 'warning', 'Resume has only 2 sections with content'));
   } else if (sectionCount < 4) {
     score -= 5;
     findings.push(
-      finding(
-        'structure',
-        'suggestion',
-        'Consider adding more sections for a comprehensive resume'
-      )
+      finding('structure', 'suggestion', 'Consider adding more sections for a comprehensive resume')
     );
   }
 
@@ -577,11 +554,7 @@ function analyzeStructure(resume: Resume): AtsCategoryScore {
     if (exp.roles.length === 0) {
       score -= 10;
       findings.push(
-        finding(
-          'structure',
-          'warning',
-          `Company '${exp.company}' has no roles defined`
-        )
+        finding('structure', 'warning', `Company '${exp.company}' has no roles defined`)
       );
     }
   }
@@ -591,11 +564,7 @@ function analyzeStructure(resume: Resume): AtsCategoryScore {
       if (cat.items.length === 0) {
         score -= 10;
         findings.push(
-          finding(
-            'structure',
-            'warning',
-            `Skill category '${cat.category}' has no items`
-          )
+          finding('structure', 'warning', `Skill category '${cat.category}' has no items`)
         );
       }
     }
@@ -634,10 +603,7 @@ function analyzeStructure(resume: Resume): AtsCategoryScore {
 
 function computeOverallScore(categories: AtsCategoryScore[]): number {
   const totalWeight = categories.reduce((sum, c) => sum + c.weight, 0);
-  const weightedSum = categories.reduce(
-    (sum, c) => sum + c.score * c.weight,
-    0
-  );
+  const weightedSum = categories.reduce((sum, c) => sum + c.score * c.weight, 0);
   return Math.round(weightedSum / totalWeight);
 }
 
@@ -646,22 +612,139 @@ function computeOverallScore(categories: AtsCategoryScore[]): number {
 // ---------------------------------------------------------------------------
 
 const STOP_WORDS = new Set([
-  'a', 'an', 'the', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
-  'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
-  'should', 'may', 'might', 'shall', 'can', 'need', 'dare', 'ought',
-  'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from',
-  'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below',
-  'between', 'out', 'off', 'over', 'under', 'again', 'further', 'then',
-  'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'each',
-  'every', 'both', 'few', 'more', 'most', 'other', 'some', 'such', 'no',
-  'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very',
-  'just', 'because', 'but', 'and', 'or', 'if', 'while', 'about',
-  'up', 'that', 'this', 'these', 'those', 'am', 'it', 'its', 'my',
-  'your', 'we', 'our', 'you', 'they', 'them', 'their', 'what', 'which',
-  'who', 'whom', 'he', 'she', 'him', 'her', 'his', 'hers', 'i', 'me',
-  'us', 'also', 'able', 'etc', 'must', 'including', 'required',
-  'preferred', 'strong', 'looking', 'work', 'working', 'role',
-  'responsibilities', 'requirements', 'qualifications', 'apply',
+  'a',
+  'an',
+  'the',
+  'is',
+  'are',
+  'was',
+  'were',
+  'be',
+  'been',
+  'being',
+  'have',
+  'has',
+  'had',
+  'do',
+  'does',
+  'did',
+  'will',
+  'would',
+  'could',
+  'should',
+  'may',
+  'might',
+  'shall',
+  'can',
+  'need',
+  'dare',
+  'ought',
+  'used',
+  'to',
+  'of',
+  'in',
+  'for',
+  'on',
+  'with',
+  'at',
+  'by',
+  'from',
+  'as',
+  'into',
+  'through',
+  'during',
+  'before',
+  'after',
+  'above',
+  'below',
+  'between',
+  'out',
+  'off',
+  'over',
+  'under',
+  'again',
+  'further',
+  'then',
+  'once',
+  'here',
+  'there',
+  'when',
+  'where',
+  'why',
+  'how',
+  'all',
+  'each',
+  'every',
+  'both',
+  'few',
+  'more',
+  'most',
+  'other',
+  'some',
+  'such',
+  'no',
+  'nor',
+  'not',
+  'only',
+  'own',
+  'same',
+  'so',
+  'than',
+  'too',
+  'very',
+  'just',
+  'because',
+  'but',
+  'and',
+  'or',
+  'if',
+  'while',
+  'about',
+  'up',
+  'that',
+  'this',
+  'these',
+  'those',
+  'am',
+  'it',
+  'its',
+  'my',
+  'your',
+  'we',
+  'our',
+  'you',
+  'they',
+  'them',
+  'their',
+  'what',
+  'which',
+  'who',
+  'whom',
+  'he',
+  'she',
+  'him',
+  'her',
+  'his',
+  'hers',
+  'i',
+  'me',
+  'us',
+  'also',
+  'able',
+  'etc',
+  'must',
+  'including',
+  'required',
+  'preferred',
+  'strong',
+  'looking',
+  'work',
+  'working',
+  'role',
+  'responsibilities',
+  'requirements',
+  'qualifications',
+  'apply',
 ]);
 
 export function extractKeywords(text: string): string[] {
@@ -702,18 +785,14 @@ export function extractKeywords(text: string): string[] {
 export function buildResumeTextBlocks(resume: Resume): Record<string, string> {
   const blocks: Record<string, string> = {};
 
-  blocks['meta'] = [resume.meta.name, resume.meta.title]
-    .filter(Boolean)
-    .join(' ');
+  blocks['meta'] = [resume.meta.name, resume.meta.title].filter(Boolean).join(' ');
 
   if (resume.summary) {
     blocks['summary'] = resume.summary;
   }
 
   if (resume.skills && resume.skills.length > 0) {
-    blocks['skills'] = resume.skills
-      .flatMap((s) => [s.category, ...s.items])
-      .join(' ');
+    blocks['skills'] = resume.skills.flatMap((s) => [s.category, ...s.items]).join(' ');
   }
 
   if (resume.experience.length > 0) {
@@ -730,11 +809,7 @@ export function buildResumeTextBlocks(resume: Resume): Record<string, string> {
 
   if (resume.projects && resume.projects.length > 0) {
     blocks['projects'] = resume.projects
-      .flatMap((p) => [
-        p.name,
-        p.description ?? '',
-        ...(p.highlights?.map(highlightText) ?? []),
-      ])
+      .flatMap((p) => [p.name, p.description ?? '', ...(p.highlights?.map(highlightText) ?? [])])
       .join(' ');
   }
 
@@ -759,10 +834,7 @@ export function textContainsKeyword(text: string, keyword: string): boolean {
   return regex.test(text);
 }
 
-function analyzeKeywords(
-  resume: Resume,
-  jobDescription: string
-): AtsKeywordAnalysis {
+function analyzeKeywords(resume: Resume, jobDescription: string): AtsKeywordAnalysis {
   const keywords = extractKeywords(jobDescription);
   const blocks = buildResumeTextBlocks(resume);
 
@@ -781,10 +853,7 @@ function analyzeKeywords(
   return {
     totalKeywords: keywords.length,
     matchedCount,
-    matchPercentage:
-      keywords.length > 0
-        ? Math.round((matchedCount / keywords.length) * 100)
-        : 100,
+    matchPercentage: keywords.length > 0 ? Math.round((matchedCount / keywords.length) * 100) : 100,
     keywords: results,
   };
 }

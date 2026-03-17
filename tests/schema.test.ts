@@ -163,9 +163,7 @@ describe('schema validation', () => {
       const result = await validateResume(invalid);
       expect(result.valid).toBe(false);
       expect(
-        result.errors.some(
-          (e) => e.path.includes('meta') && e.keyword === 'additionalProperties'
-        )
+        result.errors.some((e) => e.path.includes('meta') && e.keyword === 'additionalProperties')
       ).toBe(true);
     });
 

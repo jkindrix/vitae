@@ -32,15 +32,16 @@ describe('bundled theme accessibility', () => {
         ],
       },
     ],
-    education: [
-      { institution: 'MIT', degree: 'BS', field: 'Computer Science', end: '2018' },
-    ],
+    education: [{ institution: 'MIT', degree: 'BS', field: 'Computer Science', end: '2018' }],
     projects: [
-      { name: 'OSS Tool', url: 'https://github.com/tool', description: 'A CLI tool', highlights: ['1000+ stars'] },
+      {
+        name: 'OSS Tool',
+        url: 'https://github.com/tool',
+        description: 'A CLI tool',
+        highlights: ['1000+ stars'],
+      },
     ],
-    certifications: [
-      { name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' },
-    ],
+    certifications: [{ name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' }],
   };
 
   const themes = ['minimal', 'modern', 'professional'] as const;
@@ -55,9 +56,7 @@ describe('bundled theme accessibility', () => {
 
       it('has no error-severity findings', async () => {
         const html = await renderStandaloneHtml(normalizeResume(resume), theme);
-        const errors = auditAccessibility(html).findings.filter(
-          (f) => f.severity === 'error'
-        );
+        const errors = auditAccessibility(html).findings.filter((f) => f.severity === 'error');
         expect(errors).toHaveLength(0);
       });
     });

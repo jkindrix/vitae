@@ -20,17 +20,12 @@ function sampleResume(overrides?: Partial<Resume>): Resume {
             title: 'Senior Engineer',
             start: '2020-01',
             summary: 'Worked on backend systems',
-            highlights: [
-              'Helped improve API performance',
-              'Did code reviews for the team',
-            ],
+            highlights: ['Helped improve API performance', 'Did code reviews for the team'],
           },
         ],
       },
     ],
-    skills: [
-      { category: 'Languages', items: ['TypeScript', 'Python'] },
-    ],
+    skills: [{ category: 'Languages', items: ['TypeScript', 'Python'] }],
     ...overrides,
   };
 }
@@ -239,7 +234,7 @@ describe('callLlm — openai', () => {
   it('throws on empty response', async () => {
     mockFetchResponse({ choices: [] });
     await expect(callLlm(config, [{ role: 'user', content: 'test' }])).rejects.toThrow(
-      /No content/,
+      /No content/
     );
   });
 });
@@ -350,35 +345,35 @@ describe('callLlm — errors', () => {
   it('throws authFailed on 401', async () => {
     mockFetchResponse({}, 401);
     await expect(callLlm(config, [{ role: 'user', content: 'test' }])).rejects.toThrow(
-      /Authentication failed/,
+      /Authentication failed/
     );
   });
 
   it('throws authFailed on 403', async () => {
     mockFetchResponse({}, 403);
     await expect(callLlm(config, [{ role: 'user', content: 'test' }])).rejects.toThrow(
-      /Authentication failed/,
+      /Authentication failed/
     );
   });
 
   it('throws rateLimited on 429', async () => {
     mockFetchResponse({}, 429);
     await expect(callLlm(config, [{ role: 'user', content: 'test' }])).rejects.toThrow(
-      /Rate limited/,
+      /Rate limited/
     );
   });
 
   it('throws requestFailed on 500', async () => {
     mockFetchResponse({ error: 'internal' }, 500);
     await expect(callLlm(config, [{ role: 'user', content: 'test' }])).rejects.toThrow(
-      /request failed.*500/i,
+      /request failed.*500/i
     );
   });
 
   it('throws connectionFailed on network error', async () => {
     mockFetchError(new Error('ECONNREFUSED'));
     await expect(callLlm(config, [{ role: 'user', content: 'test' }])).rejects.toThrow(
-      /Failed to connect/,
+      /Failed to connect/
     );
   });
 });
@@ -433,10 +428,7 @@ describe('extractResumeContent', () => {
             {
               title: 'Dev',
               start: '2020-01',
-              highlights: [
-                { text: 'Tagged highlight', tags: ['backend'] },
-                'Plain highlight',
-              ],
+              highlights: [{ text: 'Tagged highlight', tags: ['backend'] }, 'Plain highlight'],
             },
           ],
         },

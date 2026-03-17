@@ -23,10 +23,7 @@ function makeResume(): Resume {
             end: 'present',
             location: 'Remote',
             summary: 'Led team',
-            highlights: [
-              'Plain highlight',
-              { text: 'Tagged highlight', tags: ['backend'] },
-            ],
+            highlights: ['Plain highlight', { text: 'Tagged highlight', tags: ['backend'] }],
             tags: ['backend'],
           },
         ],
@@ -38,10 +35,7 @@ function makeResume(): Resume {
         name: 'OSS Tool',
         url: 'https://example.com',
         description: 'A tool',
-        highlights: [
-          { text: 'Starred', tags: ['oss'] },
-          'Used widely',
-        ],
+        highlights: [{ text: 'Starred', tags: ['oss'] }, 'Used widely'],
         tags: ['oss'],
       },
     ],
@@ -52,10 +46,7 @@ function makeResume(): Resume {
         field: 'CS',
         start: '2015',
         end: '2019',
-        highlights: [
-          { text: 'Honors', tags: ['academic'] },
-          'Graduated',
-        ],
+        highlights: [{ text: 'Honors', tags: ['academic'] }, 'Graduated'],
         tags: ['academic'],
       },
     ],
@@ -69,10 +60,7 @@ function makeResume(): Resume {
         start: '2020',
         end: '2021',
         summary: 'Helped out',
-        highlights: [
-          { text: 'Fundraised', tags: ['community'] },
-          'Organized events',
-        ],
+        highlights: [{ text: 'Fundraised', tags: ['community'] }, 'Organized events'],
         tags: ['community'],
       },
     ],
@@ -194,9 +182,7 @@ describe('normalizeResume', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
         summary: 'A summary.',
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
       };
       const result = normalizeResume(resume);
 
@@ -219,9 +205,7 @@ describe('normalizeResume', () => {
     it('filters custom order to sections with content', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
         skills: [{ category: 'Lang', items: ['TS'] }],
       };
       const customOrder: SectionName[] = ['awards', 'skills', 'experience', 'projects'];
@@ -351,9 +335,7 @@ describe('normalizeResume', () => {
     it('omits undefined optional sections from result', () => {
       const resume: Resume = {
         meta: { name: 'Bare' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
       };
       const result = normalizeResume(resume);
 
@@ -368,9 +350,7 @@ describe('normalizeResume', () => {
     it('omits empty arrays from result', () => {
       const resume: Resume = {
         meta: { name: 'Empty' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
         projects: [],
         education: [],
       };

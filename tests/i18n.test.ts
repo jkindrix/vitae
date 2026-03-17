@@ -70,9 +70,19 @@ describe('i18n', () => {
     it('returns all 13 section labels', () => {
       const locale = getLocale('en');
       const expectedLabels = [
-        'summary', 'skills', 'experience', 'projects', 'education',
-        'certifications', 'languages', 'awards', 'publications',
-        'volunteer', 'references', 'contact', 'profile',
+        'summary',
+        'skills',
+        'experience',
+        'projects',
+        'education',
+        'certifications',
+        'languages',
+        'awards',
+        'publications',
+        'volunteer',
+        'references',
+        'contact',
+        'profile',
       ];
       for (const label of expectedLabels) {
         expect(locale.labels).toHaveProperty(label);

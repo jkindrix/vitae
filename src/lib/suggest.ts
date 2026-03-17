@@ -24,7 +24,7 @@ import type {
  */
 export async function generateSuggestions(
   resume: Resume,
-  options?: SuggestOptions,
+  options?: SuggestOptions
 ): Promise<SuggestResult> {
   const config = resolveLlmConfig(options);
   const resumeContent = extractResumeContent(resume, options?.section);
@@ -224,8 +224,7 @@ function buildSectionGuidance(section?: string): string {
       'Focus on education entries. Look for opportunities to emphasize relevant achievements, coursework, or honors.',
     volunteer:
       'Focus on volunteer experience. Look for weak descriptions and missing impact statements.',
-    meta:
-      'Focus on the professional title. Look for positioning improvements, keyword optimization, and clarity.',
+    meta: 'Focus on the professional title. Look for positioning improvements, keyword optimization, and clarity.',
   };
 
   return guidance[section] ?? `Focus on the "${section}" section and suggest improvements.`;
@@ -282,7 +281,7 @@ function parseResponse(content: string): SectionSuggestions[] {
   } catch (cause) {
     throw LlmError.invalidResponse(
       'llm',
-      cause instanceof Error ? cause : new Error(String(cause)),
+      cause instanceof Error ? cause : new Error(String(cause))
     );
   }
 

@@ -1,5 +1,11 @@
 import nunjucks from 'nunjucks';
-import { loadTheme, readTemplate, readStyles, loadThemeConfig, readVariantTemplate } from './themes.js';
+import {
+  loadTheme,
+  readTemplate,
+  readStyles,
+  loadThemeConfig,
+  readVariantTemplate,
+} from './themes.js';
 import { ThemeError } from './errors.js';
 import { formatDate, formatDateShort, formatDateRange } from './dates.js';
 import { getLocale } from './i18n.js';
@@ -33,9 +39,11 @@ function createEnvironment(locale: Locale, config?: ThemeConfig | null): nunjuck
 
   // Date formatting filters bound to the current locale
   env.addFilter('formatDate', (dateStr: string | undefined) => formatDate(dateStr, locale));
-  env.addFilter('formatDateShort', (dateStr: string | undefined) => formatDateShort(dateStr, locale));
+  env.addFilter('formatDateShort', (dateStr: string | undefined) =>
+    formatDateShort(dateStr, locale)
+  );
   env.addFilter('formatDateRange', (start: string | undefined, end: string | undefined) =>
-    formatDateRange(start, end, { locale }),
+    formatDateRange(start, end, { locale })
   );
 
   env.addFilter('joinItems', (items: string[] | undefined, separator = ', '): string => {
@@ -98,7 +106,7 @@ function buildLabels(locale: Locale): Record<string, string> {
 export async function renderHtml(
   resume: NormalizedResume,
   themeName: string,
-  options?: RenderOptions,
+  options?: RenderOptions
 ): Promise<RenderResult> {
   const theme = await loadTheme(themeName);
   const config = await loadThemeConfig(theme);
@@ -204,7 +212,7 @@ export function generateStyleOverrideCss(style: Record<string, string>): string 
 export async function renderStandaloneHtml(
   resume: NormalizedResume,
   themeName: string,
-  options?: RenderOptions,
+  options?: RenderOptions
 ): Promise<string> {
   const { html, css } = await renderHtml(resume, themeName, options);
   const overrideCss = resume.theme ? generateThemeOverrideCss(resume.theme) : '';

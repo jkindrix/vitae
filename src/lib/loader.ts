@@ -55,9 +55,16 @@ async function loadVariantRaw(filePath: string): Promise<Variant> {
 
 /** Section keys that are replaced (not merged) during extends resolution */
 const SECTION_KEYS: SectionName[] = [
-  'skills', 'experience', 'projects', 'education',
-  'certifications', 'languages', 'awards', 'publications',
-  'volunteer', 'references',
+  'skills',
+  'experience',
+  'projects',
+  'education',
+  'certifications',
+  'languages',
+  'awards',
+  'publications',
+  'volunteer',
+  'references',
 ];
 
 /**
@@ -123,7 +130,7 @@ function mergeVariants(parent: Variant, child: Variant): Variant {
 async function resolveExtends(
   variant: Variant,
   filePath: string,
-  visited: Set<string> = new Set(),
+  visited = new Set<string>()
 ): Promise<Variant> {
   if (!variant.extends) return variant;
 
@@ -184,8 +191,13 @@ export function isCoverLetterFormat(data: unknown): boolean {
   // Explicit type discriminator
   if (obj.type === 'cover-letter') return true;
   // Heuristic: has cover-letter-specific fields, lacks resume-specific fields
-  return 'recipient' in obj && 'body' in obj && Array.isArray(obj.body)
-    && 'greeting' in obj && !('experience' in obj);
+  return (
+    'recipient' in obj &&
+    'body' in obj &&
+    Array.isArray(obj.body) &&
+    'greeting' in obj &&
+    !('experience' in obj)
+  );
 }
 
 /**
@@ -207,7 +219,10 @@ export type DocumentResult =
 /**
  * Load a document, auto-detecting whether it is a resume or cover letter
  */
-export async function loadDocument(filePath: string, options: LoadOptions = {}): Promise<DocumentResult> {
+export async function loadDocument(
+  filePath: string,
+  options: LoadOptions = {}
+): Promise<DocumentResult> {
   const content = await readFile(filePath, 'utf-8');
   const data = parseContent(content, filePath);
 

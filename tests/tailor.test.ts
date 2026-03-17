@@ -4,7 +4,6 @@ import {
   generateVariant,
   serializeVariantWithComments,
 } from '../src/lib/tailor.js';
-import { extractKeywords } from '../src/lib/ats.js';
 import { assertValidVariant } from '../src/lib/schema.js';
 import { applyVariant } from '../src/lib/variant.js';
 import type { Resume } from '../src/types/index.js';
@@ -62,9 +61,7 @@ function fullResume(): Resume {
         ],
       },
     ],
-    education: [
-      { institution: 'MIT', degree: 'BS', field: 'Computer Science', end: '2017' },
-    ],
+    education: [{ institution: 'MIT', degree: 'BS', field: 'Computer Science', end: '2017' }],
     projects: [
       {
         name: 'Cloud Dashboard',
@@ -72,18 +69,14 @@ function fullResume(): Resume {
         highlights: ['Processes 100K events per second', 'Used by 50+ teams'],
       },
     ],
-    certifications: [
-      { name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' },
-    ],
+    certifications: [{ name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' }],
   };
 }
 
 function minimalResume(): Resume {
   return {
     meta: { name: 'Test User' },
-    experience: [
-      { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-    ],
+    experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
   };
 }
 

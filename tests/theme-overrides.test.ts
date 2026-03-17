@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateThemeOverrideCss, renderStandaloneHtml } from '../src/lib/renderer.js';
 import { normalizeResume } from '../src/lib/normalize.js';
-import type { Resume, ThemeOverrides } from '../src/types/index.js';
+import type { Resume } from '../src/types/index.js';
 
 describe('theme overrides', () => {
   describe('generateThemeOverrideCss', () => {
@@ -97,9 +97,7 @@ describe('theme overrides', () => {
     it('preserves theme overrides through normalization', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
         theme: {
           colors: { accent: '#e63946' },
           fonts: { sans: 'Inter, sans-serif' },
@@ -114,9 +112,7 @@ describe('theme overrides', () => {
     it('handles resume without theme overrides', () => {
       const resume: Resume = {
         meta: { name: 'Test' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
       };
       const normalized = normalizeResume(resume);
       expect(normalized.theme).toBeUndefined();
@@ -127,9 +123,7 @@ describe('theme overrides', () => {
     it('injects theme override CSS into standalone HTML', async () => {
       const resume: Resume = {
         meta: { name: 'Override Test' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
         theme: {
           colors: { accent: '#e63946' },
         },
@@ -143,9 +137,7 @@ describe('theme overrides', () => {
     it('does not inject override CSS when no theme overrides', async () => {
       const resume: Resume = {
         meta: { name: 'No Override' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
       };
       const normalized = normalizeResume(resume);
       const html = await renderStandaloneHtml(normalized, 'minimal');
@@ -160,9 +152,7 @@ describe('theme overrides', () => {
     it('override CSS appears after theme CSS', async () => {
       const resume: Resume = {
         meta: { name: 'Order Test' },
-        experience: [
-          { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-        ],
+        experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
         theme: {
           colors: { accent: '#ff0000' },
         },

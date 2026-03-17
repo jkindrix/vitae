@@ -28,10 +28,7 @@ type DomDocument = ReturnType<typeof parseHTML>['document'];
 // ---------------------------------------------------------------------------
 
 /** Audit an HTML string for WCAG accessibility compliance. */
-export function auditAccessibility(
-  html: string,
-  options?: A11yAuditOptions
-): A11yResult {
+export function auditAccessibility(html: string, options?: A11yAuditOptions): A11yResult {
   const { document: doc } = parseHTML(html);
   const level = options?.level ?? 'AA';
 
@@ -66,11 +63,7 @@ export function auditAccessibility(
 // Helpers
 // ---------------------------------------------------------------------------
 
-function finding(
-  category: A11yCategory,
-  severity: A11ySeverity,
-  message: string
-): A11yFinding {
+function finding(category: A11yCategory, severity: A11ySeverity, message: string): A11yFinding {
   return { category, severity, message };
 }
 
@@ -80,10 +73,7 @@ function clamp(value: number, min: number, max: number): number {
 
 function computeOverallScore(categories: A11yCategoryScore[]): number {
   const totalWeight = categories.reduce((sum, c) => sum + c.weight, 0);
-  const weightedSum = categories.reduce(
-    (sum, c) => sum + c.score * c.weight,
-    0
-  );
+  const weightedSum = categories.reduce((sum, c) => sum + c.score * c.weight, 0);
   return Math.round(weightedSum / totalWeight);
 }
 
@@ -119,7 +109,9 @@ export function parseColor(color: string): [number, number, number] | null {
   }
 
   // rgb(r, g, b) or rgb(r g b)
-  const rgbMatch = /^rgb\(\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*\)$/i.exec(trimmed);
+  const rgbMatch = /^rgb\(\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*[,\s]\s*(\d{1,3})\s*\)$/i.exec(
+    trimmed
+  );
   if (rgbMatch) {
     return [
       parseInt(rgbMatch[1]!, 10) / 255,
@@ -173,19 +165,14 @@ export function extractCssCustomProperties(html: string): Record<string, string>
 // Category: Document Structure (weight 20)
 // ---------------------------------------------------------------------------
 
-function analyzeDocumentStructure(
-  doc: DomDocument,
-  html: string
-): A11yCategoryScore {
+function analyzeDocumentStructure(doc: DomDocument, html: string): A11yCategoryScore {
   const findings: A11yFinding[] = [];
   let score = 100;
 
   // DOCTYPE
   if (!/^<!DOCTYPE\s+html>/i.test(html.trimStart())) {
     score -= 15;
-    findings.push(
-      finding('document-structure', 'error', 'Missing <!DOCTYPE html> declaration')
-    );
+    findings.push(finding('document-structure', 'error', 'Missing <!DOCTYPE html> declaration'));
   }
 
   // lang attribute
@@ -200,9 +187,7 @@ function analyzeDocumentStructure(
   // charset meta
   if (!doc.querySelector('meta[charset]')) {
     score -= 10;
-    findings.push(
-      finding('document-structure', 'warning', 'Missing <meta charset> declaration')
-    );
+    findings.push(finding('document-structure', 'warning', 'Missing <meta charset> declaration'));
   }
 
   // viewport meta
@@ -217,9 +202,7 @@ function analyzeDocumentStructure(
   const h1s = doc.querySelectorAll('h1');
   if (h1s.length === 0) {
     score -= 15;
-    findings.push(
-      finding('document-structure', 'error', 'No <h1> element found')
-    );
+    findings.push(finding('document-structure', 'error', 'No <h1> element found'));
   } else if (h1s.length > 1) {
     score -= 15;
     findings.push(
@@ -257,9 +240,7 @@ function analyzeDocumentStructure(
   const title = doc.querySelector('title');
   if (!title || !title.textContent?.trim()) {
     score -= 10;
-    findings.push(
-      finding('document-structure', 'warning', 'Missing or empty <title> element')
-    );
+    findings.push(finding('document-structure', 'warning', 'Missing or empty <title> element'));
   }
 
   // Semantic elements
@@ -291,12 +272,12 @@ function analyzeDocumentStructure(
 // ---------------------------------------------------------------------------
 
 /** Known foreground/background pairs to check. */
-const CONTRAST_PAIRS: Array<{
+const CONTRAST_PAIRS: {
   fg: string;
   bg: string;
   element: string;
   largeText?: boolean;
-}> = [
+}[] = [
   { fg: '--color-text', bg: '--color-background', element: 'Primary text' },
   { fg: '--color-text-secondary', bg: '--color-background', element: 'Secondary text' },
   { fg: '--color-text-muted', bg: '--color-background', element: 'Muted text' },
@@ -433,7 +414,7 @@ function analyzeLinksNavigation(doc: DomDocument): A11yCategoryScore {
   const textToHrefs = new Map<string, Set<string>>();
 
   for (const link of links) {
-    const text = (link.textContent?.trim() ?? '');
+    const text = link.textContent?.trim() ?? '';
     const ariaLabel = link.getAttribute('aria-label')?.trim() ?? '';
     const href = link.getAttribute('href') ?? '';
 
@@ -530,7 +511,17 @@ function analyzeLinksNavigation(doc: DomDocument): A11yCategoryScore {
 // Category: Semantic HTML (weight 20)
 // ---------------------------------------------------------------------------
 
-const PRESENTATIONAL_TAGS = new Set(['b', 'i', 'font', 'center', 'big', 'small', 'strike', 'tt', 'u']);
+const PRESENTATIONAL_TAGS = new Set([
+  'b',
+  'i',
+  'font',
+  'center',
+  'big',
+  'small',
+  'strike',
+  'tt',
+  'u',
+]);
 
 function analyzeSemanticHtml(doc: DomDocument): A11yCategoryScore {
   const findings: A11yFinding[] = [];

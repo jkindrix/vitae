@@ -161,13 +161,17 @@ experience:
   describe('loadVariant', () => {
     it('loads and validates a valid variant YAML file', async () => {
       const filePath = join(testDir, 'valid-variant.yaml');
-      await writeFile(filePath, `
+      await writeFile(
+        filePath,
+        `
 meta:
   title: Frontend Engineer
 summary: A frontend-focused summary
 tags:
   - frontend
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       const variant = await loadVariant(filePath);
       expect(variant.meta?.title).toBe('Frontend Engineer');
@@ -177,7 +181,9 @@ tags:
 
     it('returns typed Variant with correct field values', async () => {
       const filePath = join(testDir, 'typed-variant.yaml');
-      await writeFile(filePath, `
+      await writeFile(
+        filePath,
+        `
 meta:
   title: Backend Dev
 layout:
@@ -190,7 +196,9 @@ skills:
     - Go
     - Python
   limit: 2
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       const variant = await loadVariant(filePath);
       expect(variant.meta?.title).toBe('Backend Dev');
@@ -205,20 +213,28 @@ skills:
 
     it('throws on invalid variant data (unknown fields rejected)', async () => {
       const filePath = join(testDir, 'bad-variant.yaml');
-      await writeFile(filePath, `
+      await writeFile(
+        filePath,
+        `
 unknownField: true
 anotherBadKey: 123
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       await expect(loadVariant(filePath)).rejects.toThrow();
     });
 
     it('throws on malformed YAML', async () => {
       const filePath = join(testDir, 'malformed-variant.yaml');
-      await writeFile(filePath, `
+      await writeFile(
+        filePath,
+        `
 meta:
   title: [unclosed
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       await expect(loadVariant(filePath)).rejects.toThrow();
     });
@@ -231,7 +247,9 @@ meta:
       await mkdir(extendsDir, { recursive: true });
 
       // Parent variant
-      await writeFile(join(extendsDir, 'parent.yaml'), `
+      await writeFile(
+        join(extendsDir, 'parent.yaml'),
+        `
 meta:
   title: Parent Title
   location: NYC
@@ -251,10 +269,14 @@ skills:
 experience:
   tags:
     - backend
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       // Child variant that extends parent
-      await writeFile(join(extendsDir, 'child.yaml'), `
+      await writeFile(
+        join(extendsDir, 'child.yaml'),
+        `
 extends: parent.yaml
 meta:
   title: Child Title
@@ -265,17 +287,25 @@ style:
 skills:
   tags:
     - frontend
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       // Child that only overrides some fields (inherits rest)
-      await writeFile(join(extendsDir, 'partial-child.yaml'), `
+      await writeFile(
+        join(extendsDir, 'partial-child.yaml'),
+        `
 extends: parent.yaml
 meta:
   title: Partial Child
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       // 3-level chain: grandparent -> mid -> leaf
-      await writeFile(join(extendsDir, 'grandparent.yaml'), `
+      await writeFile(
+        join(extendsDir, 'grandparent.yaml'),
+        `
 meta:
   title: GP Title
   location: London
@@ -285,9 +315,13 @@ style:
 skills:
   pick:
     - Databases
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
-      await writeFile(join(extendsDir, 'mid.yaml'), `
+      await writeFile(
+        join(extendsDir, 'mid.yaml'),
+        `
 extends: grandparent.yaml
 meta:
   title: Mid Title
@@ -297,27 +331,41 @@ style:
 experience:
   tags:
     - devops
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
-      await writeFile(join(extendsDir, 'leaf.yaml'), `
+      await writeFile(
+        join(extendsDir, 'leaf.yaml'),
+        `
 extends: mid.yaml
 style:
   "--leaf-var": "leaf-value"
   "--shared": "leaf"
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       // Circular extends
-      await writeFile(join(extendsDir, 'circular-a.yaml'), `
+      await writeFile(
+        join(extendsDir, 'circular-a.yaml'),
+        `
 extends: circular-b.yaml
 meta:
   title: A
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
-      await writeFile(join(extendsDir, 'circular-b.yaml'), `
+      await writeFile(
+        join(extendsDir, 'circular-b.yaml'),
+        `
 extends: circular-a.yaml
 meta:
   title: B
-`, 'utf-8');
+`,
+        'utf-8'
+      );
     });
 
     // --- Single-level extends ---
@@ -366,9 +414,9 @@ meta:
     it('style: shallow merge (child overrides parent, parent-only preserved)', async () => {
       const variant = await loadVariant(join(extendsDir, 'child.yaml'));
       expect(variant.style).toEqual({
-        '--color-accent': '#111',    // parent-only preserved
-        '--font-size': '16px',       // child overrides parent
-        '--color-bg': '#fff',        // child-only added
+        '--color-accent': '#111', // parent-only preserved
+        '--font-size': '16px', // child overrides parent
+        '--color-bg': '#fff', // child-only added
       });
     });
 
@@ -389,10 +437,10 @@ meta:
     it('style merges across 3 levels', async () => {
       const variant = await loadVariant(join(extendsDir, 'leaf.yaml'));
       expect(variant.style).toEqual({
-        '--gp-var': 'gp-value',   // grandparent-only
+        '--gp-var': 'gp-value', // grandparent-only
         '--mid-var': 'mid-value', // mid-only
         '--leaf-var': 'leaf-value', // leaf-only
-        '--shared': 'leaf',       // leaf overrides mid overrides grandparent
+        '--shared': 'leaf', // leaf overrides mid overrides grandparent
       });
     });
 
@@ -412,17 +460,22 @@ meta:
     // --- Error cases ---
 
     it('circular extends detected and throws', async () => {
-      await expect(loadVariant(join(extendsDir, 'circular-a.yaml')))
-        .rejects.toThrow('Circular variant extends detected');
+      await expect(loadVariant(join(extendsDir, 'circular-a.yaml'))).rejects.toThrow(
+        'Circular variant extends detected'
+      );
     });
 
     it('missing parent file throws', async () => {
       const filePath = join(extendsDir, 'missing-parent.yaml');
-      await writeFile(filePath, `
+      await writeFile(
+        filePath,
+        `
 extends: does-not-exist.yaml
 meta:
   title: Orphan
-`, 'utf-8');
+`,
+        'utf-8'
+      );
 
       await expect(loadVariant(filePath)).rejects.toThrow();
     });

@@ -57,9 +57,7 @@ describe('resumeToMarkdown', () => {
         end: '2018',
       },
     ],
-    certifications: [
-      { name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' },
-    ],
+    certifications: [{ name: 'AWS Solutions Architect', issuer: 'Amazon', date: '2023' }],
   };
 
   it('includes name as H1', () => {
@@ -149,9 +147,7 @@ describe('resumeToMarkdown', () => {
   it('omits sections without content', () => {
     const minimal: Resume = {
       meta: { name: 'Minimal' },
-      experience: [
-        { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-      ],
+      experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
     };
     const md = resumeToMarkdown(normalizeResume(minimal));
 
@@ -171,10 +167,7 @@ describe('resumeToMarkdown', () => {
             {
               title: 'Dev',
               start: '2020',
-              highlights: [
-                'Plain highlight',
-                { text: 'Tagged highlight', tags: ['backend'] },
-              ],
+              highlights: ['Plain highlight', { text: 'Tagged highlight', tags: ['backend'] }],
             },
           ],
         },
@@ -228,9 +221,7 @@ describe('resumeToMarkdown', () => {
   });
 
   it('respects custom section order', () => {
-    const md = resumeToMarkdown(
-      normalizeResume(fullResume, ['education', 'experience', 'skills'])
-    );
+    const md = resumeToMarkdown(normalizeResume(fullResume, ['education', 'experience', 'skills']));
 
     const eduIdx = md.indexOf('## Education');
     const expIdx = md.indexOf('## Experience');

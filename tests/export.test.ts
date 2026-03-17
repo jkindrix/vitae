@@ -47,11 +47,7 @@ describe('exportCommand with variant', () => {
       `meta:\n  name: Test User\n  title: Full Stack Developer\nexperience:\n  - company: Co\n    roles:\n      - title: Dev\n        start: "2020"\n`,
       'utf-8'
     );
-    await writeFile(
-      variantPath,
-      `meta:\n  title: Backend Engineer\n`,
-      'utf-8'
-    );
+    await writeFile(variantPath, `meta:\n  title: Backend Engineer\n`, 'utf-8');
 
     await exportCommand(inputPath, { variant: variantPath, format: 'json', output: outputPath });
 
@@ -122,18 +118,10 @@ describe('export to JSON Resume', () => {
         ],
       },
     ],
-    skills: [
-      { category: 'Languages', items: ['TypeScript', 'Go'] },
-    ],
-    education: [
-      { institution: 'MIT', degree: 'BS', field: 'CS', end: '2019' },
-    ],
-    projects: [
-      { name: 'Tool', url: 'https://github.com/tool', highlights: ['Popular'] },
-    ],
-    certifications: [
-      { name: 'AWS SA', issuer: 'Amazon', date: '2023' },
-    ],
+    skills: [{ category: 'Languages', items: ['TypeScript', 'Go'] }],
+    education: [{ institution: 'MIT', degree: 'BS', field: 'CS', end: '2019' }],
+    projects: [{ name: 'Tool', url: 'https://github.com/tool', highlights: ['Popular'] }],
+    certifications: [{ name: 'AWS SA', issuer: 'Amazon', date: '2023' }],
   };
 
   it('maps basics correctly', () => {
@@ -218,10 +206,7 @@ describe('export to JSON Resume', () => {
             {
               title: 'Dev',
               start: '2020',
-              highlights: [
-                'plain string',
-                { text: 'tagged item', tags: ['backend'] },
-              ],
+              highlights: ['plain string', { text: 'tagged item', tags: ['backend'] }],
             },
           ],
         },
@@ -236,9 +221,7 @@ describe('export to JSON Resume', () => {
   it('handles minimal resume', () => {
     const resume: Resume = {
       meta: { name: 'Minimal' },
-      experience: [
-        { company: 'Co', roles: [{ title: 'Dev', start: '2020' }] },
-      ],
+      experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
     };
 
     const result = toJsonResume(resume);

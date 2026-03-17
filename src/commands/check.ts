@@ -8,11 +8,7 @@ import { parse as parseYaml } from 'yaml';
 import chalk from 'chalk';
 import { loadResume, loadVariant, applyVariant, isCoverLetterFormat } from '../lib/index.js';
 import { analyzeResume } from '../lib/ats.js';
-import type {
-  AtsResult,
-  AtsFinding,
-  AtsKeywordAnalysis,
-} from '../types/ats.js';
+import type { AtsResult, AtsFinding, AtsKeywordAnalysis } from '../types/ats.js';
 
 export interface CheckCommandOptions {
   job?: string;
@@ -20,10 +16,7 @@ export interface CheckCommandOptions {
   json?: boolean;
 }
 
-export async function checkCommand(
-  inputPath: string,
-  options: CheckCommandOptions
-): Promise<void> {
+export async function checkCommand(inputPath: string, options: CheckCommandOptions): Promise<void> {
   const resolvedInput = resolve(inputPath);
 
   // Detect cover letters early — ATS analysis is not applicable
@@ -31,12 +24,8 @@ export async function checkCommand(
   const parsed = parseYaml(raw);
   if (isCoverLetterFormat(parsed)) {
     console.log('');
-    console.log(
-      chalk.blue('ATS analysis is not applicable to cover letters.')
-    );
-    console.log(
-      chalk.dim('Use `vitae validate` to check cover letter schema.')
-    );
+    console.log(chalk.blue('ATS analysis is not applicable to cover letters.'));
+    console.log(chalk.dim('Use `vitae validate` to check cover letter schema.'));
     return;
   }
 
@@ -167,8 +156,7 @@ function renderKeywordAnalysis(keywords: AtsKeywordAnalysis): void {
     console.log(chalk.green('    Matched keywords:'));
     for (const k of found.slice(0, 20)) {
       console.log(
-        chalk.green(`      \u2713 ${k.keyword}`) +
-          chalk.dim(` (${k.foundIn.join(', ')})`)
+        chalk.green(`      \u2713 ${k.keyword}`) + chalk.dim(` (${k.foundIn.join(', ')})`)
       );
     }
     if (found.length > 20) {

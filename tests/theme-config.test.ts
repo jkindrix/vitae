@@ -9,7 +9,7 @@ import {
   renderHtml,
   renderStandaloneHtml,
 } from '../src/lib/index.js';
-import type { NormalizedResume, ThemeConfig } from '../src/types/index.js';
+import type { NormalizedResume } from '../src/types/index.js';
 
 // ---------------------------------------------------------------------------
 // Factory: minimal normalized resume for rendering
@@ -241,9 +241,9 @@ describe('theme config', () => {
   describe('render with variant option', () => {
     it('throws for non-existent variant', async () => {
       const resume = minimalResume();
-      await expect(
-        renderHtml(resume, 'minimal', { variant: 'nonexistent' })
-      ).rejects.toThrow(/variant.*nonexistent.*not found/i);
+      await expect(renderHtml(resume, 'minimal', { variant: 'nonexistent' })).rejects.toThrow(
+        /variant.*nonexistent.*not found/i
+      );
     });
 
     it('renders compact variant for minimal theme', async () => {
@@ -281,22 +281,18 @@ describe('layout variants', () => {
     await writeFile(
       join(tempThemePath, 'template.html'),
       '<article class="default">{{ meta.name }}</article>',
-      'utf-8',
+      'utf-8'
     );
 
     // Variant template
     await writeFile(
       join(tempThemePath, 'template-compact.html'),
       '<article class="compact">{{ meta.name }} (compact)</article>',
-      'utf-8',
+      'utf-8'
     );
 
     // Style
-    await writeFile(
-      join(tempThemePath, 'style.css'),
-      ':root { --color-text: #000; }',
-      'utf-8',
-    );
+    await writeFile(join(tempThemePath, 'style.css'), ':root { --color-text: #000; }', 'utf-8');
 
     // Config with variant
     const config = `export default {
@@ -370,7 +366,7 @@ describe('layout variants', () => {
       await writeFile(
         join(tempThemePath, 'template.html'),
         '<div>{{ meta.name | upper }}</div>',
-        'utf-8',
+        'utf-8'
       );
 
       const resume = minimalResume();
@@ -388,7 +384,7 @@ describe('layout variants', () => {
       await writeFile(
         join(tempThemePath, 'template.html'),
         '<div>{{ appName }} - {{ meta.name }}</div>',
-        'utf-8',
+        'utf-8'
       );
 
       const resume = minimalResume();
@@ -406,7 +402,7 @@ describe('layout variants', () => {
       await writeFile(
         join(tempThemePath, 'template.html'),
         '<div>{{ meta.name }} ({{ nameLength }} chars)</div>',
-        'utf-8',
+        'utf-8'
       );
 
       const resume = minimalResume();
@@ -430,9 +426,9 @@ describe('layout variants', () => {
       await writeFile(join(tempThemePath, 'theme.config.js'), config, 'utf-8');
 
       const resume = minimalResume();
-      await expect(
-        renderHtml(resume, tempThemeName, { variant: 'evil' })
-      ).rejects.toThrow(/outside theme directory/i);
+      await expect(renderHtml(resume, tempThemeName, { variant: 'evil' })).rejects.toThrow(
+        /outside theme directory/i
+      );
     } finally {
       await teardownVariantTheme();
     }
@@ -449,9 +445,9 @@ describe('layout variants', () => {
       await writeFile(join(tempThemePath, 'theme.config.js'), config, 'utf-8');
 
       const resume = minimalResume();
-      await expect(
-        renderHtml(resume, tempThemeName, { variant: 'ghost' })
-      ).rejects.toThrow(/not found/i);
+      await expect(renderHtml(resume, tempThemeName, { variant: 'ghost' })).rejects.toThrow(
+        /not found/i
+      );
     } finally {
       await teardownVariantTheme();
     }
