@@ -9,6 +9,7 @@
  */
 
 import { parseDate } from './dates.js';
+import { getSynonyms } from './synonyms.js';
 import type { Resume, Highlight } from '../types/index.js';
 import type {
   AtsResult,
@@ -831,7 +832,17 @@ export function buildResumeTextBlocks(resume: Resume): Record<string, string> {
 export function textContainsKeyword(text: string, keyword: string): boolean {
   const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regex = new RegExp(`\\b${escaped}\\b`, 'i');
-  return regex.test(text);
+  if (regex.test(text)) return true;
+
+  // Check synonyms — if "JavaScript" is the keyword, also look for "JS", etc.
+  const synonyms = getSynonyms(keyword);
+  for (const syn of synonyms) {
+    const synEscaped = syn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const synRegex = new RegExp(`\\b${synEscaped}\\b`, 'i');
+    if (synRegex.test(text)) return true;
+  }
+
+  return false;
 }
 
 function analyzeKeywords(resume: Resume, jobDescription: string): AtsKeywordAnalysis {
