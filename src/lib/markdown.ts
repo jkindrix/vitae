@@ -87,7 +87,9 @@ function renderExperienceMarkdown(resume: NormalizedResume, lines: string[], loc
       const dateParts: string[] = [];
       if (role.start) {
         const endDate = role.end ?? presentKeyword(locale);
-        dateParts.push(`${formatDateShort(role.start, locale)} - ${formatDateShort(endDate, locale)}`);
+        dateParts.push(
+          `${formatDateShort(role.start, locale)} - ${formatDateShort(endDate, locale)}`
+        );
       }
       if (role.location) dateParts.push(role.location);
 
@@ -164,7 +166,11 @@ function renderEducationMarkdown(resume: NormalizedResume, lines: string[], loca
   }
 }
 
-function renderCertificationsMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
+function renderCertificationsMarkdown(
+  resume: NormalizedResume,
+  lines: string[],
+  locale: Locale
+): void {
   if (!resume.certifications || resume.certifications.length === 0) return;
   lines.push(`## ${sectionHeading(locale, 'certifications', 'Certifications')}`);
   lines.push('');
@@ -208,7 +214,11 @@ function renderAwardsMarkdown(resume: NormalizedResume, lines: string[], locale:
   lines.push('');
 }
 
-function renderPublicationsMarkdown(resume: NormalizedResume, lines: string[], locale: Locale): void {
+function renderPublicationsMarkdown(
+  resume: NormalizedResume,
+  lines: string[],
+  locale: Locale
+): void {
   if (!resume.publications || resume.publications.length === 0) return;
   lines.push(`## ${sectionHeading(locale, 'publications', 'Publications')}`);
   lines.push('');
@@ -278,7 +288,10 @@ function renderReferencesMarkdown(resume: NormalizedResume, lines: string[], loc
 // Section renderer map
 // ---------------------------------------------------------------------------
 
-const markdownSectionRenderers: Record<SectionName, (resume: NormalizedResume, lines: string[], locale: Locale) => void> = {
+const markdownSectionRenderers: Record<
+  SectionName,
+  (resume: NormalizedResume, lines: string[], locale: Locale) => void
+> = {
   summary: renderSummaryMarkdown,
   skills: renderSkillsMarkdown,
   experience: renderExperienceMarkdown,
