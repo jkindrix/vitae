@@ -11,7 +11,7 @@ import type { LlmConfig, LlmMessage, LlmProvider, LlmResponse } from '../types/s
 // ---------------------------------------------------------------------------
 
 const DEFAULT_MODELS: Record<LlmProvider, string> = {
-  anthropic: 'claude-sonnet-4-5-20250929',
+  anthropic: 'claude-sonnet-4-5',
   openai: 'gpt-4o-mini',
   ollama: 'llama3.2',
 };

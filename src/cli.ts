@@ -216,7 +216,7 @@ program
   )
   .option(
     '--model <name>',
-    'LLM model to use (defaults: gpt-4o-mini, claude-sonnet-4-5-20250929, llama3.2)'
+    'LLM model to use (defaults: gpt-4o-mini, claude-sonnet-4-5, llama3.2)'
   )
   .option('--api-key <key>', 'API key (prefer ANTHROPIC_API_KEY or OPENAI_API_KEY env vars)')
   .option('--base-url <url>', 'Custom API base URL (for Ollama or proxies)')
