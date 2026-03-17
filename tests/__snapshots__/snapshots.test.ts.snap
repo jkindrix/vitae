@@ -1,0 +1,3306 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Cover letter HTML snapshot > minimal theme matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera - Cover Letter</title>
+  <style>
+/* Minimal Theme for Vitae
+ * Clean, professional design with excellent typography
+ * Optimized for both screen and print
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors */
+  --color-text: #1a1a1a;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #6b6b6b;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-border: #e5e5e5;
+  --color-background: #ffffff;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 10.5pt;
+  --font-size-sm: 10pt;
+  --font-size-lg: 11pt;
+  --font-size-xl: 13pt;
+  --font-size-2xl: 14pt;
+  --font-size-3xl: 22pt;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.3;
+  --line-height-relaxed: 1.4;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+/* ============================================
+   Resume Container
+   ============================================ */
+.resume {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+/* ============================================
+   Header Section
+   ============================================ */
+.resume__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resume__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.resume__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__contact-item {
+  display: inline;
+}
+
+.resume__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.resume__links {
+  font-size: var(--font-size-sm);
+}
+
+.resume__link {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.resume__link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.resume__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--color-text);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   Summary
+   ============================================ */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Skills
+   ============================================ */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.resume__skill-label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__skill-items {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Experience
+   ============================================ */
+.resume__company {
+  margin-bottom: var(--space-md);
+}
+
+.resume__company:last-child {
+  margin-bottom: 0;
+}
+
+.resume__company-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__role:last-child {
+  margin-bottom: 0;
+}
+
+.resume__role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__role-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.resume__role-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+/* ============================================
+   Highlights (Bullet Points)
+   ============================================ */
+.resume__highlights {
+  list-style: disc;
+  padding-left: var(--space-lg);
+  margin: 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Projects
+   ============================================ */
+.resume__projects {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__project {
+  margin-bottom: 0;
+}
+
+.resume__project-header {
+  margin-bottom: var(--space-xs);
+}
+
+.resume__project-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__project-name:hover {
+  text-decoration: underline;
+}
+
+.resume__project-desc {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Education
+   ============================================ */
+.resume__education {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__education:last-child {
+  margin-bottom: 0;
+}
+
+.resume__education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__education-institution {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__education-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__education-degree {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Certifications
+   ============================================ */
+.resume__certifications {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resume__certifications li {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__certifications li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__cert-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__cert-issuer {
+  color: var(--color-text-secondary);
+}
+
+.resume__cert-date {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Languages
+   ============================================ */
+.resume__languages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.resume__languages li {
+  font-size: var(--font-size-base);
+}
+
+.resume__lang-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__lang-fluency {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   Awards
+   ============================================ */
+.resume__awards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__award-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__award-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__award-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__award-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Publications
+   ============================================ */
+.resume__publications {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__publication-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__publication-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__publication-name:hover {
+  text-decoration: underline;
+}
+
+.resume__publication-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__publication-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Volunteer
+   ============================================ */
+.resume__volunteer {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__volunteer:last-child {
+  margin-bottom: 0;
+}
+
+.resume__volunteer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__volunteer-org {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__volunteer-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__volunteer-position {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.resume__volunteer-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__references {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.resume__reference-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-border);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10.5pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resume__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .resume__project-name {
+    color: var(--color-text);
+  }
+
+  /* Prevent page breaks inside elements */
+  .resume__company,
+  .resume__role,
+  .resume__project,
+  .resume__education {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title {
+    page-break-after: avoid;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #f5f5f5;
+  }
+
+  .resume,
+  .cover-letter {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+}
+
+.cover-letter__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cover-letter__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.cover-letter__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.cover-letter__links {
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.cover-letter__link:hover {
+  text-decoration: underline;
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.cover-letter__date {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.cover-letter__recipient {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__greeting {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  margin-top: var(--space-lg);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-weight: 600;
+}
+
+@media print {
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+}
+
+</style>
+  
+</head>
+<body>
+<article class="cover-letter">
+  <header class="cover-letter__header">
+    <h1 class="cover-letter__name">Alex Rivera</h1>
+
+    <div class="cover-letter__contact">
+      <span class="cover-letter__contact-item">alex@example.com</span>
+      <span class="cover-letter__contact-item">(555) 867-5309</span>
+      <span class="cover-letter__contact-item">Austin, TX</span>
+    </div>
+
+  </header>
+
+  <p class="cover-letter__date">2025-01-15</p>
+
+  <div class="cover-letter__recipient">
+<p>Jamie Chen</p><p>VP of Engineering</p><p>TechVentures Inc.</p><p>100 Innovation Way, San Francisco, CA 94105</p>  </div>
+
+  <p class="cover-letter__subject"><strong>Re: Application for Senior Backend Engineer</strong></p>
+
+  <p class="cover-letter__greeting">Dear Jamie,</p>
+
+  <div class="cover-letter__body">
+    <p>I am writing to express my interest in the Senior Backend Engineer position at TechVentures Inc. With 8 years of experience building distributed systems and leading engineering teams, I am excited about the opportunity to contribute to your platform.</p>
+    <p>In my current role at Acme Corp, I architected an event-driven microservices platform handling 50,000 requests per second and led the migration from a monolithic architecture. This experience directly aligns with the challenges described in your job posting.</p>
+    <p>I would welcome the opportunity to discuss how my background in scalable systems and team leadership can contribute to TechVentures. Thank you for your consideration.</p>
+  </div>
+
+  <div class="cover-letter__closing">
+    <p>Best regards,</p>
+    <p class="cover-letter__signature">Alex Rivera</p>
+  </div>
+</article>
+
+</body>
+</html>"
+`;
+
+exports[`HTML snapshots > minimal theme matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera - Resume</title>
+  <style>
+/* Minimal Theme for Vitae
+ * Clean, professional design with excellent typography
+ * Optimized for both screen and print
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors */
+  --color-text: #1a1a1a;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #6b6b6b;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-border: #e5e5e5;
+  --color-background: #ffffff;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 10.5pt;
+  --font-size-sm: 10pt;
+  --font-size-lg: 11pt;
+  --font-size-xl: 13pt;
+  --font-size-2xl: 14pt;
+  --font-size-3xl: 22pt;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.3;
+  --line-height-relaxed: 1.4;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+/* ============================================
+   Resume Container
+   ============================================ */
+.resume {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+/* ============================================
+   Header Section
+   ============================================ */
+.resume__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resume__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.resume__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__contact-item {
+  display: inline;
+}
+
+.resume__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.resume__links {
+  font-size: var(--font-size-sm);
+}
+
+.resume__link {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.resume__link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.resume__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--color-text);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   Summary
+   ============================================ */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Skills
+   ============================================ */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.resume__skill-label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__skill-items {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Experience
+   ============================================ */
+.resume__company {
+  margin-bottom: var(--space-md);
+}
+
+.resume__company:last-child {
+  margin-bottom: 0;
+}
+
+.resume__company-name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__role:last-child {
+  margin-bottom: 0;
+}
+
+.resume__role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__role-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.resume__role-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+/* ============================================
+   Highlights (Bullet Points)
+   ============================================ */
+.resume__highlights {
+  list-style: disc;
+  padding-left: var(--space-lg);
+  margin: 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Projects
+   ============================================ */
+.resume__projects {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__project {
+  margin-bottom: 0;
+}
+
+.resume__project-header {
+  margin-bottom: var(--space-xs);
+}
+
+.resume__project-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__project-name:hover {
+  text-decoration: underline;
+}
+
+.resume__project-desc {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Education
+   ============================================ */
+.resume__education {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__education:last-child {
+  margin-bottom: 0;
+}
+
+.resume__education-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__education-institution {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__education-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__education-degree {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Certifications
+   ============================================ */
+.resume__certifications {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resume__certifications li {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__certifications li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__cert-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__cert-issuer {
+  color: var(--color-text-secondary);
+}
+
+.resume__cert-date {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Languages
+   ============================================ */
+.resume__languages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.resume__languages li {
+  font-size: var(--font-size-base);
+}
+
+.resume__lang-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__lang-fluency {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   Awards
+   ============================================ */
+.resume__awards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__award-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__award-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__award-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__award-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Publications
+   ============================================ */
+.resume__publications {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__publication-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__publication-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__publication-name:hover {
+  text-decoration: underline;
+}
+
+.resume__publication-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__publication-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Volunteer
+   ============================================ */
+.resume__volunteer {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__volunteer:last-child {
+  margin-bottom: 0;
+}
+
+.resume__volunteer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__volunteer-org {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__volunteer-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__volunteer-position {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.resume__volunteer-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__references {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.resume__reference-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-border);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10.5pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resume__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .resume__project-name {
+    color: var(--color-text);
+  }
+
+  /* Prevent page breaks inside elements */
+  .resume__company,
+  .resume__role,
+  .resume__project,
+  .resume__education {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title {
+    page-break-after: avoid;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #f5f5f5;
+  }
+
+  .resume,
+  .cover-letter {
+    background: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+}
+
+.cover-letter__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cover-letter__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.cover-letter__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.cover-letter__links {
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.cover-letter__link:hover {
+  text-decoration: underline;
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.cover-letter__date {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.cover-letter__recipient {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__greeting {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  margin-top: var(--space-lg);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-weight: 600;
+}
+
+@media print {
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+}
+
+</style>
+  
+  
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<article class="resume">
+  <header class="resume__header">
+    <h1 class="resume__name">Alex Rivera</h1>
+    <p class="resume__title">Senior Software Engineer</p>
+
+    <div class="resume__contact">
+      <span class="resume__contact-item">alex@example.com</span>
+      <span class="resume__contact-item">(555) 867-5309</span>
+      <span class="resume__contact-item">Austin, TX</span>
+    </div>
+
+    <div class="resume__links">
+      <a href="https://github.com/arivera" class="resume__link" target="_blank" rel="noopener">
+        GitHub
+      </a>
+      <a href="https://linkedin.com/in/arivera" class="resume__link" target="_blank" rel="noopener">
+        LinkedIn
+      </a>
+    </div>
+  </header>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Summary</h2>
+  <p class="resume__summary">Full-stack engineer with 8 years of experience building scalable web applications and distributed systems.</p>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Skills</h2>
+  <div class="resume__skills">
+    <div class="resume__skill-category">
+      <span class="resume__skill-label">Languages:</span>
+      <span class="resume__skill-items">TypeScript, Python, Go</span>
+    </div>
+    <div class="resume__skill-category">
+      <span class="resume__skill-label">Frameworks:</span>
+      <span class="resume__skill-items">React, Node.js, FastAPI</span>
+    </div>
+    <div class="resume__skill-category">
+      <span class="resume__skill-label">Infrastructure:</span>
+      <span class="resume__skill-items">AWS, Docker, Kubernetes</span>
+    </div>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Experience</h2>
+  <div class="resume__company">
+    <h3 class="resume__company-name">Acme Corp</h3>
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">Senior Software Engineer</span>
+        <span class="resume__role-meta">
+Mar 2021 – Present | Austin, TX        </span>
+      </div>
+      <ul class="resume__highlights">
+        <li>Architected event-driven microservices handling 50K requests per second</li>
+        <li>Led migration from monolith to distributed system, reducing deploy time by 80%</li>
+        <li>Mentored team of 4 junior engineers through weekly code reviews</li>
+      </ul>
+    </div>
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">Software Engineer</span>
+        <span class="resume__role-meta">
+Jan 2019 – Mar 2021        </span>
+      </div>
+      <ul class="resume__highlights">
+        <li>Built real-time analytics dashboard used by 200+ internal users</li>
+        <li>Reduced API response times by 60% through query optimization</li>
+      </ul>
+    </div>
+  </div>
+  <div class="resume__company">
+    <h3 class="resume__company-name">StartupCo</h3>
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">Full Stack Developer</span>
+        <span class="resume__role-meta">
+Jun 2016 – Dec 2018 | Remote        </span>
+      </div>
+      <ul class="resume__highlights">
+        <li>Developed customer-facing portal from scratch serving 10K daily users</li>
+        <li>Implemented CI/CD pipeline reducing release cycle from weeks to hours</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Projects</h2>
+  <div class="resume__projects">
+    <div class="resume__project">
+      <div class="resume__project-header">
+        <a href="https://github.com/arivera/fastcache" class="resume__project-name" target="_blank" rel="noopener">fastcache</a>
+        <span class="resume__project-desc">— High-performance in-memory caching library for Node.js</span>
+      </div>
+      <ul class="resume__highlights">
+        <li>5K+ npm downloads per week</li>
+        <li>Sub-millisecond read latency</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Education</h2>
+  <div class="resume__education">
+    <div class="resume__education-header">
+      <span class="resume__education-institution">University of Texas at Austin</span>
+      <span class="resume__education-dates">
+2012 – 2016      </span>
+    </div>
+    <p class="resume__education-degree">
+      Bachelor of Science in Computer Science    </p>
+    <ul class="resume__highlights">
+      <li>Summa Cum Laude</li>
+      <li>Teaching Assistant for Systems Programming</li>
+    </ul>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Certifications</h2>
+  <ul class="resume__certifications">
+    <li>
+      <span class="resume__cert-name">AWS Solutions Architect - Professional</span>
+<span class="resume__cert-issuer"> — Amazon Web Services</span><span class="resume__cert-date"> (2023)</span>    </li>
+  </ul>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Languages</h2>
+  <ul class="resume__languages">
+    <li>
+      <span class="resume__lang-name">English</span>
+<span class="resume__lang-fluency"> — Native</span>    </li>
+    <li>
+      <span class="resume__lang-name">Spanish</span>
+<span class="resume__lang-fluency"> — Conversational</span>    </li>
+  </ul>
+</section>
+
+</article>
+
+</body>
+</html>"
+`;
+
+exports[`HTML snapshots > modern theme matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera - Resume</title>
+  <style>
+/* Modern Theme for Vitae
+ * Contemporary two-column layout with accent colors
+ * Perfect for tech, creative, and startup industries
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors - Modern palette with accent */
+  --color-text: #2d3748;
+  --color-text-secondary: #4a5568;
+  --color-text-muted: #718096;
+  --color-text-light: #a0aec0;
+  --color-accent: #4f46e5;
+  --color-accent-light: #818cf8;
+  --color-accent-dark: #3730a3;
+  --color-sidebar-bg: #1e293b;
+  --color-sidebar-text: #f1f5f9;
+  --color-sidebar-muted: #94a3b8;
+  --color-background: #ffffff;
+  --color-border: #e2e8f0;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  --font-size-base: 10.5pt;
+  --font-size-sm: 9.5pt;
+  --font-size-lg: 11.5pt;
+  --font-size-xl: 13pt;
+  --font-size-2xl: 16pt;
+  --font-size-3xl: 18pt;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.3;
+  --line-height-relaxed: 1.4;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Layout */
+  --sidebar-width: 2.5in;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Resume Container - Two Column Layout
+   ============================================ */
+.resume {
+  display: flex;
+  max-width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto;
+}
+
+/* ============================================
+   Sidebar
+   ============================================ */
+.resume__sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--color-sidebar-bg);
+  color: var(--color-sidebar-text);
+  padding: var(--space-lg);
+}
+
+.resume__header {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resume__name {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: var(--space-xs);
+  line-height: var(--line-height-tight);
+}
+
+.resume__title {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.resume__sidebar-section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__sidebar-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-sm);
+}
+
+/* Contact List */
+.resume__contact-list {
+  list-style: none;
+}
+
+.resume__contact-item {
+  font-size: var(--font-size-sm);
+  color: var(--color-sidebar-muted);
+  margin-bottom: var(--space-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  word-break: break-word;
+}
+
+.resume__contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.resume__contact-icon {
+  font-size: var(--font-size-sm);
+  color: var(--color-accent-light);
+  width: 1em;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.resume__contact-item a {
+  color: var(--color-sidebar-text);
+}
+
+.resume__contact-item a:hover {
+  color: var(--color-accent-light);
+}
+
+/* Skills in Sidebar */
+.resume__skill-group {
+  margin-bottom: var(--space-md);
+}
+
+.resume__skill-group:last-child {
+  margin-bottom: 0;
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-sidebar-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__skill-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__skill-list li {
+  font-size: var(--font-size-sm);
+  color: var(--color-sidebar-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+}
+
+/* Certifications in Sidebar */
+.resume__cert-list {
+  list-style: none;
+}
+
+.resume__cert-list li {
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.resume__cert-list li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__cert-name {
+  font-weight: 600;
+  color: var(--color-sidebar-text);
+}
+
+.resume__cert-issuer {
+  color: var(--color-sidebar-muted);
+  font-size: var(--font-size-sm);
+}
+
+.resume__cert-date {
+  color: var(--color-sidebar-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Main Content
+   ============================================ */
+.resume__main {
+  flex: 1;
+  padding: var(--space-lg);
+}
+
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-accent-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+/* Summary */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* Entry (Experience, Education, Projects) */
+.resume__entry {
+  margin-bottom: var(--space-md);
+}
+
+.resume__entry:last-child {
+  margin-bottom: 0;
+}
+
+.resume__entry--compact {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__entry-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.resume__entry-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+a.resume__entry-title {
+  color: var(--color-accent);
+}
+
+.resume__entry-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__entry-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* Company and Role */
+.resume__company-name {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role {
+  margin-bottom: var(--space-sm);
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--color-border);
+}
+
+.resume__role:last-child {
+  margin-bottom: 0;
+}
+
+.resume__role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent-dark);
+}
+
+.resume__role-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__role-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+/* Highlights */
+.resume__highlights {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+  padding-left: var(--space-md);
+  position: relative;
+}
+
+.resume__highlights li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  background: var(--color-accent);
+  border-radius: 50%;
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Languages in Sidebar
+   ============================================ */
+.resume__lang-list {
+  list-style: none;
+}
+
+.resume__lang-list li {
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+
+.resume__lang-list li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__lang-name {
+  font-weight: 600;
+  color: var(--color-sidebar-text);
+}
+
+.resume__lang-fluency {
+  color: var(--color-sidebar-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Entry Summary
+   ============================================ */
+.resume__entry-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__reference {
+  margin-bottom: var(--space-md);
+}
+
+.resume__reference:last-child {
+  margin-bottom: 0;
+}
+
+.resume__reference-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-accent);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10.5pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    margin: 0;
+    min-height: auto;
+  }
+
+  .resume__sidebar {
+    background: var(--color-sidebar-bg) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  /* Prevent page breaks inside elements */
+  .resume__entry,
+  .resume__role {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title,
+  .resume__company-name {
+    page-break-after: avoid;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #e2e8f0;
+  }
+
+  .resume,
+  .cover-letter {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-xl);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+.cover-letter__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.cover-letter__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.cover-letter__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " \\00b7 ";
+  color: var(--color-text-light);
+}
+
+.cover-letter__links {
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.cover-letter__link:hover {
+  color: var(--color-accent-light);
+  text-decoration: underline;
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: " \\00b7 ";
+  color: var(--color-text-light);
+}
+
+.cover-letter__date {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.cover-letter__recipient {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  margin-bottom: var(--space-md);
+  color: var(--color-accent-dark);
+}
+
+.cover-letter__greeting {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  margin-top: var(--space-lg);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+@media print {
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+}
+
+</style>
+  
+  
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<article class="resume">
+  <aside class="resume__sidebar">
+    <header class="resume__header">
+      <h1 class="resume__name">Alex Rivera</h1>
+      <p class="resume__title">Senior Software Engineer</p>
+    </header>
+
+    <section class="resume__sidebar-section">
+      <h2 class="resume__sidebar-title">Contact</h2>
+      <ul class="resume__contact-list">
+        <li class="resume__contact-item">
+          <span class="resume__contact-icon">&#9993;</span>
+          <a href="mailto:alex@example.com">alex@example.com</a>
+        </li>
+        <li class="resume__contact-item">
+          <span class="resume__contact-icon">&#9742;</span>
+          (555) 867-5309
+        </li>
+        <li class="resume__contact-item">
+          <span class="resume__contact-icon">&#9906;</span>
+          Austin, TX
+        </li>
+        <li class="resume__contact-item">
+          <span class="resume__contact-icon">&#9741;</span>
+          <a href="https://github.com/arivera" target="_blank" rel="noopener">GitHub</a>
+        </li>
+        <li class="resume__contact-item">
+          <span class="resume__contact-icon">&#9741;</span>
+          <a href="https://linkedin.com/in/arivera" target="_blank" rel="noopener">LinkedIn</a>
+        </li>
+      </ul>
+    </section>
+
+<section class="resume__sidebar-section">
+  <h2 class="resume__sidebar-title">Skills</h2>
+  <div class="resume__skill-group">
+    <h3 class="resume__skill-category">Languages</h3>
+    <ul class="resume__skill-list">
+      <li>TypeScript</li>
+      <li>Python</li>
+      <li>Go</li>
+    </ul>
+  </div>
+  <div class="resume__skill-group">
+    <h3 class="resume__skill-category">Frameworks</h3>
+    <ul class="resume__skill-list">
+      <li>React</li>
+      <li>Node.js</li>
+      <li>FastAPI</li>
+    </ul>
+  </div>
+  <div class="resume__skill-group">
+    <h3 class="resume__skill-category">Infrastructure</h3>
+    <ul class="resume__skill-list">
+      <li>AWS</li>
+      <li>Docker</li>
+      <li>Kubernetes</li>
+    </ul>
+  </div>
+</section>
+
+<section class="resume__sidebar-section">
+  <h2 class="resume__sidebar-title">Certifications</h2>
+  <ul class="resume__cert-list">
+    <li>
+      <span class="resume__cert-name">AWS Solutions Architect - Professional</span>
+<br><span class="resume__cert-issuer">Amazon Web Services</span><br><span class="resume__cert-date">2023</span>    </li>
+  </ul>
+</section>
+
+<section class="resume__sidebar-section">
+  <h2 class="resume__sidebar-title">Languages</h2>
+  <ul class="resume__lang-list">
+    <li>
+      <span class="resume__lang-name">English</span>
+<br><span class="resume__lang-fluency">Native</span>    </li>
+    <li>
+      <span class="resume__lang-name">Spanish</span>
+<br><span class="resume__lang-fluency">Conversational</span>    </li>
+  </ul>
+</section>
+
+  </aside>
+
+  <main class="resume__main">
+<section class="resume__section">
+  <h2 class="resume__section-title">Profile</h2>
+  <p class="resume__summary">Full-stack engineer with 8 years of experience building scalable web applications and distributed systems.</p>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Experience</h2>
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <h3 class="resume__company-name">Acme Corp</h3>
+    </div>
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">Senior Software Engineer</span>
+        <span class="resume__role-meta">
+Mar 2021 - Present | Austin, TX        </span>
+      </div>
+      <ul class="resume__highlights">
+        <li>Architected event-driven microservices handling 50K requests per second</li>
+        <li>Led migration from monolith to distributed system, reducing deploy time by 80%</li>
+        <li>Mentored team of 4 junior engineers through weekly code reviews</li>
+      </ul>
+    </div>
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">Software Engineer</span>
+        <span class="resume__role-meta">
+Jan 2019 - Mar 2021        </span>
+      </div>
+      <ul class="resume__highlights">
+        <li>Built real-time analytics dashboard used by 200+ internal users</li>
+        <li>Reduced API response times by 60% through query optimization</li>
+      </ul>
+    </div>
+  </div>
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <h3 class="resume__company-name">StartupCo</h3>
+    </div>
+    <div class="resume__role">
+      <div class="resume__role-header">
+        <span class="resume__role-title">Full Stack Developer</span>
+        <span class="resume__role-meta">
+Jun 2016 - Dec 2018 | Remote        </span>
+      </div>
+      <ul class="resume__highlights">
+        <li>Developed customer-facing portal from scratch serving 10K daily users</li>
+        <li>Implemented CI/CD pipeline reducing release cycle from weeks to hours</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Projects</h2>
+  <div class="resume__entry resume__entry--compact">
+    <div class="resume__entry-header">
+      <div class="resume__entry-main">
+        <a href="https://github.com/arivera/fastcache" class="resume__entry-title" target="_blank" rel="noopener">fastcache</a>
+        <span class="resume__entry-subtitle">High-performance in-memory caching library for Node.js</span>
+      </div>
+    </div>
+    <ul class="resume__highlights">
+      <li>5K+ npm downloads per week</li>
+      <li>Sub-millisecond read latency</li>
+    </ul>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Education</h2>
+  <div class="resume__entry resume__entry--compact">
+    <div class="resume__entry-header">
+      <div class="resume__entry-main">
+        <span class="resume__entry-title">University of Texas at Austin</span>
+        <span class="resume__entry-subtitle">
+          Bachelor of Science in Computer Science        </span>
+      </div>
+      <span class="resume__entry-dates">
+2012 - 2016      </span>
+    </div>
+    <ul class="resume__highlights">
+      <li>Summa Cum Laude</li>
+      <li>Teaching Assistant for Systems Programming</li>
+    </ul>
+  </div>
+</section>
+
+  </main>
+</article>
+
+</body>
+</html>"
+`;
+
+exports[`HTML snapshots > professional theme matches snapshot 1`] = `
+"<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera - Resume</title>
+  <style>
+/* Professional Theme for Vitae
+ * Classic, formal resume design with serif typography
+ * Ideal for traditional industries: law, finance, academia
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors - Conservative palette */
+  --color-text: #222222;
+  --color-text-secondary: #444444;
+  --color-text-muted: #666666;
+  --color-accent: #1a365d;
+  --color-border: #333333;
+  --color-border-light: #cccccc;
+  --color-background: #ffffff;
+
+  /* Typography - Serif for professional feel */
+  --font-serif: Georgia, "Times New Roman", Times, serif;
+  --font-sans: "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 10.5pt;
+  --font-size-sm: 10pt;
+  --font-size-lg: 11.5pt;
+  --font-size-xl: 13pt;
+  --font-size-2xl: 14pt;
+  --font-size-3xl: 20pt;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.3;
+  --line-height-relaxed: 1.4;
+
+  /* Spacing */
+  --space-xs: 0.2rem;
+  --space-sm: 0.4rem;
+  --space-md: 0.75rem;
+  --space-lg: 1.25rem;
+  --space-xl: 2rem;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Resume Container
+   ============================================ */
+.resume {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+/* ============================================
+   Header Section
+   ============================================ */
+.resume__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.resume__name {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__title {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.resume__contact {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.resume__contact-item {
+  white-space: nowrap;
+}
+
+.resume__contact-item:not(:last-child)::after {
+  content: "|";
+  margin-left: var(--space-sm);
+  color: var(--color-border-light);
+}
+
+.resume__contact-item a {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   Summary
+   ============================================ */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* ============================================
+   Entry (Experience, Education, Projects)
+   ============================================ */
+.resume__entry {
+  margin-bottom: var(--space-md);
+}
+
+.resume__entry:last-child {
+  margin-bottom: 0;
+}
+
+.resume__entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__entry-primary {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.resume__entry-secondary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.resume__entry-title {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+a.resume__entry-title {
+  color: var(--color-accent);
+}
+
+.resume__entry-org {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.resume__entry-desc {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-left: var(--space-sm);
+}
+
+.resume__entry-dates {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__entry-location {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__entry-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  margin: var(--space-xs) 0;
+  text-align: justify;
+}
+
+/* ============================================
+   Highlights (Bullet Points)
+   ============================================ */
+.resume__highlights {
+  list-style: disc;
+  padding-left: var(--space-lg);
+  margin: var(--space-xs) 0 0 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+  text-align: justify;
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Skills
+   ============================================ */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.resume__skill-label {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__skill-items {
+  font-family: var(--font-serif);
+  color: var(--color-text);
+}
+
+/* ============================================
+   Certifications
+   ============================================ */
+.resume__certifications {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resume__certifications li {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xs);
+  color: var(--color-text);
+}
+
+.resume__certifications li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__cert-name {
+  font-weight: 700;
+}
+
+/* ============================================
+   Languages
+   ============================================ */
+.resume__languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.resume__language {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+}
+
+/* ============================================
+   Entry Summary (shared for awards, publications, etc.)
+   ============================================ */
+.resume__entry-summary {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  margin-top: var(--space-xs);
+  text-align: justify;
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__reference {
+  margin-bottom: var(--space-md);
+}
+
+.resume__reference:last-child {
+  margin-bottom: 0;
+}
+
+.resume__reference-name {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-border-light);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10.5pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .resume__contact-item a {
+    color: var(--color-text-secondary);
+  }
+
+  /* Prevent page breaks inside elements */
+  .resume__entry {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title {
+    page-break-after: avoid;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #f0f0f0;
+  }
+
+  .resume,
+  .cover-letter {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  font-family: var(--font-serif);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+}
+
+.cover-letter__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.cover-letter__name {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.cover-letter__contact {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border-light);
+}
+
+.cover-letter__links {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.cover-letter__link:hover {
+  text-decoration: underline;
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border-light);
+}
+
+.cover-letter__date {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.cover-letter__recipient {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  margin-bottom: var(--space-md);
+  color: var(--color-accent);
+}
+
+.cover-letter__greeting {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  margin-top: var(--space-lg);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+@media print {
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+}
+
+</style>
+  
+  
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<article class="resume">
+  <header class="resume__header">
+    <h1 class="resume__name">Alex Rivera</h1>
+    <p class="resume__title">Senior Software Engineer</p>
+
+    <div class="resume__contact">
+      <span class="resume__contact-item">Austin, TX</span>
+      <span class="resume__contact-item">(555) 867-5309</span>
+      <span class="resume__contact-item">alex@example.com</span>
+      <span class="resume__contact-item">
+        <a href="https://github.com/arivera" target="_blank" rel="noopener">GitHub</a>
+      </span>
+      <span class="resume__contact-item">
+        <a href="https://linkedin.com/in/arivera" target="_blank" rel="noopener">LinkedIn</a>
+      </span>
+    </div>
+  </header>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Professional Summary</h2>
+  <p class="resume__summary">Full-stack engineer with 8 years of experience building scalable web applications and distributed systems.</p>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Skills</h2>
+  <div class="resume__skills">
+    <div class="resume__skill-category">
+      <span class="resume__skill-label">Languages:</span>
+      <span class="resume__skill-items">TypeScript, Python, Go</span>
+    </div>
+    <div class="resume__skill-category">
+      <span class="resume__skill-label">Frameworks:</span>
+      <span class="resume__skill-items">React, Node.js, FastAPI</span>
+    </div>
+    <div class="resume__skill-category">
+      <span class="resume__skill-label">Infrastructure:</span>
+      <span class="resume__skill-items">AWS, Docker, Kubernetes</span>
+    </div>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Professional Experience</h2>
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <div class="resume__entry-primary">
+        <span class="resume__entry-title">Senior Software Engineer</span>
+        <span class="resume__entry-org">Acme Corp</span>
+      </div>
+      <div class="resume__entry-secondary">
+        <span class="resume__entry-dates">
+Mar 2021 - Present        </span>
+        <span class="resume__entry-location">Austin, TX</span>
+      </div>
+    </div>
+    <ul class="resume__highlights">
+      <li>Architected event-driven microservices handling 50K requests per second</li>
+      <li>Led migration from monolith to distributed system, reducing deploy time by 80%</li>
+      <li>Mentored team of 4 junior engineers through weekly code reviews</li>
+    </ul>
+    <div class="resume__entry-header">
+      <div class="resume__entry-primary">
+        <span class="resume__entry-title">Software Engineer</span>
+        <span class="resume__entry-org">Acme Corp</span>
+      </div>
+      <div class="resume__entry-secondary">
+        <span class="resume__entry-dates">
+Jan 2019 - Mar 2021        </span>
+      </div>
+    </div>
+    <ul class="resume__highlights">
+      <li>Built real-time analytics dashboard used by 200+ internal users</li>
+      <li>Reduced API response times by 60% through query optimization</li>
+    </ul>
+  </div>
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <div class="resume__entry-primary">
+        <span class="resume__entry-title">Full Stack Developer</span>
+        <span class="resume__entry-org">StartupCo</span>
+      </div>
+      <div class="resume__entry-secondary">
+        <span class="resume__entry-dates">
+Jun 2016 - Dec 2018        </span>
+        <span class="resume__entry-location">Remote</span>
+      </div>
+    </div>
+    <ul class="resume__highlights">
+      <li>Developed customer-facing portal from scratch serving 10K daily users</li>
+      <li>Implemented CI/CD pipeline reducing release cycle from weeks to hours</li>
+    </ul>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Projects</h2>
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <div class="resume__entry-primary">
+        <a href="https://github.com/arivera/fastcache" class="resume__entry-title" target="_blank" rel="noopener">fastcache</a>
+        <span class="resume__entry-desc">High-performance in-memory caching library for Node.js</span>
+      </div>
+    </div>
+    <ul class="resume__highlights">
+      <li>5K+ npm downloads per week</li>
+      <li>Sub-millisecond read latency</li>
+    </ul>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Education</h2>
+  <div class="resume__entry">
+    <div class="resume__entry-header">
+      <div class="resume__entry-primary">
+        <span class="resume__entry-title">
+          Bachelor of Science in Computer Science        </span>
+        <span class="resume__entry-org">University of Texas at Austin</span>
+      </div>
+      <div class="resume__entry-secondary">
+        <span class="resume__entry-dates">
+2012 - 2016        </span>
+      </div>
+    </div>
+    <ul class="resume__highlights">
+      <li>Summa Cum Laude</li>
+      <li>Teaching Assistant for Systems Programming</li>
+    </ul>
+  </div>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Certifications</h2>
+  <ul class="resume__certifications">
+    <li>
+      <span class="resume__cert-name">AWS Solutions Architect - Professional</span>, Amazon Web Services (2023)    </li>
+  </ul>
+</section>
+
+<section class="resume__section">
+  <h2 class="resume__section-title">Languages</h2>
+  <div class="resume__languages">
+    <span class="resume__language">
+      English (Native)    </span>
+    <span class="resume__language">
+      Spanish (Conversational)    </span>
+  </div>
+</section>
+
+</article>
+
+</body>
+</html>"
+`;
+
+exports[`Markdown snapshot > resume markdown matches snapshot 1`] = `
+"# Alex Rivera
+
+**Senior Software Engineer**
+
+alex@example.com | (555) 867-5309 | Austin, TX
+
+[GitHub](https://github.com/arivera) | [LinkedIn](https://linkedin.com/in/arivera)
+
+---
+
+## Summary
+
+Full-stack engineer with 8 years of experience building scalable web applications and distributed systems.
+
+## Skills
+
+**Languages:** TypeScript, Python, Go
+
+**Frameworks:** React, Node.js, FastAPI
+
+**Infrastructure:** AWS, Docker, Kubernetes
+
+## Experience
+
+### Acme Corp
+
+**Senior Software Engineer**
+Mar 2021 - Present | Austin, TX
+
+- Architected event-driven microservices handling 50K requests per second
+- Led migration from monolith to distributed system, reducing deploy time by 80%
+- Mentored team of 4 junior engineers through weekly code reviews
+
+### Acme Corp
+
+**Software Engineer**
+Jan 2019 - Mar 2021
+
+- Built real-time analytics dashboard used by 200+ internal users
+- Reduced API response times by 60% through query optimization
+
+### StartupCo
+
+**Full Stack Developer**
+Jun 2016 - Dec 2018 | Remote
+
+- Developed customer-facing portal from scratch serving 10K daily users
+- Implemented CI/CD pipeline reducing release cycle from weeks to hours
+
+## Projects
+
+### [fastcache](https://github.com/arivera/fastcache)
+
+High-performance in-memory caching library for Node.js
+
+- 5K+ npm downloads per week
+- Sub-millisecond read latency
+
+## Education
+
+### University of Texas at Austin
+
+**Bachelor of Science in Computer Science**
+2012 - 2016
+
+- Summa Cum Laude
+- Teaching Assistant for Systems Programming
+
+## Certifications
+
+- AWS Solutions Architect - Professional (Amazon Web Services) - 2023
+
+## Languages
+
+- English (Native)
+- Spanish (Conversational)
+"
+`;
