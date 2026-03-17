@@ -27,3 +27,7 @@ npm-debug.log*
 
 # Personal files (resumes, variants, job descriptions)
 personal/
+
+# Temporary files
+.tmp/
+
