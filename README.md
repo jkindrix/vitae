@@ -120,6 +120,9 @@ vitae build cover-letter.yaml                     # Build a cover letter (auto-d
 | `-w, --watch` | Watch for changes and rebuild automatically | — |
 | `-l, --layout <name>` | Theme layout variant to use | — |
 | `-d, --debug` | Debug mode with verbose logging and intermediate files | — |
+| `--pages <count>` | Target page count for PDF | `1` |
+| `--fit` | Auto-scale PDF to fit target page count | — |
+| `--no-page-warn` | Suppress page count warnings | — |
 
 ### `vitae preview <input>`
 
