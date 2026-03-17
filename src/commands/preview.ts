@@ -15,7 +15,7 @@ import {
   loadTheme,
 } from '../lib/index.js';
 import type { RenderOptions } from '../lib/index.js';
-import { readStyles } from '../lib/themes.js';
+import { readStyles, loadThemeConfig } from '../lib/themes.js';
 import { parseCssCustomProperties } from '../lib/css-properties.js';
 import { generateConfiguratorPanel } from '../lib/configurator.js';
 import type { ConfiguratorTheme } from '../lib/configurator.js';
@@ -68,7 +68,13 @@ export async function previewCommand(
       const theme = await loadTheme(t.name);
       const css = await readStyles(theme);
       const properties = css ? parseCssCustomProperties(css) : {};
-      configuratorThemes.push({ name: t.name, properties });
+      const config = await loadThemeConfig(theme);
+      configuratorThemes.push({
+        name: t.name,
+        properties,
+        description: config?.metadata?.description,
+        tags: config?.metadata?.tags,
+      });
     }
   } else {
     console.log(chalk.blue('Starting preview server...'));
@@ -164,6 +170,7 @@ export async function previewCommand(
         const overrides = JSON.parse(body) as {
           colors?: Record<string, string>;
           fonts?: Record<string, string>;
+          custom?: Record<string, string>;
         };
         await writeThemeOverrides(resolvedInput, overrides);
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -349,7 +356,7 @@ function readRequestBody(req: IncomingMessage): Promise<string> {
  */
 async function writeThemeOverrides(
   filePath: string,
-  overrides: { colors?: Record<string, string>; fonts?: Record<string, string> }
+  overrides: { colors?: Record<string, string>; fonts?: Record<string, string>; custom?: Record<string, string> }
 ): Promise<void> {
   const content = await readFile(filePath, 'utf-8');
   const lines = content.split('\n');
@@ -375,6 +382,7 @@ async function writeThemeOverrides(
   // Parse existing theme block to merge with
   const existingColors: Record<string, string> = {};
   const existingFonts: Record<string, string> = {};
+  const existingCustom: Record<string, string> = {};
 
   if (themeStart >= 0) {
     let section = '';
@@ -384,12 +392,15 @@ async function writeThemeOverrides(
         section = 'colors';
       } else if (/^\s+fonts\s*:/.test(line)) {
         section = 'fonts';
+      } else if (/^\s+custom\s*:/.test(line)) {
+        section = 'custom';
       } else {
-        const kvMatch = line.match(/^\s{4,}(\w+)\s*:\s*(.+)/);
+        const kvMatch = line.match(/^\s{4,}(\S+)\s*:\s*(.+)/);
         if (kvMatch) {
           const val = kvMatch[2]!.replace(/^["']|["']$/g, '').trim();
           if (section === 'colors') existingColors[kvMatch[1]!] = val;
           else if (section === 'fonts') existingFonts[kvMatch[1]!] = val;
+          else if (section === 'custom') existingCustom[kvMatch[1]!] = val;
         }
       }
     }
@@ -398,6 +409,7 @@ async function writeThemeOverrides(
   // Merge: new overrides take precedence over existing values
   const mergedColors = { ...existingColors, ...overrides.colors };
   const mergedFonts = { ...existingFonts, ...overrides.fonts };
+  const mergedCustom = { ...existingCustom, ...overrides.custom };
 
   // Build the merged theme block YAML
   const themeLines: string[] = ['theme:'];
@@ -411,6 +423,12 @@ async function writeThemeOverrides(
     themeLines.push('  fonts:');
     for (const [key, value] of Object.entries(mergedFonts)) {
       themeLines.push(`    ${key}: ${value}`);
+    }
+  }
+  if (Object.keys(mergedCustom).length > 0) {
+    themeLines.push('  custom:');
+    for (const [key, value] of Object.entries(mergedCustom)) {
+      themeLines.push(`    ${key}: "${value}"`);
     }
   }
   const themeBlock = themeLines.join('\n');

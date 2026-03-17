@@ -6,6 +6,8 @@
 export interface ConfiguratorTheme {
   name: string;
   properties: Record<string, string>;
+  description?: string | undefined;
+  tags?: string[] | undefined;
 }
 
 export interface ConfiguratorOptions {
@@ -24,9 +26,6 @@ const CORE_COLORS: Record<string, string> = {
   '--color-border': 'Border',
 };
 
-/** Core font properties */
-const CORE_FONTS = ['--font-sans', '--font-serif'];
-
 /**
  * Generate the complete configurator panel HTML (div + style + script).
  * Injected before </body> in the preview server.
@@ -36,7 +35,6 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
 
   const themesJson = JSON.stringify(themes);
   const coreColorsJson = JSON.stringify(CORE_COLORS);
-  const coreFontsJson = JSON.stringify(CORE_FONTS);
 
   return `
 <style>
@@ -203,6 +201,32 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
   color: #a6adc8;
   text-align: center;
 }
+.vitae-cfg-search {
+  width: 100%;
+  margin-bottom: 8px;
+  background: #313244;
+  color: #cdd6f4;
+  border: 1px solid #45475a;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.vitae-cfg-group-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6c7086;
+  margin: 10px 0 6px;
+  padding-top: 8px;
+  border-top: 1px solid #313244;
+}
+.vitae-cfg-group-title:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
 @media print {
   .vitae-cfg, .vitae-cfg-toggle { display: none !important; }
 }
@@ -218,6 +242,7 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
     <div class="vitae-cfg-row">
       <select id="vitaeCfgTheme" style="width:100%"></select>
     </div>
+    <div id="vitaeCfgThemeTags" style="font-size:10px;color:#6c7086;margin-top:4px"></div>
   </div>
 
   <div class="vitae-cfg-section" id="vitaeCfgColors">
@@ -247,11 +272,13 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
 (function() {
   const THEMES = ${themesJson};
   const CORE_COLORS = ${coreColorsJson};
-  const CORE_FONTS = ${coreFontsJson};
   const CSRF = ${JSON.stringify(csrfToken)};
   let currentTheme = ${JSON.stringify(currentTheme)};
   let defaults = {};
   const modified = {};
+
+  /** Detected font-family property names for the current theme (dynamic, not hardcoded) */
+  let fontFamilyKeys = [];
 
   const panel = document.getElementById('vitaeCfgPanel');
   const toggle = document.getElementById('vitaeCfgToggle');
@@ -280,10 +307,21 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
   THEMES.forEach(t => {
     const opt = document.createElement('option');
     opt.value = t.name;
-    opt.textContent = t.name;
+    opt.textContent = t.name + (t.description ? ' \\u2014 ' + t.description : '');
     if (t.name === currentTheme) opt.selected = true;
     themeSelect.appendChild(opt);
   });
+
+  function updateThemeTags() {
+    const tagsEl = document.getElementById('vitaeCfgThemeTags');
+    const theme = THEMES.find(t => t.name === currentTheme);
+    if (theme && theme.tags && theme.tags.length > 0) {
+      tagsEl.textContent = 'Tags: ' + theme.tags.join(', ');
+    } else {
+      tagsEl.textContent = '';
+    }
+  }
+  updateThemeTags();
 
   themeSelect.addEventListener('change', () => {
     const name = themeSelect.value;
@@ -298,24 +336,60 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
       .catch(err => showStatus('Switch failed: ' + err.message, true));
   });
 
+  // --- Color and value detection utilities ---
+
+  function toHex6(color) {
+    if (!color) return '#000000';
+    const c = color.trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(c)) return c;
+    if (/^#[0-9a-fA-F]{3}$/.test(c)) return '#' + c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+    // Try to use a temporary element to convert named/rgb/hsl colors
+    try {
+      const tmp = document.createElement('div');
+      tmp.style.color = c;
+      document.body.appendChild(tmp);
+      const computed = getComputedStyle(tmp).color;
+      document.body.removeChild(tmp);
+      const m = computed.match(/rgb\\w*\\(\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)/);
+      if (m) return '#' + [m[1],m[2],m[3]].map(x => parseInt(x).toString(16).padStart(2,'0')).join('');
+    } catch(e) {}
+    return '#000000';
+  }
+
+  function isColorValue(val) {
+    const v = val.trim();
+    return /^#[0-9a-fA-F]{3,8}$/.test(v) || /^(rgb|hsl)a?\\(/.test(v);
+  }
+
+  function isHexColor(val) {
+    return /^#[0-9a-fA-F]{3,8}$/.test(val.trim());
+  }
+
   // --- Populate controls ---
   function init() {
     const theme = THEMES.find(t => t.name === currentTheme);
     if (!theme) return;
     defaults = { ...theme.properties };
 
+    // Detect font-family properties dynamically
+    fontFamilyKeys = Object.keys(theme.properties).filter(k =>
+      k.startsWith('--font-') && !k.startsWith('--font-size') && !k.startsWith('--font-weight') && !k.startsWith('--line-height')
+    );
+
     buildColors(theme.properties);
     buildFonts(theme.properties);
     buildAdvanced(theme.properties);
+    updateThemeTags();
+
+    restoreFromStorage();
   }
 
-  function buildColors(props) {
-    const container = document.getElementById('vitaeCfgColors');
-    container.innerHTML = '<h3>Colors</h3>';
-    for (const [varName, label] of Object.entries(CORE_COLORS)) {
-      const val = getComputedValue(varName) || props[varName] || '#000000';
-      const row = document.createElement('div');
-      row.className = 'vitae-cfg-row';
+  function buildColorRow(container, varName, label, val) {
+    const row = document.createElement('div');
+    row.className = 'vitae-cfg-row';
+
+    if (isHexColor(val)) {
+      // Hex color: show color picker + text input
       row.innerHTML =
         '<label>' + label + '</label>' +
         '<div class="vitae-cfg-color-group">' +
@@ -330,10 +404,36 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
         textInput.value = colorInput.value;
         applyVar(varName, colorInput.value);
       });
-      textInput.addEventListener('change', () => {
-        colorInput.value = toHex6(textInput.value);
+      textInput.addEventListener('input', () => {
+        if (/^#[0-9a-fA-F]{3,6}$/.test(textInput.value.trim())) {
+          colorInput.value = toHex6(textInput.value);
+          applyVar(varName, textInput.value);
+        }
+      });
+    } else {
+      // Non-hex color (rgb, hsl, etc.): show text input only
+      row.innerHTML =
+        '<label>' + label + '</label>' +
+        '<div class="vitae-cfg-color-group">' +
+          '<input type="text" value="' + val + '" data-var="' + varName + '" style="width:100%">' +
+        '</div>';
+      container.appendChild(row);
+
+      const textInput = row.querySelector('input[type="text"]');
+      textInput.addEventListener('input', () => {
         applyVar(varName, textInput.value);
       });
+    }
+
+    return row;
+  }
+
+  function buildColors(props) {
+    const container = document.getElementById('vitaeCfgColors');
+    container.innerHTML = '<h3>Colors</h3>';
+    for (const [varName, label] of Object.entries(CORE_COLORS)) {
+      const val = getComputedValue(varName) || props[varName] || '#000000';
+      buildColorRow(container, varName, label, val);
     }
   }
 
@@ -342,14 +442,22 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
     container.innerHTML = '<h3>Fonts</h3>';
     const fontOptions = [
       'system-ui, -apple-system, sans-serif',
-      'Inter, system-ui, sans-serif',
-      'Roboto, system-ui, sans-serif',
+      '"Inter", system-ui, sans-serif',
+      '"Roboto", system-ui, sans-serif',
+      '"Montserrat", system-ui, sans-serif',
+      '"Lato", system-ui, sans-serif',
       '"Helvetica Neue", Arial, sans-serif',
       'Georgia, "Times New Roman", serif',
+      '"Libre Baskerville", Georgia, serif',
+      '"Playfair Display", Georgia, serif',
+      '"Cormorant Garamond", Garamond, serif',
       '"Palatino Linotype", Palatino, serif',
+      '"Fira Code", "Fira Mono", monospace',
+      '"JetBrains Mono", "Cascadia Code", monospace',
       '"Courier New", Courier, monospace',
     ];
-    CORE_FONTS.forEach(varName => {
+
+    fontFamilyKeys.forEach(varName => {
       if (!props[varName]) return;
       const val = getComputedValue(varName) || props[varName];
       const label = varName.replace('--font-', '').charAt(0).toUpperCase() + varName.replace('--font-', '').slice(1);
@@ -372,48 +480,130 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
   function buildAdvanced(props) {
     const container = document.getElementById('vitaeCfgAdvProps');
     container.innerHTML = '<h3>All CSS Properties</h3>';
-    const coreSet = new Set([...Object.keys(CORE_COLORS), ...CORE_FONTS]);
+
+    // Search input
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.id = 'vitaeCfgSearch';
+    searchInput.placeholder = 'Filter properties...';
+    searchInput.className = 'vitae-cfg-search';
+    container.appendChild(searchInput);
+
+    const coreSet = new Set([...Object.keys(CORE_COLORS), ...fontFamilyKeys]);
     const advancedProps = Object.entries(props).filter(([k]) => !coreSet.has(k));
+
     if (advancedProps.length === 0) {
-      container.innerHTML += '<div style="color:#6c7086;font-size:11px">No additional properties</div>';
+      container.appendChild(Object.assign(document.createElement('div'), {
+        style: 'color:#6c7086;font-size:11px',
+        textContent: 'No additional properties',
+      }));
       return;
     }
-    advancedProps.forEach(([varName, defaultVal]) => {
-      const val = getComputedValue(varName) || defaultVal;
-      const isColor = /^#[0-9a-fA-F]{3,8}$/.test(val.trim());
-      const row = document.createElement('div');
-      row.className = 'vitae-cfg-row';
 
-      const labelHtml =
-        '<label title="' + varName + '" style="width:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-family:monospace">' +
-          varName.replace('--', '') +
-        '</label>';
+    // Group properties by category
+    const groups = {
+      'Colors': [],
+      'Typography': [],
+      'Spacing': [],
+      'Layout': [],
+      'Other': [],
+    };
 
-      if (isColor) {
-        row.innerHTML = labelHtml +
-          '<div class="vitae-cfg-color-group">' +
-            '<input type="color" value="' + toHex6(val) + '" data-var="' + varName + '">' +
-            '<input type="text" value="' + val + '" data-var="' + varName + '">' +
-          '</div>';
-        container.appendChild(row);
-        const colorInput = row.querySelector('input[type="color"]');
-        const textInput = row.querySelector('input[type="text"]');
-        colorInput.addEventListener('input', () => {
-          textInput.value = colorInput.value;
-          applyVar(varName, colorInput.value);
-        });
-        textInput.addEventListener('change', () => {
-          colorInput.value = toHex6(textInput.value);
-          applyVar(varName, textInput.value);
-        });
-      } else {
-        row.innerHTML = labelHtml +
-          '<input type="text" value="' + val + '" data-var="' + varName + '">';
-        container.appendChild(row);
-        row.querySelector('input[type="text"]').addEventListener('change', (e) => {
-          applyVar(varName, e.target.value);
-        });
+    advancedProps.forEach(([varName, val]) => {
+      if (varName.startsWith('--color-')) groups['Colors'].push([varName, val]);
+      else if (varName.startsWith('--font-') || varName.startsWith('--line-height')) groups['Typography'].push([varName, val]);
+      else if (varName.startsWith('--space-')) groups['Spacing'].push([varName, val]);
+      else if (varName.match(/--sidebar|--grid|--timeline/)) groups['Layout'].push([varName, val]);
+      else groups['Other'].push([varName, val]);
+    });
+
+    let isFirstGroup = true;
+    for (const [groupName, items] of Object.entries(groups)) {
+      if (items.length === 0) continue;
+
+      const groupTitle = document.createElement('div');
+      groupTitle.className = 'vitae-cfg-group-title';
+      if (isFirstGroup) {
+        isFirstGroup = false;
       }
+      groupTitle.textContent = groupName;
+      groupTitle.setAttribute('data-group', groupName);
+      container.appendChild(groupTitle);
+
+      items.forEach(([varName, defaultVal]) => {
+        const val = getComputedValue(varName) || defaultVal;
+        const isColor = isColorValue(val);
+        const row = document.createElement('div');
+        row.className = 'vitae-cfg-row';
+        row.setAttribute('data-group', groupName);
+
+        const labelHtml =
+          '<label title="' + varName + '" style="width:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-family:monospace">' +
+            varName.replace('--', '') +
+          '</label>';
+
+        if (isColor) {
+          if (isHexColor(val)) {
+            // Hex color: color picker + text
+            row.innerHTML = labelHtml +
+              '<div class="vitae-cfg-color-group">' +
+                '<input type="color" value="' + toHex6(val) + '" data-var="' + varName + '">' +
+                '<input type="text" value="' + val + '" data-var="' + varName + '">' +
+              '</div>';
+            container.appendChild(row);
+            const colorInput = row.querySelector('input[type="color"]');
+            const textInput = row.querySelector('input[type="text"]');
+            colorInput.addEventListener('input', () => {
+              textInput.value = colorInput.value;
+              applyVar(varName, colorInput.value);
+            });
+            textInput.addEventListener('input', () => {
+              if (/^#[0-9a-fA-F]{3,6}$/.test(textInput.value.trim())) {
+                colorInput.value = toHex6(textInput.value);
+                applyVar(varName, textInput.value);
+              }
+            });
+          } else {
+            // Non-hex color (rgb, hsl, etc.): text input only
+            row.innerHTML = labelHtml +
+              '<div class="vitae-cfg-color-group">' +
+                '<input type="text" value="' + val + '" data-var="' + varName + '" style="width:100%">' +
+              '</div>';
+            container.appendChild(row);
+            const textInput = row.querySelector('input[type="text"]');
+            textInput.addEventListener('input', () => {
+              applyVar(varName, textInput.value);
+            });
+          }
+        } else {
+          row.innerHTML = labelHtml +
+            '<input type="text" value="' + val + '" data-var="' + varName + '">';
+          container.appendChild(row);
+          row.querySelector('input[type="text"]').addEventListener('input', (e) => {
+            applyVar(varName, e.target.value);
+          });
+        }
+      });
+    }
+
+    // Search filter handler
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      container.querySelectorAll('.vitae-cfg-row').forEach(row => {
+        const label = row.querySelector('label');
+        const labelText = label ? label.textContent.toLowerCase() : '';
+        row.style.display = labelText.includes(query) ? '' : 'none';
+      });
+      // Show/hide group headings based on whether they have visible rows
+      container.querySelectorAll('.vitae-cfg-group-title').forEach(title => {
+        const groupName = title.getAttribute('data-group');
+        const rows = container.querySelectorAll('.vitae-cfg-row[data-group="' + groupName + '"]');
+        let anyVisible = false;
+        rows.forEach(r => {
+          if (r.style.display !== 'none') anyVisible = true;
+        });
+        title.style.display = anyVisible ? '' : 'none';
+      });
     });
   }
 
@@ -430,12 +620,14 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
     document.documentElement.style.setProperty(name, value);
     modified[name] = value;
     markModified(name, true);
+    saveToStorage();
   }
 
   function removeVar(name) {
     document.documentElement.style.removeProperty(name);
     delete modified[name];
     markModified(name, false);
+    saveToStorage();
   }
 
   function markModified(varName, isModified) {
@@ -450,13 +642,41 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
-  function toHex6(color) {
-    if (!color) return '#000000';
-    const c = color.trim();
-    if (/^#[0-9a-fA-F]{6}$/.test(c)) return c;
-    if (/^#[0-9a-fA-F]{3}$/.test(c)) return '#' + c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
-    return '#000000';
+  // --- localStorage persistence ---
+  function getStorageKey() {
+    return 'vitae-cfg-' + currentTheme;
   }
+
+  function saveToStorage() {
+    try {
+      if (Object.keys(modified).length > 0) {
+        localStorage.setItem(getStorageKey(), JSON.stringify(modified));
+      } else {
+        localStorage.removeItem(getStorageKey());
+      }
+    } catch(e) {}
+  }
+
+  function restoreFromStorage() {
+    try {
+      const saved = localStorage.getItem(getStorageKey());
+      if (saved) {
+        const data = JSON.parse(saved);
+        for (const [k, v] of Object.entries(data)) {
+          applyVar(k, v);
+        }
+        showStatus('Restored ' + Object.keys(data).length + ' unsaved changes');
+      }
+    } catch(e) {}
+  }
+
+  function clearStorage() {
+    try {
+      localStorage.removeItem(getStorageKey());
+    } catch(e) {}
+  }
+
+  window.addEventListener('beforeunload', saveToStorage);
 
   // --- Export ---
   document.getElementById('vitaeCfgExport').addEventListener('click', () => {
@@ -465,23 +685,26 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
       return;
     }
     const coreColorKeys = Object.keys(CORE_COLORS);
-    const coreFontKeys = CORE_FONTS;
     const colors = {};
     const fonts = {};
+    const custom = {};
 
     for (const [k, v] of Object.entries(modified)) {
       if (coreColorKeys.includes(k)) {
         const name = k.replace('--color-', '').replace(/-([a-z])/g, (_, c) => c.toUpperCase());
         colors[name] = v;
-      } else if (coreFontKeys.includes(k)) {
+      } else if (fontFamilyKeys.includes(k)) {
         const name = k.replace('--font-', '');
         fonts[name] = v;
+      } else {
+        custom[k] = v;
       }
     }
 
     const payload = {};
     if (Object.keys(colors).length > 0) payload.colors = colors;
     if (Object.keys(fonts).length > 0) payload.fonts = fonts;
+    if (Object.keys(custom).length > 0) payload.custom = custom;
 
     fetch('/__vitae_api/export', {
       method: 'POST',
@@ -495,6 +718,7 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
     .then(() => {
       showStatus('Exported to resume.yaml');
       Object.keys(modified).forEach(k => delete modified[k]);
+      clearStorage();
     })
     .catch(err => showStatus(err.message, true));
   });
@@ -506,6 +730,7 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
       markModified(k, false);
     });
     Object.keys(modified).forEach(k => delete modified[k]);
+    clearStorage();
     init();
     showStatus('Reset to theme defaults');
   });

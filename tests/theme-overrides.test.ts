@@ -91,6 +91,34 @@ describe('theme overrides', () => {
       const css = generateThemeOverrideCss({ fonts: {} });
       expect(css).toBe('');
     });
+
+    it('generates CSS for custom properties', () => {
+      const css = generateThemeOverrideCss({
+        custom: {
+          '--color-header-bg': '#1a1a2e',
+          '--sidebar-width': '280px',
+        },
+      });
+      expect(css).toContain(':root');
+      expect(css).toContain('--color-header-bg: #1a1a2e');
+      expect(css).toContain('--sidebar-width: 280px');
+    });
+
+    it('combines colors, fonts, and custom properties', () => {
+      const css = generateThemeOverrideCss({
+        colors: { accent: '#ff0000' },
+        fonts: { sans: 'Roboto, sans-serif' },
+        custom: { '--line-height-body': '1.8' },
+      });
+      expect(css).toContain('--color-accent: #ff0000');
+      expect(css).toContain('--font-sans: Roboto, sans-serif');
+      expect(css).toContain('--line-height-body: 1.8');
+    });
+
+    it('skips empty custom object', () => {
+      const css = generateThemeOverrideCss({ custom: {} });
+      expect(css).toBe('');
+    });
   });
 
   describe('normalization pass-through', () => {

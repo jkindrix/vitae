@@ -218,6 +218,12 @@ export function generateThemeOverrideCss(theme: ThemeOverrides): string {
     }
   }
 
+  if (theme.custom) {
+    for (const [prop, value] of Object.entries(theme.custom)) {
+      vars.push(`${prop}: ${value}`);
+    }
+  }
+
   return vars.length > 0 ? `:root { ${vars.join('; ')}; }` : '';
 }
 

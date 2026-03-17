@@ -85,6 +85,11 @@
             "sans": { "type": "string" },
             "serif": { "type": "string" }
           }
+        },
+        "custom": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Arbitrary CSS custom property overrides (e.g., --color-header-bg, --sidebar-width)"
         }
       }
     }

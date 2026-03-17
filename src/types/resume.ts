@@ -183,6 +183,7 @@ export interface ThemeFonts {
 export interface ThemeOverrides {
   colors?: ThemeColors;
   fonts?: ThemeFonts;
+  custom?: Record<string, string>;
 }
 
 /**

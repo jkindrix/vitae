@@ -494,6 +494,11 @@
               "description": "Serif font stack (e.g., 'Merriweather, serif')"
             }
           }
+        },
+        "custom": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Arbitrary CSS custom property overrides (e.g., --color-header-bg, --sidebar-width)"
         }
       }
     }
