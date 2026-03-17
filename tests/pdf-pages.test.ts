@@ -5,7 +5,9 @@ import { tmpdir } from 'os';
 import { countPdfPages, generatePdf, generatePdfBuffer, generatePdfFromHtml, closeBrowser } from '../src/lib/pdf.js';
 import { renderStandaloneHtml } from '../src/lib/renderer.js';
 import { normalizeResume } from '../src/lib/normalize.js';
+import { renderCoverLetterStandaloneHtml } from '../src/lib/cover-letter.js';
 import type { Resume } from '../src/types/index.js';
+import type { CoverLetter } from '../src/types/cover-letter.js';
 
 describe('countPdfPages', () => {
   it('counts 1 page in a synthetic PDF', () => {
@@ -180,6 +182,28 @@ describe('PDF generation with PdfResult', () => {
       });
 
       expect(result.scale).toBeGreaterThanOrEqual(0.90);
+    } finally {
+      if (existsSync(outPath)) unlinkSync(outPath);
+    }
+  }, 30000);
+
+  it('generates PDF from cover letter standalone HTML', async () => {
+    const coverLetter: CoverLetter = {
+      meta: { name: 'CL PDF Test' },
+      recipient: { company: 'Test Co' },
+      greeting: 'Dear Hiring Manager,',
+      body: ['I am writing to express my interest.'],
+      closing: 'Sincerely,',
+    };
+    const html = await renderCoverLetterStandaloneHtml(coverLetter, 'minimal');
+    const outPath = join(tmpdir(), `vitae-cl-pdf-${Date.now()}.pdf`);
+
+    try {
+      const result = await generatePdfFromHtml(html, outPath);
+      expect(existsSync(outPath)).toBe(true);
+      const buffer = readFileSync(outPath);
+      expect(buffer.toString('ascii', 0, 4)).toBe('%PDF');
+      expect(result.pageCount).toBeGreaterThanOrEqual(1);
     } finally {
       if (existsSync(outPath)) unlinkSync(outPath);
     }

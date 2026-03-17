@@ -173,6 +173,16 @@ describe('generateDocx', () => {
     expect(text).toContain('1000+ stars');
   });
 
+  it('includes volunteer content', async () => {
+    const out = tempPath('docx');
+    await generateDocx(normalizeResume(fullResume), 'minimal', out);
+
+    const text = await extractDocxText(out);
+    expect(text).toContain('Code for Good');
+    expect(text).toContain('Mentor');
+    expect(text).toContain('Mentored 20 students');
+  });
+
   it('uses localized section headings when language is set', async () => {
     const frResume: Resume = { ...fullResume, language: 'fr' };
     const out = tempPath('docx');

@@ -347,6 +347,16 @@ describe('renderer', () => {
         const css = generateStyleOverrideCss({ '--only': 'value' });
         expect(css).toBe(':root { --only: value; }');
       });
+
+      it('includes empty-string values in output', () => {
+        const css = generateStyleOverrideCss({ '--gap': '' });
+        expect(css).toContain('--gap: ');
+      });
+
+      it('passes through values containing CSS-like syntax verbatim', () => {
+        const css = generateStyleOverrideCss({ '--color': 'red; background: url(evil)' });
+        expect(css).toBe(':root { --color: red; background: url(evil); }');
+      });
     });
 
     describe('renderStandaloneHtml with styleOverrides', () => {

@@ -5,7 +5,9 @@ import { tmpdir } from 'os';
 import { generatePng, generatePngFromHtml, closeBrowser } from '../src/lib/pdf.js';
 import { renderStandaloneHtml } from '../src/lib/renderer.js';
 import { normalizeResume } from '../src/lib/normalize.js';
+import { renderCoverLetterStandaloneHtml } from '../src/lib/cover-letter.js';
 import type { Resume } from '../src/types/index.js';
+import type { CoverLetter } from '../src/types/cover-letter.js';
 
 describe('generatePng', () => {
   afterAll(async () => {
@@ -88,4 +90,28 @@ describe('generatePng', () => {
       }
     }
   }, 60000);
+
+  it('generates PNG from cover letter standalone HTML', async () => {
+    const coverLetter: CoverLetter = {
+      meta: { name: 'CL PNG Test' },
+      recipient: { company: 'Test Co' },
+      greeting: 'Dear Hiring Manager,',
+      body: ['I am writing to express my interest.'],
+      closing: 'Sincerely,',
+    };
+    const html = await renderCoverLetterStandaloneHtml(coverLetter, 'minimal');
+    const outPath = join(tmpdir(), `vitae-cl-png-${Date.now()}.png`);
+
+    try {
+      await generatePngFromHtml(html, outPath);
+      expect(existsSync(outPath)).toBe(true);
+      const buffer = readFileSync(outPath);
+      expect(buffer[0]).toBe(0x89);
+      expect(buffer[1]).toBe(0x50); // P
+      expect(buffer[2]).toBe(0x4e); // N
+      expect(buffer[3]).toBe(0x47); // G
+    } finally {
+      if (existsSync(outPath)) unlinkSync(outPath);
+    }
+  }, 30000);
 });

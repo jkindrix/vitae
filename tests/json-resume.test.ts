@@ -191,6 +191,12 @@ describe('JSON Resume support', () => {
       expect(result.skills).toBeUndefined();
       expect(result.projects).toBeUndefined();
     });
+
+    it('returns Unknown name when basics is entirely absent', () => {
+      const result = fromJsonResume({} as any);
+      expect(result.meta.name).toBe('Unknown');
+      expect(result.experience).toBeDefined();
+    });
   });
 
   describe('toJsonResume', () => {

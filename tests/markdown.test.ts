@@ -126,6 +126,26 @@ describe('resumeToMarkdown', () => {
     expect(md).toContain('AWS Solutions Architect');
   });
 
+  it('includes volunteer section', () => {
+    const volunteerResume: Resume = {
+      ...fullResume,
+      volunteer: [
+        {
+          organization: 'Code for Good',
+          position: 'Mentor',
+          start: '2019',
+          end: '2023',
+          highlights: ['Mentored 20 students'],
+        },
+      ],
+    };
+    const md = resumeToMarkdown(normalizeResume(volunteerResume));
+    expect(md).toContain('## Volunteer');
+    expect(md).toContain('Code for Good');
+    expect(md).toContain('Mentor');
+    expect(md).toContain('- Mentored 20 students');
+  });
+
   it('omits sections without content', () => {
     const minimal: Resume = {
       meta: { name: 'Minimal' },

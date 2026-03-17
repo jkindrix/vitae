@@ -63,6 +63,31 @@ describe('exportCommand with variant', () => {
   });
 });
 
+describe('exportCommand error handling', () => {
+  it('throws for unknown export format', async () => {
+    const testDir = join(tmpdir(), `vitae-export-err-${randomUUID()}`);
+    const inputPath = join(testDir, 'resume.yaml');
+    const outputPath = join(testDir, 'out.xml');
+
+    const { mkdir } = await import('fs/promises');
+    await mkdir(testDir, { recursive: true });
+
+    try {
+      await writeFile(
+        inputPath,
+        `meta:\n  name: Test\nexperience:\n  - company: Co\n    roles:\n      - title: Dev\n        start: "2020"\n`,
+        'utf-8'
+      );
+
+      await expect(
+        exportCommand(inputPath, { format: 'xml' as any, output: outputPath })
+      ).rejects.toThrow('Unknown export format');
+    } finally {
+      await rm(testDir, { recursive: true, force: true });
+    }
+  });
+});
+
 describe('export to JSON Resume', () => {
   const fullResume: Resume = {
     meta: {
@@ -120,6 +145,26 @@ describe('export to JSON Resume', () => {
     expect(result.basics?.phone).toBe('555-0100');
     expect(result.basics?.location?.city).toBe('Austin');
     expect(result.basics?.summary).toBe('Experienced engineer.');
+  });
+
+  it('maps location with no comma to city only', () => {
+    const resume: Resume = {
+      meta: { name: 'Test', location: 'Remote' },
+      experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
+    };
+    const result = toJsonResume(resume);
+    expect(result.basics?.location?.city).toBe('Remote');
+    expect(result.basics?.location?.region).toBeUndefined();
+  });
+
+  it('maps location with multiple commas using first two parts', () => {
+    const resume: Resume = {
+      meta: { name: 'Test', location: 'San Francisco, CA, USA' },
+      experience: [{ company: 'Co', roles: [{ title: 'Dev', start: '2020' }] }],
+    };
+    const result = toJsonResume(resume);
+    expect(result.basics?.location?.city).toBe('San Francisco');
+    expect(result.basics?.location?.region).toBe('CA');
   });
 
   it('flattens multi-role experience into separate work entries', () => {

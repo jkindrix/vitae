@@ -90,7 +90,7 @@ function logPdfPageInfo(
 /**
  * Generate outputs for a single theme
  */
-async function generateForTheme(
+export async function generateForTheme(
   resume: NormalizedResume,
   themeName: string,
   formats: OutputFormat[],
@@ -209,7 +209,7 @@ async function generateForTheme(
 /**
  * Generate cover letter outputs for a single theme
  */
-async function generateCoverLetterForTheme(
+export async function generateCoverLetterForTheme(
   coverLetter: CoverLetter,
   themeName: string,
   formats: OutputFormat[],
