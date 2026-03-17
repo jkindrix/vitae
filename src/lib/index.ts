@@ -15,13 +15,7 @@ export {
   validateCoverLetter,
   assertValidCoverLetter,
 } from './schema.js';
-export {
-  listThemes,
-  loadTheme,
-  getThemesDir,
-  readCoverLetterTemplate,
-  loadThemeConfig,
-} from './themes.js';
+export { listThemes, loadTheme, readCoverLetterTemplate, loadThemeConfig } from './themes.js';
 export {
   renderHtml,
   renderStandaloneHtml,
@@ -59,12 +53,7 @@ export type { ValidationErrorDetail } from './errors.js';
 export { fromJsonResume, toJsonResume, isJsonResumeFormat } from './json-resume.js';
 export { applyVariant } from './variant.js';
 export { normalizeResume, DEFAULT_SECTION_ORDER } from './normalize.js';
-export {
-  analyzeResume,
-  extractKeywords,
-  buildResumeTextBlocks,
-  textContainsKeyword,
-} from './ats.js';
+export { analyzeResume } from './ats.js';
 export { analyzeTailoring, generateVariant, serializeVariantWithComments } from './tailor.js';
 export {
   renderCoverLetterHtml,
@@ -73,12 +62,6 @@ export {
 } from './cover-letter.js';
 export { getLocale, getSectionLabel } from './i18n.js';
 export type { Locale, LocaleLabels, LocaleMonths, LocaleKeywords } from './i18n.js';
-export {
-  auditAccessibility,
-  parseColor,
-  relativeLuminance,
-  contrastRatio,
-  extractCssCustomProperties,
-} from './a11y.js';
-export { resolveLlmConfig, callLlm } from './llm.js';
+export { auditAccessibility } from './a11y.js';
+export { resolveLlmConfig } from './llm.js';
 export { generateSuggestions } from './suggest.js';

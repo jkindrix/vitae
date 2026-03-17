@@ -5,10 +5,10 @@ import {
   loadTheme,
   listThemes,
   loadThemeConfig,
-  getThemesDir,
   renderHtml,
   renderStandaloneHtml,
 } from '../src/lib/index.js';
+import { getThemesDir } from '../src/lib/themes.js';
 import type { NormalizedResume } from '../src/types/index.js';
 
 // ---------------------------------------------------------------------------
