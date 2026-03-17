@@ -7,6 +7,7 @@ import { buildCommand } from '../src/commands/build.js';
 import { validateCommand } from '../src/commands/validate.js';
 import { checkCommand } from '../src/commands/check.js';
 import { auditCommand } from '../src/commands/audit.js';
+import { tailorCommand } from '../src/commands/tailor.js';
 import { themesCommand } from '../src/commands/themes.js';
 import { importCommand } from '../src/commands/import.js';
 import { closeBrowser } from '../src/lib/index.js';
@@ -259,6 +260,51 @@ describe('auditCommand', () => {
     expect(result).toHaveProperty('score');
     expect(typeof result.score).toBe('number');
     expect(result).toHaveProperty('categories');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// tailorCommand
+// ---------------------------------------------------------------------------
+
+describe('tailorCommand', () => {
+  it('generates a variant YAML from a job description', async () => {
+    const inputPath = await writeFixture('resume.yaml', MINIMAL_RESUME);
+    const jobPath = await writeFixture(
+      'job.txt',
+      'We are looking for a backend engineer with experience in Node.js, TypeScript, and distributed systems.'
+    );
+    const outputPath = join(testDir, `tailor-${randomUUID()}.variant.yaml`);
+
+    await tailorCommand(inputPath, { job: jobPath, output: outputPath });
+
+    expect(await fileExists(outputPath)).toBe(true);
+    const content = await readFile(outputPath, 'utf-8');
+    expect(content).toContain('layout');
+  });
+
+  it('produces JSON analysis with --json flag', async () => {
+    const inputPath = await writeFixture('resume.yaml', MINIMAL_RESUME);
+    const jobPath = await writeFixture(
+      'job.txt',
+      'Senior software engineer with cloud infrastructure experience.'
+    );
+    const logs: string[] = [];
+    const origLog = console.log;
+    console.log = (...args: unknown[]) => logs.push(args.join(' '));
+
+    try {
+      await tailorCommand(inputPath, { job: jobPath, json: true });
+    } finally {
+      console.log = origLog;
+    }
+
+    // tailorCommand logs progress messages before the JSON — find the JSON object
+    const jsonLine = logs.find((line) => line.trimStart().startsWith('{'));
+    expect(jsonLine).toBeDefined();
+    const result = JSON.parse(jsonLine!);
+    expect(result).toHaveProperty('matchPercentage');
+    expect(typeof result.matchPercentage).toBe('number');
   });
 });
 
