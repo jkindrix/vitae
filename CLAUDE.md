@@ -29,6 +29,7 @@ src/
 │   ├── renderer.ts         # Nunjucks template rendering with locale filters
 │   ├── pdf.ts              # Playwright-based PDF/PNG generation
 │   ├── docx.ts             # DOCX generation via docx package
+│   ├── markdown.ts         # Markdown resume rendering
 │   ├── cover-letter.ts     # Cover letter rendering (HTML, Markdown)
 │   ├── json-resume.ts      # Bidirectional JSON Resume conversion
 │   ├── ats.ts              # ATS compatibility analysis (pure static)

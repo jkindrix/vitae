@@ -262,8 +262,8 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
         console.log(chalk.dim('  Use --force to overwrite'));
         return;
       }
-    } catch {
-      // File doesn't exist, which is fine
+    } catch (err: unknown) {
+      if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
     }
 
     await writeFile(outputPath, EXAMPLE_COVER_LETTER, 'utf-8');
@@ -289,8 +289,8 @@ export async function initCommand(options: InitCommandOptions): Promise<void> {
       console.log(chalk.dim('  Use --force to overwrite'));
       return;
     }
-  } catch {
-    // File doesn't exist, which is fine
+  } catch (err: unknown) {
+    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
   }
 
   let content: string;
