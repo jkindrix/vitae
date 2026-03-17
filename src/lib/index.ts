@@ -68,3 +68,5 @@ export { auditAccessibility } from './a11y.js';
 export { resolveLlmConfig } from './llm.js';
 export type { ResolveLlmConfigOptions } from './llm.js';
 export { generateSuggestions } from './suggest.js';
+export { build } from './build.js';
+export type { BuildOptions, BuildResult } from './build.js';
