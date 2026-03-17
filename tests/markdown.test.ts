@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resumeToMarkdown } from '../src/lib/docx.js';
+import { resumeToMarkdown } from '../src/lib/markdown.js';
 import { normalizeResume } from '../src/lib/normalize.js';
 import type { Resume } from '../src/types/index.js';
 

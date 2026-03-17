@@ -6,7 +6,8 @@ export { renderHtml, renderStandaloneHtml, generateThemeOverrideCss, generateSty
 export type { RenderOptions } from './renderer.js';
 export { generatePdf, generatePdfBuffer, generatePng, generatePdfFromHtml, generatePngFromHtml, closeBrowser, countPdfPages } from './pdf.js';
 export type { PdfOptions, PdfResult, PdfBufferResult } from './pdf.js';
-export { generateDocx, generateCoverLetterDocx, resumeToMarkdown } from './docx.js';
+export { generateDocx, generateCoverLetterDocx } from './docx.js';
+export { resumeToMarkdown } from './markdown.js';
 export type { DocxOptions } from './docx.js';
 export { parseDate, formatDate, formatDateShort, formatDateRange } from './dates.js';
 export type { ParsedDate } from './dates.js';
