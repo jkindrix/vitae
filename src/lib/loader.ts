@@ -5,7 +5,7 @@ import { assertValidResume, assertValidVariant, assertValidCoverLetter } from '.
 import { isJsonResumeFormat, fromJsonResume } from './json-resume.js';
 import type { Resume, Variant, CoverLetter, SectionName } from '../types/index.js';
 
-interface LoadOptions {
+export interface LoadOptions {
   /**
    * Force interpretation as JSON Resume format
    * (by default, the loader auto-detects the format)

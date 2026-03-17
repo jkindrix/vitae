@@ -614,7 +614,7 @@ export interface DocxOptions {
  */
 export async function generateDocx(
   resume: NormalizedResume,
-  _themeName: string,
+  _themeName: string | undefined,
   outputPath: string,
   _options: DocxOptions = {}
 ): Promise<void> {

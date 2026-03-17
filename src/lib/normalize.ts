@@ -19,7 +19,7 @@ import type {
 /**
  * Default section order matching current template hardcoded order
  */
-export const DEFAULT_SECTION_ORDER: SectionName[] = [
+export const DEFAULT_SECTION_ORDER: readonly SectionName[] = [
   'summary',
   'skills',
   'experience',

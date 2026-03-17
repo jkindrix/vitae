@@ -6,7 +6,7 @@ export {
   loadDocument,
   isCoverLetterFormat,
 } from './loader.js';
-export type { DocumentResult } from './loader.js';
+export type { DocumentResult, LoadOptions } from './loader.js';
 export {
   validateResume,
   assertValidResume,
@@ -15,6 +15,7 @@ export {
   validateCoverLetter,
   assertValidCoverLetter,
 } from './schema.js';
+export type { ValidationResult } from './schema.js';
 export { listThemes, loadTheme, readCoverLetterTemplate, loadThemeConfig } from './themes.js';
 export {
   renderHtml,
@@ -22,7 +23,7 @@ export {
   generateThemeOverrideCss,
   generateStyleOverrideCss,
 } from './renderer.js';
-export type { RenderOptions } from './renderer.js';
+export type { RenderOptions, RenderResult } from './renderer.js';
 export {
   generatePdf,
   generatePdfBuffer,
@@ -49,7 +50,7 @@ export {
   isVitaeError,
   formatError,
 } from './errors.js';
-export type { ValidationErrorDetail } from './errors.js';
+export type { VitaeErrorCode, ValidationErrorDetail } from './errors.js';
 export { fromJsonResume, toJsonResume, isJsonResumeFormat } from './json-resume.js';
 export { applyVariant } from './variant.js';
 export { normalizeResume, DEFAULT_SECTION_ORDER } from './normalize.js';
@@ -60,8 +61,10 @@ export {
   renderCoverLetterStandaloneHtml,
   coverLetterToMarkdown,
 } from './cover-letter.js';
+export type { CoverLetterRenderResult } from './cover-letter.js';
 export { getLocale, getSectionLabel } from './i18n.js';
 export type { Locale, LocaleLabels, LocaleMonths, LocaleKeywords } from './i18n.js';
 export { auditAccessibility } from './a11y.js';
 export { resolveLlmConfig } from './llm.js';
+export type { ResolveLlmConfigOptions } from './llm.js';
 export { generateSuggestions } from './suggest.js';

@@ -91,6 +91,7 @@ describe('generatePng', () => {
 
   it('generates PNG from cover letter standalone HTML', async () => {
     const coverLetter: CoverLetter = {
+      type: 'cover-letter',
       meta: { name: 'CL PNG Test' },
       recipient: { company: 'Test Co' },
       greeting: 'Dear Hiring Manager,',

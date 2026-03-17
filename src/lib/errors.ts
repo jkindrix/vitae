@@ -7,12 +7,23 @@ interface ErrorOptions {
 }
 
 /**
+ * Error codes for programmatic error handling
+ */
+export type VitaeErrorCode =
+  | 'THEME_ERROR'
+  | 'VALIDATION_ERROR'
+  | 'FILE_ERROR'
+  | 'PDF_ERROR'
+  | 'DOCX_ERROR'
+  | 'LLM_ERROR';
+
+/**
  * Base error class for Vitae errors
  */
 export class VitaeError extends Error {
-  public readonly code: string;
+  public readonly code: VitaeErrorCode;
 
-  constructor(message: string, code: string, options?: ErrorOptions) {
+  constructor(message: string, code: VitaeErrorCode, options?: ErrorOptions) {
     super(message, options);
     this.code = code;
     this.name = 'VitaeError';

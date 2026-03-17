@@ -2,7 +2,7 @@ import { readdir, readFile, stat } from 'fs/promises';
 import { join, dirname, resolve, relative } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { ThemeError } from './errors.js';
-import type { Theme, ThemeConfig } from '../types/index.js';
+import type { ThemeInfo, ThemeConfig } from '../types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,7 +31,7 @@ async function fileExists(path: string): Promise<boolean> {
 /**
  * Load information about a specific theme
  */
-export async function loadTheme(themeName: string): Promise<Theme> {
+export async function loadTheme(themeName: string): Promise<ThemeInfo> {
   const themesDir = getThemesDir();
   const themePath = join(themesDir, themeName);
 
@@ -64,11 +64,11 @@ export async function loadTheme(themeName: string): Promise<Theme> {
 /**
  * List all available themes
  */
-export async function listThemes(): Promise<Theme[]> {
+export async function listThemes(): Promise<ThemeInfo[]> {
   const themesDir = getThemesDir();
   const entries = await readdir(themesDir, { withFileTypes: true });
 
-  const themes: Theme[] = [];
+  const themes: ThemeInfo[] = [];
 
   for (const entry of entries) {
     if (entry.isDirectory()) {
@@ -87,7 +87,7 @@ export async function listThemes(): Promise<Theme[]> {
 /**
  * Read a theme's template file
  */
-export async function readTemplate(theme: Theme): Promise<string> {
+export async function readTemplate(theme: ThemeInfo): Promise<string> {
   const templatePath = join(theme.path, 'template.html');
   return readFile(templatePath, 'utf-8');
 }
@@ -95,7 +95,7 @@ export async function readTemplate(theme: Theme): Promise<string> {
 /**
  * Read a theme's stylesheet
  */
-export async function readStyles(theme: Theme): Promise<string | null> {
+export async function readStyles(theme: ThemeInfo): Promise<string | null> {
   if (!theme.hasStyles) return null;
   const stylePath = join(theme.path, 'style.css');
   return readFile(stylePath, 'utf-8');
@@ -104,7 +104,7 @@ export async function readStyles(theme: Theme): Promise<string | null> {
 /**
  * Get path to theme's DOCX reference file
  */
-export function getDocxReferencePath(theme: Theme): string | null {
+export function getDocxReferencePath(theme: ThemeInfo): string | null {
   if (!theme.hasDocxReference) return null;
   return join(theme.path, 'reference.docx');
 }
@@ -112,7 +112,7 @@ export function getDocxReferencePath(theme: Theme): string | null {
 /**
  * Read a theme's cover letter template file
  */
-export async function readCoverLetterTemplate(theme: Theme): Promise<string> {
+export async function readCoverLetterTemplate(theme: ThemeInfo): Promise<string> {
   if (!theme.hasCoverLetterTemplate) {
     throw new ThemeError(
       `Theme '${theme.name}' does not have a cover letter template (cover-letter.html)`,
@@ -127,7 +127,7 @@ export async function readCoverLetterTemplate(theme: Theme): Promise<string> {
  * Load a theme's configuration file (theme.config.js)
  * Returns null if the theme has no config file.
  */
-export async function loadThemeConfig(theme: Theme): Promise<ThemeConfig | null> {
+export async function loadThemeConfig(theme: ThemeInfo): Promise<ThemeConfig | null> {
   if (!theme.hasConfig) return null;
   const configPath = join(theme.path, 'theme.config.js');
   const configUrl = pathToFileURL(configPath).href;
@@ -141,7 +141,7 @@ export async function loadThemeConfig(theme: Theme): Promise<ThemeConfig | null>
  * Read a variant template file from a theme directory.
  * The filename must resolve to a path within the theme directory.
  */
-export async function readVariantTemplate(theme: Theme, filename: string): Promise<string> {
+export async function readVariantTemplate(theme: ThemeInfo, filename: string): Promise<string> {
   const resolved = resolve(theme.path, filename);
   const rel = relative(theme.path, resolved);
   if (rel.startsWith('..') || resolve(theme.path, rel) !== resolved) {

@@ -201,6 +201,7 @@ describe('PDF generation with PdfResult', () => {
 
   it('generates PDF from cover letter standalone HTML', async () => {
     const coverLetter: CoverLetter = {
+      type: 'cover-letter',
       meta: { name: 'CL PDF Test' },
       recipient: { company: 'Test Co' },
       greeting: 'Dear Hiring Manager,',

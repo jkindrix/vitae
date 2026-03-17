@@ -14,7 +14,7 @@ export interface Recipient {
  * Cover letter data structure
  */
 export interface CoverLetter {
-  type?: 'cover-letter';
+  type: 'cover-letter';
   meta: Meta;
   language?: string;
   recipient: Recipient;

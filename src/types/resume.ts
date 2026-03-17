@@ -374,24 +374,14 @@ export interface NormalizedResume {
 // ---------------------------------------------------------------------------
 
 /**
- * Build output configuration
- */
-export interface BuildOptions {
-  input: string;
-  output: string;
-  theme: string;
-  formats: OutputFormat[];
-}
-
-/**
  * Supported output formats
  */
 export type OutputFormat = 'pdf' | 'docx' | 'html' | 'json' | 'md' | 'png';
 
 /**
- * Theme configuration
+ * Theme filesystem metadata (name, path, available features)
  */
-export interface Theme {
+export interface ThemeInfo {
   name: string;
   path: string;
   hasTemplate: boolean;
