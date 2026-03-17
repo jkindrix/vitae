@@ -344,6 +344,7 @@ function readRequestBody(req: IncomingMessage): Promise<string> {
 
 /**
  * Surgical YAML write-back — only touches the theme: block.
+ * Merges new overrides with existing theme configuration.
  * Preserves all user comments and formatting outside the theme section.
  */
 async function writeThemeOverrides(
@@ -353,22 +354,6 @@ async function writeThemeOverrides(
   const content = await readFile(filePath, 'utf-8');
   const lines = content.split('\n');
 
-  // Build the theme block YAML
-  const themeLines: string[] = ['theme:'];
-  if (overrides.colors && Object.keys(overrides.colors).length > 0) {
-    themeLines.push('  colors:');
-    for (const [key, value] of Object.entries(overrides.colors)) {
-      themeLines.push(`    ${key}: "${value}"`);
-    }
-  }
-  if (overrides.fonts && Object.keys(overrides.fonts).length > 0) {
-    themeLines.push('  fonts:');
-    for (const [key, value] of Object.entries(overrides.fonts)) {
-      themeLines.push(`    ${key}: ${value}`);
-    }
-  }
-  const themeBlock = themeLines.join('\n');
-
   // Find existing theme: block boundaries
   let themeStart = -1;
   let themeEnd = -1;
@@ -376,7 +361,6 @@ async function writeThemeOverrides(
   for (let i = 0; i < lines.length; i++) {
     if (/^theme\s*:/.test(lines[i]!)) {
       themeStart = i;
-      // Find end: next root-level key or end of file
       for (let j = i + 1; j < lines.length; j++) {
         if (/^\S/.test(lines[j]!) && !/^\s*#/.test(lines[j]!) && !/^\s*$/.test(lines[j]!)) {
           themeEnd = j;
@@ -388,14 +372,55 @@ async function writeThemeOverrides(
     }
   }
 
+  // Parse existing theme block to merge with
+  const existingColors: Record<string, string> = {};
+  const existingFonts: Record<string, string> = {};
+
+  if (themeStart >= 0) {
+    let section = '';
+    for (let i = themeStart + 1; i < themeEnd; i++) {
+      const line = lines[i]!;
+      if (/^\s+colors\s*:/.test(line)) {
+        section = 'colors';
+      } else if (/^\s+fonts\s*:/.test(line)) {
+        section = 'fonts';
+      } else {
+        const kvMatch = line.match(/^\s{4,}(\w+)\s*:\s*(.+)/);
+        if (kvMatch) {
+          const val = kvMatch[2]!.replace(/^["']|["']$/g, '').trim();
+          if (section === 'colors') existingColors[kvMatch[1]!] = val;
+          else if (section === 'fonts') existingFonts[kvMatch[1]!] = val;
+        }
+      }
+    }
+  }
+
+  // Merge: new overrides take precedence over existing values
+  const mergedColors = { ...existingColors, ...overrides.colors };
+  const mergedFonts = { ...existingFonts, ...overrides.fonts };
+
+  // Build the merged theme block YAML
+  const themeLines: string[] = ['theme:'];
+  if (Object.keys(mergedColors).length > 0) {
+    themeLines.push('  colors:');
+    for (const [key, value] of Object.entries(mergedColors)) {
+      themeLines.push(`    ${key}: "${value}"`);
+    }
+  }
+  if (Object.keys(mergedFonts).length > 0) {
+    themeLines.push('  fonts:');
+    for (const [key, value] of Object.entries(mergedFonts)) {
+      themeLines.push(`    ${key}: ${value}`);
+    }
+  }
+  const themeBlock = themeLines.join('\n');
+
   let result: string;
   if (themeStart >= 0) {
-    // Replace existing theme block
     const before = lines.slice(0, themeStart);
     const after = lines.slice(themeEnd);
     result = [...before, themeBlock, ...after].join('\n');
   } else {
-    // Append theme block (with blank line separator)
     const trimmed = content.trimEnd();
     result = trimmed + '\n\n' + themeBlock + '\n';
   }

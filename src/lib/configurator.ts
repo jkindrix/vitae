@@ -162,6 +162,16 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
   cursor: pointer;
   font-family: inherit;
 }
+.vitae-cfg-row.modified label::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #89b4fa;
+  margin-right: 4px;
+  vertical-align: middle;
+}
 .vitae-cfg-btn-export {
   background: #89b4fa;
   color: #1e1e2e;
@@ -370,17 +380,40 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
     }
     advancedProps.forEach(([varName, defaultVal]) => {
       const val = getComputedValue(varName) || defaultVal;
+      const isColor = /^#[0-9a-fA-F]{3,8}$/.test(val.trim());
       const row = document.createElement('div');
       row.className = 'vitae-cfg-row';
-      row.innerHTML =
+
+      const labelHtml =
         '<label title="' + varName + '" style="width:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-family:monospace">' +
           varName.replace('--', '') +
-        '</label>' +
-        '<input type="text" value="' + val + '" data-var="' + varName + '">';
-      container.appendChild(row);
-      row.querySelector('input').addEventListener('change', (e) => {
-        applyVar(varName, e.target.value);
-      });
+        '</label>';
+
+      if (isColor) {
+        row.innerHTML = labelHtml +
+          '<div class="vitae-cfg-color-group">' +
+            '<input type="color" value="' + toHex6(val) + '" data-var="' + varName + '">' +
+            '<input type="text" value="' + val + '" data-var="' + varName + '">' +
+          '</div>';
+        container.appendChild(row);
+        const colorInput = row.querySelector('input[type="color"]');
+        const textInput = row.querySelector('input[type="text"]');
+        colorInput.addEventListener('input', () => {
+          textInput.value = colorInput.value;
+          applyVar(varName, colorInput.value);
+        });
+        textInput.addEventListener('change', () => {
+          colorInput.value = toHex6(textInput.value);
+          applyVar(varName, textInput.value);
+        });
+      } else {
+        row.innerHTML = labelHtml +
+          '<input type="text" value="' + val + '" data-var="' + varName + '">';
+        container.appendChild(row);
+        row.querySelector('input[type="text"]').addEventListener('change', (e) => {
+          applyVar(varName, e.target.value);
+        });
+      }
     });
   }
 
@@ -396,11 +429,21 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
   function applyVar(name, value) {
     document.documentElement.style.setProperty(name, value);
     modified[name] = value;
+    markModified(name, true);
   }
 
   function removeVar(name) {
     document.documentElement.style.removeProperty(name);
     delete modified[name];
+    markModified(name, false);
+  }
+
+  function markModified(varName, isModified) {
+    const row = panel.querySelector('[data-var="' + varName + '"]');
+    if (row) {
+      const r = row.closest('.vitae-cfg-row');
+      if (r) r.classList.toggle('modified', isModified);
+    }
   }
 
   function getComputedValue(name) {
@@ -460,6 +503,7 @@ export function generateConfiguratorPanel(options: ConfiguratorOptions): string 
   document.getElementById('vitaeCfgReset').addEventListener('click', () => {
     Object.keys(modified).forEach(k => {
       document.documentElement.style.removeProperty(k);
+      markModified(k, false);
     });
     Object.keys(modified).forEach(k => delete modified[k]);
     init();
