@@ -1,0 +1,734 @@
+/* Timeline Theme for Vitae
+ * Visual vertical timeline for career progression
+ * Connected markers guide the reader through professional history
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors */
+  --color-text: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
+  --color-accent: #3b82f6;
+  --color-accent-dark: #2563eb;
+  --color-accent-light: #93c5fd;
+  --color-accent-hover: #2563eb;
+  --color-border: #e2e8f0;
+  --color-background: #ffffff;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 10.5pt;
+  --font-size-sm: 10pt;
+  --font-size-lg: 11pt;
+  --font-size-xl: 12pt;
+  --font-size-2xl: 14pt;
+  --font-size-3xl: 24pt;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.35;
+  --line-height-relaxed: 1.5;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Timeline-specific tokens */
+  --timeline-line-width: 2px;
+  --timeline-dot-size: 12px;
+  --timeline-gutter: 2rem;
+  --timeline-dot-offset: 0.45rem;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+/* ============================================
+   Resume Container
+   ============================================ */
+.resume {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+/* ============================================
+   Header Section
+   ============================================ */
+.resume__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resume__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.resume__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__contact-item {
+  display: inline;
+}
+
+.resume__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.resume__links {
+  font-size: var(--font-size-sm);
+}
+
+.resume__link {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.resume__link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+.resume__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid var(--color-accent);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   Summary
+   ============================================ */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Skills
+   ============================================ */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.resume__skill-label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__skill-items {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Timeline — The Distinctive Feature
+   ============================================ */
+.resume__timeline {
+  position: relative;
+}
+
+/* Each timeline entry: a role or education item */
+.resume__timeline-entry {
+  position: relative;
+  padding-left: var(--timeline-gutter);
+  padding-bottom: var(--space-lg);
+}
+
+/* The vertical connecting line */
+.resume__timeline-entry::before {
+  content: "";
+  position: absolute;
+  left: var(--timeline-dot-offset);
+  top: 0;
+  bottom: 0;
+  width: var(--timeline-line-width);
+  background: var(--color-accent);
+}
+
+/* The circular dot marker */
+.resume__timeline-entry::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--timeline-dot-offset) - (var(--timeline-dot-size) / 2) + (var(--timeline-line-width) / 2));
+  top: 0.3rem;
+  width: var(--timeline-dot-size);
+  height: var(--timeline-dot-size);
+  border-radius: 50%;
+  background: var(--color-accent);
+  border: 2px solid var(--color-background);
+  box-shadow: 0 0 0 var(--timeline-line-width) var(--color-accent);
+  z-index: 1;
+}
+
+/* Last entry: remove the line below the dot */
+.resume__timeline-entry:last-child {
+  padding-bottom: 0;
+}
+
+.resume__timeline-entry:last-child::before {
+  display: none;
+}
+
+/* Single entry: no line, just the dot */
+.resume__timeline-entry:only-child::before {
+  display: none;
+}
+
+/* Timeline entry header row */
+.resume__timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__timeline-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.resume__timeline-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__timeline-org {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.resume__timeline-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.resume__timeline-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+/* ============================================
+   Highlights (Bullet Points)
+   ============================================ */
+.resume__highlights {
+  list-style: disc;
+  padding-left: var(--space-lg);
+  margin: 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Projects
+   ============================================ */
+.resume__projects {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__project {
+  margin-bottom: 0;
+}
+
+.resume__project-header {
+  margin-bottom: var(--space-xs);
+}
+
+.resume__project-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__project-name:hover {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.resume__project-desc {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Certifications
+   ============================================ */
+.resume__certifications {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resume__certifications li {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__certifications li:last-child {
+  margin-bottom: 0;
+}
+
+.resume__cert-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__cert-issuer {
+  color: var(--color-text-secondary);
+}
+
+.resume__cert-date {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* ============================================
+   Languages
+   ============================================ */
+.resume__languages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.resume__languages li {
+  font-size: var(--font-size-base);
+}
+
+.resume__lang-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__lang-fluency {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   Awards
+   ============================================ */
+.resume__awards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__award-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__award-title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__award-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__award-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Publications
+   ============================================ */
+.resume__publications {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.resume__publication-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__publication-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a.resume__publication-name:hover {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.resume__publication-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__publication-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Volunteer
+   ============================================ */
+.resume__volunteer {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__volunteer:last-child {
+  margin-bottom: 0;
+}
+
+.resume__volunteer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.resume__volunteer-org {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__volunteer-dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__volunteer-position {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+.resume__volunteer-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__references {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.resume__reference-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-accent-light);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10.5pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resume__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .resume__project-name,
+  .resume__publication-name {
+    color: var(--color-text);
+  }
+
+  /* Ensure timeline colors print correctly */
+  .resume__timeline-entry::before,
+  .resume__timeline-entry::after {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Prevent page breaks inside timeline entries */
+  .resume__timeline-entry,
+  .resume__project,
+  .resume__volunteer {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title {
+    page-break-after: avoid;
+  }
+
+  /* Keep timeline section together when possible */
+  .resume__timeline {
+    page-break-inside: avoid;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #f1f5f9;
+  }
+
+  .resume,
+  .cover-letter {
+    background: white;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.08),
+      0 1px 2px rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+}
+
+.cover-letter__header {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cover-letter__name {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.cover-letter__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.cover-letter__links {
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.cover-letter__link:hover {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-border);
+}
+
+.cover-letter__date {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.cover-letter__recipient {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__greeting {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  margin-top: var(--space-lg);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-weight: 600;
+}
+
+@media print {
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__link {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+}
