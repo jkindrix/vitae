@@ -1,0 +1,624 @@
+/* Sharp Theme for Vitae
+ * Swiss International Typographic Style (Massimo Vignelli, Josef Muller-Brockmann)
+ * Form follows function — zero decoration, pure typographic hierarchy
+ * Asymmetric two-column grid for date-aligned entries
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors — pure black/white/gray only */
+  --color-text: #000000;
+  --color-text-secondary: #333333;
+  --color-text-muted: #666666;
+  --color-border: #999999;
+  --color-background: #ffffff;
+
+  /* Typography — canonical Swiss typeface stack */
+  --font-sans: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+  --font-size-base: 10.5pt;
+  --font-size-sm: 9pt;
+  --font-size-section: 11pt;
+  --font-size-title: 13pt;
+  --font-size-name: 28pt;
+  --line-height-tight: 1.15;
+  --line-height-normal: 1.35;
+  --line-height-relaxed: 1.5;
+
+  /* Spacing */
+  --space-xs: 0.15rem;
+  --space-sm: 0.4rem;
+  --space-md: 0.75rem;
+  --space-lg: 1.25rem;
+  --space-xl: 1.75rem;
+  --space-2xl: 2.25rem;
+
+  /* Grid */
+  --grid-aside-width: 1.2in;
+  --grid-gap: 1rem;
+}
+
+/* ============================================
+   Base Reset
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+a {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Resume Container
+   ============================================ */
+.resume {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+/* ============================================
+   Header — Flush-Left, Swiss Style
+   ============================================ */
+.resume__header {
+  text-align: left;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resume__name {
+  font-size: var(--font-size-name);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__title {
+  font-size: var(--font-size-title);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--space-sm);
+}
+
+.resume__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.resume__contact-item {
+  display: inline;
+}
+
+.resume__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-text-muted);
+}
+
+.resume__link {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.resume__link:hover {
+  text-decoration: underline;
+}
+
+/* ============================================
+   Section Titles — Uppercase, Letterspaced
+   ============================================ */
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+.resume__section-title {
+  font-size: var(--font-size-section);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-text);
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-tight);
+}
+
+.resume__section:first-child .resume__section-title {
+  margin-top: 0;
+}
+
+/* ============================================
+   Asymmetric Entry Grid — The Core Layout
+   Dates/location right-aligned on the left,
+   content on the right.
+   ============================================ */
+.resume__entry-grid {
+  display: grid;
+  grid-template-columns: var(--grid-aside-width) 1fr;
+  gap: 0 var(--grid-gap);
+  margin-bottom: var(--space-md);
+}
+
+.resume__entry-grid:last-child {
+  margin-bottom: 0;
+}
+
+.resume__entry-aside {
+  text-align: right;
+  padding-top: 0.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.resume__dates {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+}
+
+.resume__location {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.resume__entry-content {
+  min-width: 0;
+}
+
+/* ============================================
+   Entry Headings (Role + Company, etc.)
+   ============================================ */
+.resume__entry-heading {
+  margin-bottom: var(--space-xs);
+  line-height: var(--line-height-normal);
+}
+
+.resume__role-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  display: block;
+}
+
+.resume__company-name {
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  display: block;
+}
+
+.resume__institution-name {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  display: block;
+}
+
+.resume__education-degree {
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  display: block;
+}
+
+.resume__role-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+/* ============================================
+   Highlights (Bullet Points)
+   ============================================ */
+.resume__highlights {
+  list-style: disc;
+  padding-left: 1.2em;
+  margin: var(--space-xs) 0 0 0;
+}
+
+.resume__highlights li {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Summary — Full Width
+   ============================================ */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Skills — Full Width, Inline
+   ============================================ */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.resume__skill-category {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.resume__skill-label {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__skill-items {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Projects — Full Width
+   ============================================ */
+.resume__projects {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.resume__project-header {
+  margin-bottom: var(--space-xs);
+}
+
+.resume__project-name {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+a.resume__project-name:hover {
+  text-decoration: underline;
+}
+
+.resume__project-desc {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Certifications — Grid Layout
+   ============================================ */
+.resume__cert-name {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__cert-issuer {
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Languages — Full Width, Inline
+   ============================================ */
+.resume__languages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.resume__languages li {
+  font-size: var(--font-size-base);
+}
+
+.resume__lang-name {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__lang-fluency {
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   Awards — Grid Layout
+   ============================================ */
+.resume__award-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__award-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Publications — Grid Layout
+   ============================================ */
+.resume__publication-name {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+a.resume__publication-name:hover {
+  text-decoration: underline;
+}
+
+.resume__publication-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Volunteer — Grid Layout
+   ============================================ */
+.resume__volunteer-org {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+  display: block;
+}
+
+.resume__volunteer-position {
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  display: block;
+}
+
+.resume__volunteer-summary {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0;
+}
+
+/* ============================================
+   References — Full Width
+   ============================================ */
+.resume__references {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.resume__reference-name {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-size: var(--font-size-base);
+  font-style: normal;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 0;
+  padding-left: var(--space-md);
+  border-left: none;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10.5pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .resume__link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .resume__project-name,
+  a.resume__publication-name {
+    color: var(--color-text);
+  }
+
+  /* Prevent page breaks inside entries */
+  .resume__entry-grid,
+  .resume__project {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title {
+    page-break-after: avoid;
+  }
+}
+
+/* ============================================
+   Screen-Only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #f0f0f0;
+  }
+
+  .resume,
+  .cover-letter {
+    background: white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+}
+
+.cover-letter__header {
+  text-align: left;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cover-letter__name {
+  font-size: var(--font-size-name);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  line-height: var(--line-height-tight);
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-size: var(--font-size-title);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.cover-letter__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-text-muted);
+}
+
+.cover-letter__links {
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.cover-letter__link:hover {
+  text-decoration: underline;
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-text-muted);
+}
+
+.cover-letter__date {
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.cover-letter__recipient {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__greeting {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  margin-top: var(--space-lg);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-weight: 700;
+}
+
+@media print {
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+}

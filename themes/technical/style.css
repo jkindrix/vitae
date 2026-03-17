@@ -1,0 +1,740 @@
+/* Technical Theme for Vitae
+ * Monospace developer aesthetic with terminal-inspired accents.
+ * A love letter to developer culture — refined and professional,
+ * clearly signaling "I am a builder."
+ */
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Colors — Terminal-inspired palette */
+  --color-text: #1a1a2e;
+  --color-text-secondary: #374151;
+  --color-text-muted: #6b7280;
+  --color-accent: #06b6d4;
+  --color-accent-light: #22d3ee;
+  --color-accent-dark: #0891b2;
+  --color-header-bg: #111827;
+  --color-header-text: #f9fafb;
+  --color-header-accent: #22d3ee;
+  --color-header-muted: rgba(249, 250, 251, 0.6);
+  --color-border: #374151;
+  --color-border-light: #4b5563;
+  --color-background: #ffffff;
+  --color-tag-bg: #f3f4f6;
+  --color-tag-border: #d1d5db;
+
+  /* Typography — Monospace stack */
+  --font-mono: "Fira Code", "Fira Mono", "Cascadia Code", "JetBrains Mono",
+    "Consolas", "Menlo", "Monaco", monospace;
+  --font-size-base: 10pt;
+  --font-size-sm: 9pt;
+  --font-size-xs: 8pt;
+  --font-size-lg: 11pt;
+  --font-size-xl: 12pt;
+  --font-size-2xl: 14pt;
+  --font-size-3xl: 20pt;
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.4;
+  --line-height-relaxed: 1.55;
+
+  /* Spacing — Information-dense but readable */
+  --space-xs: 0.2rem;
+  --space-sm: 0.4rem;
+  --space-md: 0.75rem;
+  --space-lg: 1.25rem;
+  --space-xl: 1.75rem;
+  --space-2xl: 2.25rem;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+a {
+  color: var(--color-accent-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+/* ============================================
+   Resume Container
+   ============================================ */
+.resume {
+  max-width: 8.5in;
+  min-height: 11in;
+  margin: 0 auto;
+  background: var(--color-background);
+}
+
+/* ============================================
+   Header Banner — Dark charcoal terminal feel
+   ============================================ */
+.resume__header {
+  background: var(--color-header-bg);
+  color: var(--color-header-text);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+}
+
+.resume__name {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-header-text);
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-xs);
+  line-height: var(--line-height-tight);
+}
+
+.resume__title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--color-header-accent);
+  letter-spacing: 0.03em;
+  margin-bottom: var(--space-md);
+}
+
+.resume__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-header-text);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__contact-item {
+  white-space: nowrap;
+}
+
+.resume__contact-item:not(:last-child)::after {
+  content: "|";
+  margin-left: var(--space-sm);
+  color: var(--color-header-muted);
+}
+
+.resume__links {
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-sm);
+}
+
+.resume__link {
+  color: var(--color-header-accent);
+  text-decoration: none;
+  opacity: 0.9;
+  transition: opacity 0.15s ease;
+}
+
+.resume__link:hover {
+  opacity: 1;
+  text-decoration: underline;
+  color: var(--color-header-accent);
+}
+
+.resume__link:not(:last-child)::after {
+  content: "//";
+  margin: 0 var(--space-sm);
+  color: var(--color-header-muted);
+  font-weight: 400;
+}
+
+/* ============================================
+   Body Content
+   ============================================ */
+.resume__body {
+  padding: var(--space-lg) var(--space-lg) var(--space-xl);
+}
+
+/* ============================================
+   Sections
+   ============================================ */
+.resume__section {
+  margin-bottom: var(--space-lg);
+}
+
+.resume__section:last-child {
+  margin-bottom: 0;
+}
+
+/* Section title with ## prefix (like markdown headers) */
+.resume__section-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-tight);
+}
+
+.resume__section-title::before {
+  content: "## ";
+  color: var(--color-accent);
+  font-weight: 400;
+}
+
+/* ============================================
+   Summary / Profile
+   ============================================ */
+.resume__summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+}
+
+/* ============================================
+   Skills (Tag Badges)
+   ============================================ */
+.resume__skills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.resume__skill-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.resume__skill-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-right: var(--space-xs);
+  white-space: nowrap;
+}
+
+.resume__skill-label::after {
+  content: ":";
+}
+
+.resume__skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+
+.resume__skill-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  background: var(--color-tag-bg);
+  border: 1px solid var(--color-tag-border);
+  padding: 0.05rem 0.4rem;
+  color: var(--color-text);
+  white-space: nowrap;
+  line-height: 1.5;
+}
+
+/* ============================================
+   Entry (Experience, Education, Projects, etc.)
+   ============================================ */
+.resume__entry {
+  margin-bottom: var(--space-md);
+}
+
+.resume__entry:last-child {
+  margin-bottom: 0;
+}
+
+.resume__entry--compact {
+  margin-bottom: var(--space-sm);
+}
+
+.resume__entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__entry-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.resume__entry-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__entry-subtitle {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__entry-dates {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.resume__entry-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* ============================================
+   Experience: Company & Roles
+   ============================================ */
+.resume__company-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role {
+  margin-bottom: var(--space-sm);
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--color-accent);
+}
+
+.resume__role:last-child {
+  margin-bottom: 0;
+}
+
+.resume__role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.resume__role-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-accent-dark);
+}
+
+.resume__role-meta {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.resume__role-location {
+  color: var(--color-text-muted);
+}
+
+.resume__role-summary {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+/* ============================================
+   Highlights — Terminal prompt ">" prefix
+   ============================================ */
+.resume__highlights {
+  list-style: none;
+  padding-left: 1.2em;
+  margin: 0;
+}
+
+.resume__highlights li {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-xs);
+  position: relative;
+}
+
+.resume__highlights li::before {
+  content: ">";
+  position: absolute;
+  left: -1.2em;
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.resume__highlights li:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   Projects — Terminal-style links
+   ============================================ */
+.resume__project-link {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.resume__project-link:hover {
+  color: var(--color-accent);
+}
+
+/* ============================================
+   Languages
+   ============================================ */
+.resume__languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-lg);
+}
+
+.resume__language {
+  display: flex;
+  flex-direction: column;
+}
+
+.resume__language-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__language-fluency {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* ============================================
+   References
+   ============================================ */
+.resume__reference {
+  margin-bottom: var(--space-md);
+}
+
+.resume__reference:last-child {
+  margin-bottom: 0;
+}
+
+.resume__reference-name {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.resume__reference-quote {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0 var(--space-md);
+  padding-left: var(--space-sm);
+  border-left: 2px solid var(--color-accent);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  html {
+    font-size: 10pt;
+  }
+
+  body {
+    background: white;
+  }
+
+  .resume {
+    max-width: none;
+    margin: 0;
+    min-height: auto;
+  }
+
+  /* Preserve the dark header in print */
+  .resume__header {
+    background: var(--color-header-bg) !important;
+    color: var(--color-header-text) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .resume__name {
+    color: var(--color-header-text) !important;
+  }
+
+  .resume__title {
+    color: var(--color-header-accent) !important;
+  }
+
+  /* Preserve skill tag backgrounds */
+  .resume__skill-tag {
+    background: var(--color-tag-bg) !important;
+    border-color: var(--color-tag-border) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Preserve accent-colored elements */
+  .resume__highlights li::before {
+    color: var(--color-accent) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .resume__section-title::before {
+    color: var(--color-accent) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .resume__role {
+    border-left-color: var(--color-accent) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .resume__link {
+    color: var(--color-header-accent) !important;
+  }
+
+  /* Prevent page breaks inside elements */
+  .resume__entry,
+  .resume__role {
+    page-break-inside: avoid;
+  }
+
+  .resume__section-title,
+  .resume__company-name {
+    page-break-after: avoid;
+  }
+
+  .resume__section {
+    page-break-inside: avoid;
+  }
+
+  /* Cover letter print */
+  .cover-letter {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cover-letter__header {
+    background: var(--color-header-bg) !important;
+    color: var(--color-header-text) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cover-letter__name {
+    color: var(--color-header-text) !important;
+  }
+
+  .cover-letter__title {
+    color: var(--color-header-accent) !important;
+  }
+
+  .cover-letter__link {
+    color: var(--color-header-accent) !important;
+    text-decoration: none;
+  }
+}
+
+/* ============================================
+   Screen-only Styles (Preview)
+   ============================================ */
+@media screen {
+  body {
+    padding: var(--space-xl) var(--space-md);
+    background: #1e293b;
+  }
+
+  .resume,
+  .cover-letter {
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.15),
+      0 10px 24px rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+}
+
+/* ============================================
+   Cover Letter Styles
+   ============================================ */
+.cover-letter {
+  max-width: 8.5in;
+  margin: 0 auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+.cover-letter__header {
+  background: var(--color-header-bg);
+  color: var(--color-header-text);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+}
+
+.cover-letter__name {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--color-header-text);
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--color-header-accent);
+  letter-spacing: 0.03em;
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__contact {
+  font-size: var(--font-size-sm);
+  color: var(--color-header-text);
+  margin-bottom: var(--space-xs);
+}
+
+.cover-letter__contact-item {
+  display: inline;
+}
+
+.cover-letter__contact-item:not(:last-child)::after {
+  content: " | ";
+  color: var(--color-header-muted);
+}
+
+.cover-letter__links {
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-sm);
+}
+
+.cover-letter__link {
+  color: var(--color-header-accent);
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.cover-letter__link:hover {
+  opacity: 1;
+  text-decoration: underline;
+  color: var(--color-header-accent);
+}
+
+.cover-letter__link:not(:last-child)::after {
+  content: "//";
+  margin: 0 var(--space-sm);
+  color: var(--color-header-muted);
+  font-weight: 400;
+}
+
+.cover-letter__date {
+  padding: 0 var(--space-lg);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-md);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+.cover-letter__recipient {
+  padding: 0 var(--space-lg);
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-normal);
+}
+
+.cover-letter__recipient p {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.cover-letter__subject {
+  padding: 0 var(--space-lg);
+  margin-bottom: var(--space-md);
+  color: var(--color-accent-dark);
+  font-weight: 700;
+}
+
+.cover-letter__greeting {
+  padding: 0 var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__body {
+  padding: 0 var(--space-lg);
+}
+
+.cover-letter__body p {
+  margin-bottom: var(--space-md);
+  text-indent: 0;
+}
+
+.cover-letter__body p:last-child {
+  margin-bottom: var(--space-md);
+}
+
+.cover-letter__closing {
+  padding: 0 var(--space-lg);
+  margin-top: var(--space-lg);
+  padding-bottom: var(--space-xl);
+}
+
+.cover-letter__closing p {
+  margin: 0;
+}
+
+.cover-letter__signature {
+  margin-top: var(--space-lg);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-accent-dark);
+}
