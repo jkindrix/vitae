@@ -9,7 +9,11 @@ import type { CoverLetter, ThemeConfig } from '../types/index.js';
  * Create a Nunjucks environment for cover letter rendering.
  * When a theme config is provided, its filters and globals are registered.
  */
-function createCoverLetterEnvironment(config?: ThemeConfig | null): nunjucks.Environment {
+function createCoverLetterEnvironment(
+  config?: ThemeConfig | null,
+  language?: string
+): nunjucks.Environment {
+  const locale = getLocale(language);
   const env = new nunjucks.Environment(null, {
     autoescape: true,
     trimBlocks: true,
@@ -19,15 +23,15 @@ function createCoverLetterEnvironment(config?: ThemeConfig | null): nunjucks.Env
   // Date formatting filters (same as resume renderer)
   env.addFilter('formatDate', (dateStr: string | undefined) => {
     if (!dateStr) return '';
-    return formatDate(dateStr);
+    return formatDate(dateStr, locale);
   });
   env.addFilter('formatDateShort', (dateStr: string | undefined) => {
     if (!dateStr) return '';
-    return formatDateShort(dateStr);
+    return formatDateShort(dateStr, locale);
   });
   env.addFilter('formatDateRange', (start: string | undefined, end?: string | undefined) => {
     if (!start) return '';
-    return formatDateRange(start, end, { locale: getLocale() });
+    return formatDateRange(start, end, { locale });
   });
 
   env.addFilter('joinItems', (items: string[] | undefined, separator?: string) => {
@@ -79,7 +83,7 @@ export async function renderCoverLetterHtml(
   const template = await readCoverLetterTemplate(theme);
   const css = await readStyles(theme);
 
-  const env = createCoverLetterEnvironment(config);
+  const env = createCoverLetterEnvironment(config, coverLetter.language);
 
   const html = env.renderString(template, {
     meta: coverLetter.meta,

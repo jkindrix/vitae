@@ -137,7 +137,7 @@
   <ul class="resume__certifications">
     {% for cert in certifications %}
     <li>
-      <span class="resume__cert-name">{{ cert.name }}</span>{% if cert.issuer %}, {{ cert.issuer }}{% endif %}{% if cert.date %} ({{ cert.date }}){% endif %}
+      <span class="resume__cert-name">{{ cert.name }}</span>{% if cert.issuer %}, {{ cert.issuer }}{% endif %}{% if cert.date %} ({{ cert.date | formatDateShort }}){% endif %}
     </li>
     {% endfor %}
   </ul>
@@ -160,7 +160,7 @@
       </div>
       {% if award.date %}
       <div class="resume__entry-secondary">
-        <span class="resume__entry-dates">{{ award.date }}</span>
+        <span class="resume__entry-dates">{{ award.date | formatDateShort }}</span>
       </div>
       {% endif %}
     </div>
@@ -192,7 +192,7 @@
       </div>
       {% if pub.date %}
       <div class="resume__entry-secondary">
-        <span class="resume__entry-dates">{{ pub.date }}</span>
+        <span class="resume__entry-dates">{{ pub.date | formatDateShort }}</span>
       </div>
       {% endif %}
     </div>

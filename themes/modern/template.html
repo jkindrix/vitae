@@ -27,7 +27,7 @@
     <li>
       <span class="resume__cert-name">{{ cert.name }}</span>
       {% if cert.issuer %}<br><span class="resume__cert-issuer">{{ cert.issuer }}</span>{% endif %}
-      {% if cert.date %}<br><span class="resume__cert-date">{{ cert.date }}</span>{% endif %}
+      {% if cert.date %}<br><span class="resume__cert-date">{{ cert.date | formatDateShort }}</span>{% endif %}
     </li>
     {% endfor %}
   </ul>
@@ -177,7 +177,7 @@
         {% endif %}
       </div>
       {% if award.date %}
-      <span class="resume__entry-dates">{{ award.date }}</span>
+      <span class="resume__entry-dates">{{ award.date | formatDateShort }}</span>
       {% endif %}
     </div>
     {% if award.summary %}
@@ -207,7 +207,7 @@
         {% endif %}
       </div>
       {% if pub.date %}
-      <span class="resume__entry-dates">{{ pub.date }}</span>
+      <span class="resume__entry-dates">{{ pub.date | formatDateShort }}</span>
       {% endif %}
     </div>
     {% if pub.summary %}

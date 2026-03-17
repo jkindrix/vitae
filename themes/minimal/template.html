@@ -38,7 +38,7 @@
         <span class="resume__role-title">{{ role.title }}</span>
         <span class="resume__role-meta">
           {% if role.start %}{{ role.start | formatDateShort }}{% endif %}
-          {% if role.end %} – {{ role.end | formatDateShort }}{% endif %}
+          {% if role.end %} – {{ role.end | formatDateShort }}{% elif role.start %} – {{ labels.present or "Present" }}{% endif %}
           {% if role.location %} | {{ role.location }}{% endif %}
         </span>
       </div>
@@ -133,7 +133,7 @@
     <li>
       <span class="resume__cert-name">{{ cert.name }}</span>
       {% if cert.issuer %}<span class="resume__cert-issuer"> — {{ cert.issuer }}</span>{% endif %}
-      {% if cert.date %}<span class="resume__cert-date"> ({{ cert.date }})</span>{% endif %}
+      {% if cert.date %}<span class="resume__cert-date"> ({{ cert.date | formatDateShort }})</span>{% endif %}
     </li>
     {% endfor %}
   </ul>
@@ -169,7 +169,7 @@
         {% if award.awarder or award.date %}
         <span class="resume__award-meta">
           {% if award.awarder %}{{ award.awarder }}{% endif %}
-          {% if award.date %} ({{ award.date }}){% endif %}
+          {% if award.date %} ({{ award.date | formatDateShort }}){% endif %}
         </span>
         {% endif %}
       </div>
@@ -199,7 +199,7 @@
         {% if pub.publisher or pub.date %}
         <span class="resume__publication-meta">
           {% if pub.publisher %}{{ pub.publisher }}{% endif %}
-          {% if pub.date %} ({{ pub.date }}){% endif %}
+          {% if pub.date %} ({{ pub.date | formatDateShort }}){% endif %}
         </span>
         {% endif %}
       </div>

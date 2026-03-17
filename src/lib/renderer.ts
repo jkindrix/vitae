@@ -30,7 +30,11 @@ export interface RenderOptions {
  * When a theme config is provided, its custom filters and globals are
  * registered on the environment after the built-in ones.
  */
-function createEnvironment(locale: Locale, config?: ThemeConfig | null): nunjucks.Environment {
+function createEnvironment(
+  locale: Locale,
+  config?: ThemeConfig | null,
+  themeName?: string
+): nunjucks.Environment {
   const env = new nunjucks.Environment(null, {
     autoescape: true,
     trimBlocks: true,
@@ -61,9 +65,22 @@ function createEnvironment(locale: Locale, config?: ThemeConfig | null): nunjuck
     }
   });
 
-  // Register theme-provided filters
+  // Register theme-provided filters (guard against shadowing built-ins)
+  const builtInFilters = new Set([
+    'formatDate',
+    'formatDateShort',
+    'formatDateRange',
+    'joinItems',
+    'domain',
+  ]);
   if (config?.filters) {
     for (const f of config.filters) {
+      if (builtInFilters.has(f.name)) {
+        throw new ThemeError(
+          `Theme filter "${f.name}" shadows a built-in filter`,
+          themeName ?? 'unknown'
+        );
+      }
       env.addFilter(f.name, f.filter);
     }
   }
@@ -128,7 +145,7 @@ export async function renderHtml(
 
   const css = await readStyles(theme);
   const locale = getLocale(resume.language);
-  const env = createEnvironment(locale, config);
+  const env = createEnvironment(locale, config, themeName);
 
   // Build template context
   const context: Record<string, unknown> = {
