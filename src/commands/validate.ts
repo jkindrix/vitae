@@ -31,7 +31,13 @@ export async function validateCommand(
       const result = await validateCoverLetter(data);
 
       if (options.json) {
-        console.log(JSON.stringify({ valid: result.valid, errors: result.errors, type: 'cover-letter' }, null, 2));
+        console.log(
+          JSON.stringify(
+            { valid: result.valid, errors: result.errors, type: 'cover-letter' },
+            null,
+            2
+          )
+        );
         if (!result.valid) process.exitCode = 1;
         return;
       }
@@ -77,7 +83,9 @@ export async function validateCommand(
       const result = await validateResume(data);
 
       if (options.json) {
-        console.log(JSON.stringify({ valid: result.valid, errors: result.errors, type: 'resume' }, null, 2));
+        console.log(
+          JSON.stringify({ valid: result.valid, errors: result.errors, type: 'resume' }, null, 2)
+        );
         if (!result.valid) process.exitCode = 1;
         return;
       }

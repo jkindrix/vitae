@@ -29,6 +29,8 @@ A resume generator that converts YAML to PDF, DOCX, HTML, JSON, Markdown, and PN
 
 - **Node.js 20+** (required)
 
+> **Note:** Vitae is an ESM-only package. It requires Node.js 20+ with ES module support (`import`, not `require`).
+
 ### Install from npm
 
 ```bash
@@ -121,7 +123,7 @@ vitae build cover-letter.yaml                     # Build a cover letter (auto-d
 **Options:**
 | Option | Description | Default |
 |--------|-------------|---------|
-| `-f, --formats <formats>` | Comma-separated output formats: `pdf,docx,html,json,md,png` | `pdf,docx,html` |
+| `-f, --formats <formats>` | Comma-separated output formats: `pdf,docx,html,json,md,png` | `pdf,docx,html` (resumes), `pdf,html` (cover letters) |
 | `-o, --output <dir>` | Output directory | Input file directory |
 | `-n, --name <prefix>` | Output filename prefix | Input filename |
 | `-t, --theme <name>` | Theme to use | `minimal` |

@@ -221,10 +221,7 @@ program
     '--provider <name>',
     'LLM provider: openai, anthropic, ollama (auto-detected from env vars if omitted)'
   )
-  .option(
-    '--model <name>',
-    'LLM model to use (defaults: gpt-4o-mini, claude-sonnet-4-5, llama3.2)'
-  )
+  .option('--model <name>', 'LLM model to use (defaults: gpt-4o-mini, claude-sonnet-4-5, llama3.2)')
   .option('--base-url <url>', 'Custom API base URL (for Ollama or proxies)')
   .option('--json', 'Output results as JSON')
   .action(async (input: string, options) => {

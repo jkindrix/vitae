@@ -183,7 +183,9 @@ export async function deployCommand(
     // 4. Initialize git repo in temp dir, commit, and push
     if (options.dryRun) {
       console.log(chalk.cyan(`[dry-run] Would push to ${options.remote}/${options.branch}`));
-      console.log(chalk.cyan(`[dry-run] Files: index.html${options.cname ? ', CNAME' : ''}, .nojekyll`));
+      console.log(
+        chalk.cyan(`[dry-run] Files: index.html${options.cname ? ', CNAME' : ''}, .nojekyll`)
+      );
       console.log(chalk.cyan(`[dry-run] Remote: ${remoteUrl}`));
       console.log(chalk.cyan(`[dry-run] Message: ${options.message}`));
       return;

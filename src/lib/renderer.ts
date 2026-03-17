@@ -155,7 +155,10 @@ export async function renderHtml(
     const reserved = new Set(Object.keys(context));
     for (const key of Object.keys(helperContext)) {
       if (reserved.has(key)) {
-        throw new ThemeError(`Theme helper key "${key}" collides with a reserved context variable`, themeName);
+        throw new ThemeError(
+          `Theme helper key "${key}" collides with a reserved context variable`,
+          themeName
+        );
       }
     }
     Object.assign(context, helperContext);

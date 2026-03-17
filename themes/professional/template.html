@@ -64,8 +64,8 @@
       <div class="resume__entry-secondary">
         {% if edu.start or edu.end %}
         <span class="resume__entry-dates">
-          {% if edu.start %}{{ edu.start }}{% endif %}
-          {% if edu.end %} - {{ edu.end }}{% endif %}
+          {% if edu.start %}{{ edu.start | formatDateShort }}{% endif %}
+          {% if edu.end %} - {{ edu.end | formatDateShort }}{% endif %}
         </span>
         {% endif %}
       </div>
@@ -221,8 +221,8 @@
       <div class="resume__entry-secondary">
         {% if vol.start or vol.end %}
         <span class="resume__entry-dates">
-          {% if vol.start %}{{ vol.start }}{% endif %}
-          {% if vol.end %} - {{ vol.end }}{% endif %}
+          {% if vol.start %}{{ vol.start | formatDateShort }}{% endif %}
+          {% if vol.end %} - {{ vol.end | formatDateShort }}{% endif %}
         </span>
         {% endif %}
       </div>

@@ -160,8 +160,7 @@ describe('schema validation', () => {
         ],
       };
       const result = await validateResume(extended);
-      expect(result.valid).toBe(true
-      ).toBe(true);
+      expect(result.valid).toBe(true).toBe(true);
     });
 
     it('rejects experience entry with unknown properties', async () => {
