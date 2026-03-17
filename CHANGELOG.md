@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ## [Unreleased]
 
 ### Added
+- Interactive theme configurator panel (`vitae preview --configure`) with live color/font editing, theme switching, and YAML export
 - `vitae deploy` command for publishing resumes to GitHub Pages
 - Snapshot tests for HTML (all 3 themes), Markdown, and cover letter output
 - CLI smoke tests for build, validate, check, audit, tailor, import, and themes commands

@@ -11,7 +11,7 @@ src/
 │   ├── index.ts            # Command barrel export
 │   ├── build.ts            # Multi-format generation with watch mode
 │   ├── init.ts             # Template scaffolding (resume + cover letter)
-│   ├── preview.ts          # Hot-reload dev server
+│   ├── preview.ts          # Hot-reload dev server + theme configurator API
 │   ├── validate.ts         # Schema validation
 │   ├── check.ts            # ATS compatibility scoring
 │   ├── audit.ts            # WCAG accessibility auditing
@@ -33,6 +33,8 @@ src/
 │   ├── docx-styles.ts      # Shared DOCX styling infrastructure
 │   ├── markdown.ts         # Markdown resume rendering
 │   ├── cover-letter.ts     # Cover letter rendering (HTML, Markdown)
+│   ├── configurator.ts     # Theme configurator panel generation
+│   ├── css-properties.ts   # CSS custom property parser
 │   ├── json-resume.ts      # Bidirectional JSON Resume conversion
 │   ├── ats.ts              # ATS compatibility analysis (pure static)
 │   ├── a11y.ts             # WCAG accessibility auditing via linkedom

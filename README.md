@@ -17,6 +17,7 @@ A resume generator that converts YAML to PDF, DOCX, HTML, JSON, Markdown, and PN
 - **JSON Resume** — Bidirectional import/export with the [JSON Resume](https://jsonresume.org/) standard
 - **Watch mode** — Rebuild automatically on file changes
 - **Live preview** — Hot-reload preview server for rapid iteration
+- **Theme configurator** — Visual color/font editor with live preview and YAML export
 - **Schema validation** — Catch errors before generating; provides editor autocompletion via JSON Schema
 - **CLI & library** — Use from the command line or as a Node.js module
 - **Zero system deps** — Only requires Node.js 20+ (Chromium auto-installed for PDF/PNG via Playwright)
@@ -146,6 +147,7 @@ vitae preview resume.yaml                         # Preview on port 3000
 vitae preview resume.yaml -p 8080                 # Custom port
 vitae preview resume.yaml -t minimal              # Use specific theme
 vitae preview resume.yaml -v backend.variant.yaml # Preview with variant applied
+vitae preview resume.yaml --configure             # Open with theme configurator
 ```
 
 **Options:**
@@ -154,7 +156,10 @@ vitae preview resume.yaml -v backend.variant.yaml # Preview with variant applied
 | `-p, --port <number>` | Port to run server on | `3000` |
 | `-t, --theme <name>` | Theme to use | `minimal` |
 | `-v, --variant <path>` | Variant YAML file for role-specific filtering | — |
-| `-l, --layout <name>` | Theme layout variant to use | — |
+| `-l, --layout <name>` | Theme layout preset name | — |
+| `--configure` | Open interactive theme configurator panel | — |
+
+The configurator panel lets you browse themes, adjust colors and fonts with visual controls, and export the configuration back to your `resume.yaml`. Changes preview instantly — no page reload needed for color and font adjustments. Toggle the panel with `Ctrl+Shift+T`.
 
 ### `vitae validate <input>`
 
