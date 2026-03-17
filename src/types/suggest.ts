@@ -19,17 +19,6 @@ export interface LlmConfig {
   baseUrl?: string;
 }
 
-/** A chat message sent to the LLM */
-export interface LlmMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
-/** Response from the LLM */
-export interface LlmResponse {
-  content: string;
-}
-
 // ---------------------------------------------------------------------------
 // Suggestion types
 // ---------------------------------------------------------------------------

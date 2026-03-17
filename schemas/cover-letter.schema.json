@@ -4,7 +4,7 @@
   "title": "Vitae Cover Letter Schema",
   "description": "Schema for vitae cover letter YAML files",
   "type": "object",
-  "required": ["meta", "recipient", "greeting", "body", "closing"],
+  "required": ["type", "meta", "recipient", "greeting", "body", "closing"],
   "properties": {
     "type": {
       "type": "string",

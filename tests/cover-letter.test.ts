@@ -21,6 +21,7 @@ import type { CoverLetter } from '../src/types/index.js';
 
 function makeValidCoverLetter(): CoverLetter {
   return {
+    type: 'cover-letter',
     meta: {
       name: 'Jane Smith',
       title: 'Software Engineer',
@@ -49,6 +50,7 @@ function makeValidCoverLetter(): CoverLetter {
 
 function makeMinimalCoverLetter(): CoverLetter {
   return {
+    type: 'cover-letter',
     meta: { name: 'Jane Smith' },
     recipient: {},
     greeting: 'Dear Hiring Manager,',

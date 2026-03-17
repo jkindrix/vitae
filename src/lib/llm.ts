@@ -4,7 +4,18 @@
  */
 
 import { LlmError } from './errors.js';
-import type { LlmConfig, LlmMessage, LlmProvider, LlmResponse } from '../types/suggest.js';
+import type { LlmConfig, LlmProvider } from '../types/suggest.js';
+
+/** A chat message sent to the LLM */
+export interface LlmMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+/** Response from the LLM */
+export interface LlmResponse {
+  content: string;
+}
 
 // ---------------------------------------------------------------------------
 // Default models per provider

@@ -4,6 +4,7 @@
  */
 
 import { resolveLlmConfig, callLlm } from './llm.js';
+import type { LlmMessage } from './llm.js';
 import { LlmError } from './errors.js';
 import type { Resume, Highlight } from '../types/resume.js';
 import type {
@@ -12,7 +13,6 @@ import type {
   SectionSuggestions,
   Suggestion,
   SuggestionCategory,
-  LlmMessage,
 } from '../types/suggest.js';
 
 // ---------------------------------------------------------------------------

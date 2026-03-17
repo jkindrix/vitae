@@ -19,7 +19,9 @@ export interface AtsFinding {
 export interface AtsCategoryScore {
   category: AtsCategory;
   label: string;
+  /** Category score (0–100) */
   score: number;
+  /** Category weight as a fraction (0–1) */
   weight: number;
   findings: AtsFinding[];
 }
@@ -55,6 +57,7 @@ export interface AtsAnalyzeOptions {
 
 /** Complete ATS analysis result */
 export interface AtsResult {
+  /** Overall weighted score (0–100) */
   score: number;
   categories: AtsCategoryScore[];
   findings: AtsFinding[];

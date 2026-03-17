@@ -25,7 +25,9 @@ export interface A11yFinding {
 export interface A11yCategoryScore {
   category: A11yCategory;
   label: string;
+  /** Category score (0–100) */
   score: number;
+  /** Category weight as a fraction (0–1) */
   weight: number;
   findings: A11yFinding[];
 }
@@ -48,6 +50,7 @@ export interface A11yAuditOptions {
 
 /** Complete accessibility audit result */
 export interface A11yResult {
+  /** Overall weighted score (0–100) */
   score: number;
   categories: A11yCategoryScore[];
   findings: A11yFinding[];
