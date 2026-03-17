@@ -1,6 +1,8 @@
-import { createServer, type ServerResponse } from 'http';
+import { createServer, type IncomingMessage, type ServerResponse } from 'http';
 import { resolve, dirname } from 'path';
+import { readFile, writeFile } from 'fs/promises';
 import { watch, type FSWatcher } from 'fs';
+import { randomUUID } from 'crypto';
 import chalk from 'chalk';
 import {
   loadVariant,
@@ -9,14 +11,21 @@ import {
   normalizeResume,
   renderStandaloneHtml,
   renderCoverLetterStandaloneHtml,
+  listThemes,
+  loadTheme,
 } from '../lib/index.js';
 import type { RenderOptions } from '../lib/index.js';
+import { readStyles } from '../lib/themes.js';
+import { parseCssCustomProperties } from '../lib/css-properties.js';
+import { generateConfiguratorPanel } from '../lib/configurator.js';
+import type { ConfiguratorTheme } from '../lib/configurator.js';
 
 export interface PreviewCommandOptions {
   theme: string;
   port?: number;
   variant?: string;
   layout?: string;
+  configure?: boolean;
 }
 
 // Store connected SSE clients
@@ -47,7 +56,23 @@ export async function previewCommand(
     );
   }
 
-  console.log(chalk.blue('Starting preview server...'));
+  // Configurator state
+  const csrfToken = randomUUID();
+  let activeTheme = options.theme;
+  const configuratorThemes: ConfiguratorTheme[] = [];
+
+  if (options.configure) {
+    console.log(chalk.blue('Starting preview server with theme configurator...'));
+    const allThemes = await listThemes();
+    for (const t of allThemes) {
+      const theme = await loadTheme(t.name);
+      const css = await readStyles(theme);
+      const properties = css ? parseCssCustomProperties(css) : {};
+      configuratorThemes.push({ name: t.name, properties });
+    }
+  } else {
+    console.log(chalk.blue('Starting preview server...'));
+  }
 
   // Watch for file changes in the resume directory
   const watchers: FSWatcher[] = [];
@@ -109,13 +134,52 @@ export async function previewCommand(
         return;
       }
 
+      // Configurator API endpoints
+      if (options.configure && req.url === '/__vitae_api/themes') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ current: activeTheme, themes: configuratorThemes }));
+        return;
+      }
+
+      if (options.configure && req.url?.startsWith('/__vitae_api/switch')) {
+        const url = new URL(req.url, `http://localhost:${port}`);
+        const themeName = url.searchParams.get('theme');
+        if (themeName) {
+          activeTheme = themeName;
+          broadcastReload();
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+        return;
+      }
+
+      if (options.configure && req.url === '/__vitae_api/export' && req.method === 'POST') {
+        const token = req.headers['x-vitae-token'];
+        if (token !== csrfToken) {
+          res.writeHead(403, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Invalid token' }));
+          return;
+        }
+        const body = await readRequestBody(req);
+        const overrides = JSON.parse(body) as {
+          colors?: Record<string, string>;
+          fonts?: Record<string, string>;
+        };
+        await writeThemeOverrides(resolvedInput, overrides);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true }));
+        return;
+      }
+
       // Reload document on each request for live updates
       const document = await loadDocument(resolvedInput);
 
       let html: string;
 
+      const themeName = options.configure ? activeTheme : options.theme;
+
       if (document.type === 'cover-letter') {
-        html = await renderCoverLetterStandaloneHtml(document.coverLetter, options.theme);
+        html = await renderCoverLetterStandaloneHtml(document.coverLetter, themeName);
       } else {
         let resume = document.resume;
 
@@ -137,7 +201,7 @@ export async function previewCommand(
         const hasRenderOpts = options.layout || variantStyleOverrides;
         html = await renderStandaloneHtml(
           normalized,
-          options.theme,
+          themeName,
           hasRenderOpts ? renderOpts : undefined
         );
       }
@@ -178,10 +242,18 @@ export async function previewCommand(
         </script>
       `;
 
-      const htmlWithHotReload = html.replace('</body>', `${hotReloadScript}</body>`);
+      let injected = hotReloadScript;
+      if (options.configure) {
+        injected += generateConfiguratorPanel({
+          themes: configuratorThemes,
+          currentTheme: activeTheme,
+          csrfToken,
+        });
+      }
+      const finalHtml = html.replace('</body>', `${injected}</body>`);
 
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(htmlWithHotReload);
+      res.end(finalHtml);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.log(chalk.red(`  Error: ${message}`));
@@ -256,4 +328,77 @@ function escapeHtml(str: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+/**
+ * Read the full request body as a string
+ */
+function readRequestBody(req: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    req.on('data', (chunk: Buffer) => chunks.push(chunk));
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')));
+    req.on('error', reject);
+  });
+}
+
+/**
+ * Surgical YAML write-back — only touches the theme: block.
+ * Preserves all user comments and formatting outside the theme section.
+ */
+async function writeThemeOverrides(
+  filePath: string,
+  overrides: { colors?: Record<string, string>; fonts?: Record<string, string> }
+): Promise<void> {
+  const content = await readFile(filePath, 'utf-8');
+  const lines = content.split('\n');
+
+  // Build the theme block YAML
+  const themeLines: string[] = ['theme:'];
+  if (overrides.colors && Object.keys(overrides.colors).length > 0) {
+    themeLines.push('  colors:');
+    for (const [key, value] of Object.entries(overrides.colors)) {
+      themeLines.push(`    ${key}: "${value}"`);
+    }
+  }
+  if (overrides.fonts && Object.keys(overrides.fonts).length > 0) {
+    themeLines.push('  fonts:');
+    for (const [key, value] of Object.entries(overrides.fonts)) {
+      themeLines.push(`    ${key}: ${value}`);
+    }
+  }
+  const themeBlock = themeLines.join('\n');
+
+  // Find existing theme: block boundaries
+  let themeStart = -1;
+  let themeEnd = -1;
+
+  for (let i = 0; i < lines.length; i++) {
+    if (/^theme\s*:/.test(lines[i]!)) {
+      themeStart = i;
+      // Find end: next root-level key or end of file
+      for (let j = i + 1; j < lines.length; j++) {
+        if (/^\S/.test(lines[j]!) && !/^\s*#/.test(lines[j]!) && !/^\s*$/.test(lines[j]!)) {
+          themeEnd = j;
+          break;
+        }
+      }
+      if (themeEnd === -1) themeEnd = lines.length;
+      break;
+    }
+  }
+
+  let result: string;
+  if (themeStart >= 0) {
+    // Replace existing theme block
+    const before = lines.slice(0, themeStart);
+    const after = lines.slice(themeEnd);
+    result = [...before, themeBlock, ...after].join('\n');
+  } else {
+    // Append theme block (with blank line separator)
+    const trimmed = content.trimEnd();
+    result = trimmed + '\n\n' + themeBlock + '\n';
+  }
+
+  await writeFile(filePath, result, 'utf-8');
 }

@@ -243,6 +243,7 @@ program
   .option('-p, --port <number>', 'Port to run on', '3000')
   .option('-v, --variant <path>', 'Path to variant YAML file for role-specific filtering')
   .option('-l, --layout <name>', 'Theme layout preset name')
+  .option('--configure', 'Open interactive theme configurator panel')
   .action(async (input: string, options) => {
     try {
       await previewCommand(input, {
@@ -250,6 +251,7 @@ program
         port: parseInt(options.port, 10),
         variant: options.variant,
         layout: options.layout,
+        configure: options.configure,
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

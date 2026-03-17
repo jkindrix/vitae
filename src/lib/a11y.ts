@@ -10,6 +10,7 @@
  */
 
 import { parseHTML } from 'linkedom';
+import { parseCssCustomProperties } from './css-properties.js';
 import type {
   A11yResult,
   A11yAuditOptions,
@@ -145,20 +146,16 @@ export function contrastRatio(l1: number, l2: number): number {
  * Later declarations override earlier ones (theme overrides win).
  */
 export function extractCssCustomProperties(html: string): Record<string, string> {
-  const props: Record<string, string> = {};
+  const allProps: Record<string, string> = {};
   const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
   let styleMatch: RegExpExecArray | null;
 
   while ((styleMatch = styleRegex.exec(html)) !== null) {
-    const css = styleMatch[1]!;
-    const propRegex = /(--[\w-]+)\s*:\s*([^;]+)/g;
-    let propMatch: RegExpExecArray | null;
-    while ((propMatch = propRegex.exec(css)) !== null) {
-      props[propMatch[1]!] = propMatch[2]!.trim();
-    }
+    const props = parseCssCustomProperties(styleMatch[1]!);
+    Object.assign(allProps, props);
   }
 
-  return props;
+  return allProps;
 }
 
 // ---------------------------------------------------------------------------
