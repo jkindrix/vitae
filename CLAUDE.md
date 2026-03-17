@@ -19,7 +19,8 @@ src/
 │   ├── tailor.ts           # Job description → variant generation
 │   ├── import.ts           # JSON Resume → Vitae YAML
 │   ├── export.ts           # Vitae YAML → JSON Resume
-│   └── themes.ts           # List available themes
+│   ├── themes.ts           # List available themes
+│   └── deploy.ts           # GitHub Pages publishing
 ├── lib/                    # Core library (public API)
 │   ├── index.ts            # Public API barrel — exports are intentional
 │   ├── loader.ts           # File I/O, format detection, variant composition
@@ -29,6 +30,7 @@ src/
 │   ├── renderer.ts         # Nunjucks template rendering with locale filters
 │   ├── pdf.ts              # Playwright-based PDF/PNG generation
 │   ├── docx.ts             # DOCX generation via docx package
+│   ├── docx-styles.ts      # Shared DOCX styling infrastructure
 │   ├── markdown.ts         # Markdown resume rendering
 │   ├── cover-letter.ts     # Cover letter rendering (HTML, Markdown)
 │   ├── json-resume.ts      # Bidirectional JSON Resume conversion

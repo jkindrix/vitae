@@ -7,8 +7,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ## [Unreleased]
 
 ### Added
+- `vitae deploy` command for publishing resumes to GitHub Pages
+- Snapshot tests for HTML (all 3 themes), Markdown, and cover letter output
+- CLI smoke tests for build, validate, check, audit, tailor, import, and themes commands
 - Format dispatch, JSON Resume roundtrip, schema regression, and theme accessibility tests
-- `.tmp/` to `.gitignore`
+- Project guide (`CLAUDE.md`), changelog, and `.env.example`
+- PDF page scaling options (`--pages`, `--fit`, `--no-page-warn`) documented in README
+
+### Changed
+- Switched from `playwright` to `playwright-core` for lighter installs (~5MB vs ~500MB); users run `npx playwright install chromium` for PDF/PNG support
+- Extracted markdown renderer to `src/lib/markdown.ts` (zero docx dependency)
+- Extracted shared DOCX styles to `src/lib/docx-styles.ts`
+- Centralized variant highlight filtering into generic `filterSectionWithHighlights`
+- Replaced `exec()` with `execFile()` in file opener for security
+
+### Fixed
+- Preview server now validates port range (1-65535)
+- Init command distinguishes ENOENT from permission errors in file existence checks
+- User-friendly error message when Playwright browsers are not installed
 
 ## [0.1.0] — 2025-01-14 to present
 
