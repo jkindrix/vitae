@@ -119,6 +119,11 @@ export * from './lib/index.js';
 - **Coverage:** v8 provider, excludes `src/cli.ts`
 - **Pattern:** Library functions are thoroughly tested; CLI commands have lighter coverage
 
+Setup (after `npm install`):
+```bash
+npx playwright install chromium   # Required for PDF/PNG tests
+```
+
 Run tests:
 ```bash
 npm test              # Watch mode
